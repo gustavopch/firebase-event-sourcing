@@ -29,8 +29,14 @@ export const createFunctions = <
     application.domain,
   )
 
+  const cronJobs = createCronJobFirebaseFunctions(
+    firebaseAdminApp,
+    application.flows,
+  )
+
   return {
     processEvent,
     processJobs,
+    ...cronJobs,
   }
 }
