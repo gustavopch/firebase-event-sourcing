@@ -32,6 +32,8 @@ module.exports = {
         project: [join(__dirname, 'tsconfig.json')],
       },
       rules: {
+        ...baseRules,
+
         'no-return-await': 'off',
 
         // https://npm.im/eslint-plugin-import
