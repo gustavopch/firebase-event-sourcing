@@ -11,8 +11,7 @@ export type { Job } from './elements/job'
 export type { ProjectionHandler } from './elements/projection-handler'
 export type { QueryHandler } from './elements/query-handler'
 export type { ReactionHandler } from './elements/reaction-handler'
-export { createProcessEventFirebaseFunction } from './functions/process-event'
-export { createProcessJobsFirebaseFunction } from './functions/process-jobs'
+export { createFunctions } from './functions'
 export type {
   FieldValue,
   GeoPoint,
