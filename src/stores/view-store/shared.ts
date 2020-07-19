@@ -72,7 +72,7 @@ export const exists = (db: Firestore): ViewStore['exists'] => {
 export const get = (db: Firestore): ViewStore['get'] => {
   return async (collection, id) => {
     const docSnap = await db.collection(collection).doc(id).get()
-    return docSnap.data() ?? null
+    return (docSnap.data() ?? null) as any
   }
 }
 
@@ -82,7 +82,7 @@ export const getAndObserve = (db: Firestore): ViewStore['getAndObserve'] => {
       .collection(collection)
       .doc(id)
       .onSnapshot((docSnap: DocumentSnapshot) => {
-        onNext(docSnap.data() ?? null)
+        onNext((docSnap.data() ?? null) as any)
       }, onError)
   }
 }

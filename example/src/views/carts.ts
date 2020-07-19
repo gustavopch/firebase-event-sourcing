@@ -84,8 +84,8 @@ export const carts = defineView({
   },
 
   queries: {
-    get: async (store, id: string): Promise<Cart> => {
-      return (await store.get(collection, id)) as Cart
+    get: (store, id: string): Promise<Cart | null> => {
+      return store.get<Cart>(collection, id)
     },
   },
 })

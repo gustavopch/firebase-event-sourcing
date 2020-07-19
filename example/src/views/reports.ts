@@ -29,7 +29,7 @@ export const reports = defineView({
 
   queries: {
     getTotals: async (store): Promise<Report> => {
-      return (await store.get(collection, totalsId)) as Report
+      return (await store.get<Report>(collection, totalsId))!
     },
   },
 })

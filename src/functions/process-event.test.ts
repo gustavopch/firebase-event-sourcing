@@ -118,9 +118,11 @@ it('gracefully handles wrongly ordered function invocations', async () => {
   await waitForExpect(async () => {
     const cart = await app.views.carts.get(aggregateId)
 
-    expect(
-      Object.values(cart.items).sort((a, b) => a.title.localeCompare(b.title)),
-    ).toEqual([
+    const items = Object.values(cart?.items ?? {}).sort((a, b) =>
+      a.title.localeCompare(b.title),
+    )
+
+    expect(items).toEqual([
       { title: '1st Item' },
       { title: '2nd Item' },
       { title: '3rd Item' },
