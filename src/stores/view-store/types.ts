@@ -57,12 +57,15 @@ export type ViewStore = {
 
   exists: (collection: string, id: string) => Promise<boolean>
 
-  get: (collection: string, id: string) => Promise<{ [key: string]: any }>
+  get: (
+    collection: string,
+    id: string,
+  ) => Promise<{ [key: string]: any } | null>
 
   getAndObserve: (
     collection: string,
     id: string,
-    onNext: (doc: { [key: string]: any }) => void,
+    onNext: (doc: { [key: string]: any } | null) => void,
     onError?: (error: Error) => void,
   ) => Unsubscribe
 
