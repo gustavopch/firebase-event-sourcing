@@ -12,7 +12,7 @@
   },
   "functions": {
     "ignore": [".cache", "node_modules", "src"],
-    "runtime": "nodejs10",
+    "runtime": "nodejs12",
     "source": "./example"
   }
 }
