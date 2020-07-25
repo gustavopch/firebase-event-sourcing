@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "date-fns": "2.14.0",
-    "firebase": "7.16.0",
+    "firebase": "7.17.1",
     "firebase-admin": "9.0.0",
     "firebase-functions": "3.8.0"
   },
