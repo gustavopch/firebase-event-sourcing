@@ -2,8 +2,9 @@
   "name": "example",
   "version": "0.0.0-development",
   "license": "MIT",
+  "main": "./dist/functions",
   "scripts": {
-    "build-functions": "parcel build src/functions.ts --target node && ./scripts/build-package-json.js"
+    "build-functions": "parcel build src/functions.ts --target node"
   },
   "dependencies": {
     "date-fns": "2.14.0",

@@ -11,6 +11,8 @@
     }
   },
   "functions": {
-    "source": "./example/dist"
+    "ignore": [".cache", "node_modules", "src"],
+    "runtime": "nodejs10",
+    "source": "./example"
   }
 }
