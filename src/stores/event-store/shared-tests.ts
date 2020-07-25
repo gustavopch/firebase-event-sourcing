@@ -42,7 +42,7 @@ const generateTestData: GenerateTestDataFn = timestamp => ({
         timestamp: timestamp('2020-07-01'),
         revision: 1,
         status: 'approved',
-        issuerId: 'john',
+        userId: 'john',
       },
     },
     '2': {
@@ -71,7 +71,7 @@ const generateTestData: GenerateTestDataFn = timestamp => ({
         timestamp: timestamp('2020-07-03'),
         revision: 1,
         status: 'approved',
-        issuerId: 'john',
+        userId: 'john',
       },
     },
     '4': {
@@ -186,12 +186,12 @@ export const testGetEventsByCorrelationId = (setup: SetupFn): void => {
   })
 }
 
-export const testGetEventsByIssuerId = (setup: SetupFn): void => {
-  test('getEventsByIssuerId', async () => {
+export const testGetEventsByUserId = (setup: SetupFn): void => {
+  test('getEventsByUserId', async () => {
     const { eventStore, testEvents } = await setup({ generateTestData })
 
     const events: Event[] = []
-    await eventStore.getEventsByIssuerId('john', event => {
+    await eventStore.getEventsByUserId('john', event => {
       events.push(event)
     })
 

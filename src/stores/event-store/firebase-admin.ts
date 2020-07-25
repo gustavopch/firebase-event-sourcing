@@ -7,7 +7,7 @@ import {
   getEvent,
   getEventsByCausationId,
   getEventsByCorrelationId,
-  getEventsByIssuerId,
+  getEventsByUserId,
   getReplay,
   getReplayForAggregate,
   importEvents,
@@ -32,7 +32,7 @@ export const createFirebaseAdminEventStore = (
 
     getEventsByCorrelationId: getEventsByCorrelationId(eventsCollection),
 
-    getEventsByIssuerId: getEventsByIssuerId(eventsCollection),
+    getEventsByUserId: getEventsByUserId(eventsCollection),
 
     getReplay: getReplay(eventsCollection),
 

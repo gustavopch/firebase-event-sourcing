@@ -85,11 +85,11 @@ export const getEventsByCorrelationId = (
   }
 }
 
-export const getEventsByIssuerId = (
+export const getEventsByUserId = (
   eventsCollection: CollectionReference,
-): EventStore['getEventsByIssuerId'] => {
-  return async (issuerId, onNext, options = {}) => {
-    let query = eventsCollection.where('metadata.issuerId', '==', issuerId)
+): EventStore['getEventsByUserId'] => {
+  return async (userId, onNext, options = {}) => {
+    let query = eventsCollection.where('metadata.userId', '==', userId)
 
     if (options.status) {
       query = query.where('metadata.status', '==', options.status)
@@ -170,7 +170,7 @@ export const saveEvent = (
         timestamp: now(),
         revision: increment(1) as any,
         status: 'pending',
-        issuerId: currentUserId(),
+        userId: currentUserId(),
       },
     }
 

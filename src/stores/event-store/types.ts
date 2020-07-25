@@ -23,8 +23,8 @@ export type EventStore = {
     options?: { status?: EventStatus },
   ) => Promise<Event[]>
 
-  getEventsByIssuerId: (
-    issuerId: string,
+  getEventsByUserId: (
+    userId: string,
     onNext: OnEvent,
     options?: { status?: EventStatus },
   ) => Promise<void>

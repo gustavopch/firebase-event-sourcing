@@ -11,7 +11,7 @@ import {
   testGetAggregateSnapshot,
   testGetEvent,
   testGetEventsByCorrelationId,
-  testGetEventsByIssuerId,
+  testGetEventsByUserId,
   testGetReplay,
   testGetReplayForAggregate,
   testImportEvents,
@@ -82,7 +82,7 @@ describe('Event Store', () => {
 
   testGetEventsByCorrelationId(setup)
 
-  testGetEventsByIssuerId(setup)
+  testGetEventsByUserId(setup)
 
   testGetReplay(setup)
 

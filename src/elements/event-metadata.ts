@@ -8,5 +8,5 @@ export type EventMetadata = {
   timestamp: Timestamp
   revision: number
   status: EventStatus
-  issuerId?: string
+  userId?: string
 }
