@@ -8,7 +8,7 @@ export type JobStore = {
     scheduledFor: Date
     aggregateName: string
     aggregateId: string
-    handlerName: string
+    commandName: string
     commandData: TCommandData
     causationId?: string
     correlationId?: string

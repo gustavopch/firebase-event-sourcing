@@ -11,7 +11,7 @@ export type Job<TCommandData extends CommandData = CommandData> = {
   type: 'command'
   aggregateName: string
   aggregateId: string
-  handlerName: string
+  commandName: string
   commandData: TCommandData
   causationId?: string
   correlationId?: string

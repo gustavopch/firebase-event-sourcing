@@ -63,7 +63,7 @@ export const createFlowManager = (
         scheduledFor: new Date(date),
         aggregateName,
         aggregateId,
-        handlerName: handler.name,
+        commandName: handler.name,
         commandData: commandData,
         causationId: causationEvent?.id,
         correlationId: causationEvent?.metadata.correlationId,

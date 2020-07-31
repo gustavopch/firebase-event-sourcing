@@ -20,7 +20,7 @@ export const createProcessJobsFirebaseFunction = (
       const [contextName, aggregateName] = job.aggregateName.split('.')
 
       const handler =
-        domain[contextName][aggregateName].commands[job.handlerName]
+        domain[contextName][aggregateName].commands[job.commandName]
 
       const { name, data } = handler(job.commandData)
 
