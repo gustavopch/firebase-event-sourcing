@@ -19,8 +19,6 @@ import {
 export const SHOPPING_CART = 'shopping.cart'
 
 export const cart = defineAggregate({
-  name: SHOPPING_CART,
-
   commands: {
     initialize: (data: ShoppingCartInitialized['data']) => ({
       name: SHOPPING_CART_INITIALIZED,
