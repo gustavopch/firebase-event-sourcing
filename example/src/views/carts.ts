@@ -1,14 +1,20 @@
 import { Timestamp, defineView } from '../../../src'
 import {
   SHOPPING_CART_INITIALIZED,
-  SHOPPING_CART_ITEM_ADDED,
-  SHOPPING_CART_ITEM_REMOVED,
-  SHOPPING_CART_ORDER_PLACED,
   ShoppingCartInitialized,
+} from '../domain/shopping/cart/events/initialized'
+import {
+  SHOPPING_CART_ITEM_ADDED,
   ShoppingCartItemAdded,
+} from '../domain/shopping/cart/events/item-added'
+import {
+  SHOPPING_CART_ITEM_REMOVED,
   ShoppingCartItemRemoved,
+} from '../domain/shopping/cart/events/item-removed'
+import {
+  SHOPPING_CART_ORDER_PLACED,
   ShoppingCartOrderPlaced,
-} from '../domain/shopping/cart'
+} from '../domain/shopping/cart/events/order-placed'
 
 const collection = 'carts'
 

@@ -1,8 +1,6 @@
 import { defineFlow } from '../../../src'
-import {
-  SHOPPING_CART_ORDER_PLACED,
-  ShoppingCartInitialized,
-} from '../domain/shopping/cart'
+import { ShoppingCartInitialized } from '../domain/shopping/cart/events/initialized'
+import { SHOPPING_CART_ORDER_PLACED } from '../domain/shopping/cart/events/order-placed'
 import { getEmailService } from '../services/email-service'
 
 export const ifOrderPlacedThenSendEmail = defineFlow({

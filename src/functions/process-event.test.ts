@@ -4,13 +4,15 @@ import waitForExpect from 'wait-for-expect'
 
 import { initializeApp } from '../../example/src/app'
 import { config } from '../../example/src/config'
+import { SHOPPING_CART } from '../../example/src/domain/shopping/cart'
 import {
-  SHOPPING_CART,
   SHOPPING_CART_INITIALIZED,
-  SHOPPING_CART_ITEM_ADDED,
   ShoppingCartInitialized,
+} from '../../example/src/domain/shopping/cart/events/initialized'
+import {
+  SHOPPING_CART_ITEM_ADDED,
   ShoppingCartItemAdded,
-} from '../../example/src/domain/shopping/cart'
+} from '../../example/src/domain/shopping/cart/events/item-added'
 import { EVENTS } from '../stores/event-store/constants'
 
 const setup = () => {

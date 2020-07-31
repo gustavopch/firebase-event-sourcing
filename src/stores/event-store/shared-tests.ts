@@ -1,11 +1,11 @@
 import type firebaseAdmin from 'firebase-admin'
 
+import { SHOPPING_CART } from '../../../example/src/domain/shopping/cart'
 import {
-  SHOPPING_CART,
   SHOPPING_CART_INITIALIZED,
-  SHOPPING_CART_ITEM_ADDED,
   ShoppingCartInitialized,
-} from '../../../example/src/domain/shopping/cart'
+} from '../../../example/src/domain/shopping/cart/events/initialized'
+import { SHOPPING_CART_ITEM_ADDED } from '../../../example/src/domain/shopping/cart/events/item-added'
 import { Event } from '../../elements/event'
 import { AggregateSnapshot, EventStore } from './types'
 

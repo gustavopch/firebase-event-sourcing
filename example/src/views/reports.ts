@@ -2,7 +2,7 @@ import { defineView } from '../../../src'
 import {
   SHOPPING_CART_ORDER_PLACED,
   ShoppingCartOrderPlaced,
-} from '../domain/shopping/cart'
+} from '../domain/shopping/cart/events/order-placed'
 
 const collection = 'reports'
 const totalsId = 'totals'

@@ -1,22 +1,22 @@
-import { Event, defineAggregate } from '../../../../src'
+import { defineAggregate } from '../../../../../src'
+import {
+  SHOPPING_CART_INITIALIZED,
+  ShoppingCartInitialized,
+} from './events/initialized'
+import {
+  SHOPPING_CART_ITEM_ADDED,
+  ShoppingCartItemAdded,
+} from './events/item-added'
+import {
+  SHOPPING_CART_ITEM_REMOVED,
+  ShoppingCartItemRemoved,
+} from './events/item-removed'
+import {
+  SHOPPING_CART_ORDER_PLACED,
+  ShoppingCartOrderPlaced,
+} from './events/order-placed'
 
 export const SHOPPING_CART = 'shopping.cart'
-
-export const SHOPPING_CART_INITIALIZED = `${SHOPPING_CART}.initialized`
-export type ShoppingCartInitialized = Event<null>
-
-export const SHOPPING_CART_ITEM_ADDED = `${SHOPPING_CART}.itemAdded`
-export type ShoppingCartItemAdded = Event<{
-  title: string
-}>
-
-export const SHOPPING_CART_ITEM_REMOVED = `${SHOPPING_CART}.itemRemoved`
-export type ShoppingCartItemRemoved = Event<{
-  itemId: string
-}>
-
-export const SHOPPING_CART_ORDER_PLACED = `${SHOPPING_CART}.orderPlaced`
-export type ShoppingCartOrderPlaced = Event<null>
 
 export const cart = defineAggregate({
   name: SHOPPING_CART,
