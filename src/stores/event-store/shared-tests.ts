@@ -243,11 +243,11 @@ export const testGetAggregateSnapshot = (setup: SetupFn): void => {
   })
 }
 
-export const testSaveEvent = (setup: SetupFn): void => {
-  test('saveEvent', async () => {
+export const testSaveNewEvent = (setup: SetupFn): void => {
+  test('saveNewEvent', async () => {
     const { eventStore } = await setup({ generateTestData })
 
-    const { id } = await eventStore.saveEvent<ShoppingCartInitialized>({
+    const { id } = await eventStore.saveNewEvent<ShoppingCartInitialized>({
       aggregateName: 'some.name',
       aggregateId: 'x',
       name: SHOPPING_CART_INITIALIZED,

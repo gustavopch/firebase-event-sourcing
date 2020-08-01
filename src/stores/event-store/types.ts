@@ -46,7 +46,7 @@ export type EventStore = {
     aggregateId: string | null | undefined,
   ) => Promise<AggregateSnapshot | null>
 
-  saveEvent: <TEvent extends Event>(eventProps: {
+  saveNewEvent: <TEvent extends Event>(eventProps: {
     aggregateName: TEvent['aggregateName']
     aggregateId: TEvent['aggregateId']
     name: TEvent['name']

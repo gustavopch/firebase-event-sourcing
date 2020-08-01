@@ -16,7 +16,7 @@ import {
   testGetReplayForAggregate,
   testImportEvents,
   testSaveAggregateSnapshot,
-  testSaveEvent,
+  testSaveNewEvent,
 } from './shared-tests'
 
 const firebaseAdminApp = firebaseAdmin.initializeApp({
@@ -90,7 +90,7 @@ describe('Event Store', () => {
 
   testGetAggregateSnapshot(setup)
 
-  testSaveEvent(setup)
+  testSaveNewEvent(setup)
 
   testSaveAggregateSnapshot(setup)
 

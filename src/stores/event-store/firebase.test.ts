@@ -16,7 +16,7 @@ import {
   testGetReplayForAggregate,
   testImportEvents,
   testSaveAggregateSnapshot,
-  testSaveEvent,
+  testSaveNewEvent,
 } from './shared-tests'
 
 const setup: SetupFn = async ({ generateTestData } = {}) => {
@@ -86,7 +86,7 @@ describe('Event Store', () => {
 
   testGetAggregateSnapshot(setup)
 
-  testSaveEvent(setup)
+  testSaveNewEvent(setup)
 
   testSaveAggregateSnapshot(setup)
 

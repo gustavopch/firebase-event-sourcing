@@ -142,12 +142,12 @@ export const getAggregateSnapshot = (
   }
 }
 
-export const saveEvent = (
+export const saveNewEvent = (
   eventsCollection: CollectionReference,
   now: () => Timestamp,
   increment: (n: number) => FieldValue,
   currentUserId: () => string | undefined,
-): EventStore['saveEvent'] => {
+): EventStore['saveNewEvent'] => {
   return async ({
     aggregateName,
     aggregateId,

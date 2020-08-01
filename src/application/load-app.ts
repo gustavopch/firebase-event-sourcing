@@ -30,7 +30,7 @@ export const loadApp = <TApplicationDefinition extends ApplicationDefinition>(
           return async (aggregateId: string, commandData: CommandData) => {
             const { name, data } = handler(commandData)
 
-            const event = await eventStore.saveEvent({
+            const event = await eventStore.saveNewEvent({
               aggregateName,
               aggregateId,
               name,

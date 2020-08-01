@@ -12,7 +12,7 @@ import {
   getReplayForAggregate,
   importEvents,
   saveAggregateSnapshot,
-  saveEvent,
+  saveNewEvent,
 } from './shared'
 import { EventStore } from './types'
 
@@ -40,7 +40,7 @@ export const createFirebaseAdminEventStore = (
 
     getAggregateSnapshot: getAggregateSnapshot(snapshotsCollection),
 
-    saveEvent: saveEvent(
+    saveNewEvent: saveNewEvent(
       eventsCollection,
       firebaseAdmin.firestore.Timestamp.now,
       firebaseAdmin.firestore.FieldValue.increment,
