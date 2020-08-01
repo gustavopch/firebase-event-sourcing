@@ -104,9 +104,16 @@ export const createProcessEventFirebaseFunction = (
             revision: event.metadata.revision,
           })
 
-          await triggerProjections(event)
+          try {
+            await triggerProjections(event)
 
-          await triggerReactions(event)
+            await triggerReactions(event)
+
+            await eventStore.markEventAsApproved(event)
+          } catch (error) {
+            await eventStore.markEventAsFailed(event)
+            console.error(`Event ${event.name} (${event.id}) failed:`, error)
+          }
         }
       } catch (error) {
         console.error(error)
