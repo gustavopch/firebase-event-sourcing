@@ -43,7 +43,7 @@
     "firebase-tools": "8.6.0",
     "husky": "4.2.5",
     "lint-staged": "10.2.11",
-    "typescript": "3.9.6",
+    "typescript": "3.9.7",
     "wait-for-expect": "3.0.2"
   },
   "peerDependencies": {
