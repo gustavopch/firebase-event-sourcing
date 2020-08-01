@@ -1,4 +1,5 @@
 import { Event } from '../../elements/event'
+import { EventStatus } from '../../elements/event-metadata'
 import {
   CollectionReference,
   DocumentSnapshot,
@@ -178,6 +179,35 @@ export const saveNewEvent = (
 
     return event
   }
+}
+
+const updateEventStatus = (
+  eventsCollection: CollectionReference,
+  status: EventStatus,
+) => {
+  return async (event: Event) => {
+    await eventsCollection.doc(event.id).update({
+      'metadata.status': status,
+    })
+  }
+}
+
+export const markEventAsApproved = (
+  eventsCollection: CollectionReference,
+): EventStore['markEventAsApproved'] => {
+  return updateEventStatus(eventsCollection, 'approved')
+}
+
+export const markEventAsRejected = (
+  eventsCollection: CollectionReference,
+): EventStore['markEventAsRejected'] => {
+  return updateEventStatus(eventsCollection, 'rejected')
+}
+
+export const markEventAsFailed = (
+  eventsCollection: CollectionReference,
+): EventStore['markEventAsFailed'] => {
+  return updateEventStatus(eventsCollection, 'failed')
 }
 
 export const saveAggregateSnapshot = (

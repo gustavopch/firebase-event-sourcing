@@ -57,5 +57,11 @@ export type EventStore = {
 
   saveAggregateSnapshot: (aggregate: AggregateSnapshot) => Promise<void>
 
+  markEventAsApproved: (event: Event) => Promise<void>
+
+  markEventAsRejected: (event: Event) => Promise<void>
+
+  markEventAsFailed: (event: Event) => Promise<void>
+
   importEvents: (events: Event[]) => Promise<void>
 }

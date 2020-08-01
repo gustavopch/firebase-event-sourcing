@@ -271,6 +271,26 @@ export const testSaveNewEvent = (setup: SetupFn): void => {
   })
 }
 
+export const testMarkEventAsX = (setup: SetupFn): void => {
+  test('markEventAs{Approved,Rejected,Failed}', async () => {
+    const { eventStore } = await setup({ generateTestData })
+
+    let event = (await eventStore.getEvent('1'))!
+
+    await eventStore.markEventAsRejected(event)
+    event = (await eventStore.getEvent('1'))!
+    expect(event.metadata.status).toBe('rejected')
+
+    await eventStore.markEventAsFailed(event)
+    event = (await eventStore.getEvent('1'))!
+    expect(event.metadata.status).toBe('failed')
+
+    await eventStore.markEventAsApproved(event)
+    event = (await eventStore.getEvent('1'))!
+    expect(event.metadata.status).toBe('approved')
+  })
+}
+
 export const testSaveAggregateSnapshot = (setup: SetupFn): void => {
   test('saveAggregateSnapshot', async () => {
     const { eventStore } = await setup({ generateTestData })

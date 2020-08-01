@@ -13,6 +13,9 @@ import {
   getReplay,
   getReplayForAggregate,
   importEvents,
+  markEventAsApproved,
+  markEventAsFailed,
+  markEventAsRejected,
   saveAggregateSnapshot,
   saveNewEvent,
 } from './shared'
@@ -56,6 +59,12 @@ export const createFirebaseEventStore = (
           ? undefined
           : firebaseApp.auth().currentUser?.uid,
     ),
+
+    markEventAsApproved: markEventAsApproved(eventsCollection),
+
+    markEventAsRejected: markEventAsRejected(eventsCollection),
+
+    markEventAsFailed: markEventAsFailed(eventsCollection),
 
     saveAggregateSnapshot: saveAggregateSnapshot(snapshotsCollection),
 
