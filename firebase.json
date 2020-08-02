@@ -13,6 +13,6 @@
   "functions": {
     "ignore": [".cache", "node_modules", "src"],
     "runtime": "nodejs12",
-    "source": "./example"
+    "source": "./example/dist"
   }
 }

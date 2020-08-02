@@ -20,9 +20,6 @@
   "module": "dist/firebase-event-sourcing.esm.js",
   "typings": "dist/index.d.ts",
   "repository": "github:gustavopch/firebase-event-sourcing",
-  "workspaces": [
-    "./example"
-  ],
   "scripts": {
     "postinstall": "yarn build",
     "build": "tsdx build --tsconfig ./tsconfig.build.json",
@@ -43,6 +40,7 @@
     "firebase-tools": "8.6.0",
     "husky": "4.2.5",
     "lint-staged": "10.2.11",
+    "parcel-bundler": "1.12.4",
     "typescript": "3.9.7",
     "wait-for-expect": "3.0.2"
   },
@@ -55,6 +53,5 @@
     "@typescript-eslint/eslint-plugin": "3.6.1",
     "@typescript-eslint/parser": "3.6.1",
     "prettier": "2.0.5"
-  },
-  "private": true
+  }
 }

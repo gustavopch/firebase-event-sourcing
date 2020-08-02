@@ -12,12 +12,12 @@ if (matchedTestFiles.length === 0) {
   process.exit(0)
 }
 
+execSync('./scripts/build-example.js', {
+  stdio: 'inherit',
+})
+
 const jestCommand = `tsdx test --passWithNoTests --runInBand ${jestArgs}`
 
-execSync(
-  'yarn workspace example build-functions && ' +
-    `firebase emulators:exec "${jestCommand}"`,
-  {
-    stdio: 'inherit',
-  },
-)
+execSync(`yarn firebase emulators:exec "${jestCommand}"`, {
+  stdio: 'inherit',
+})
