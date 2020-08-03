@@ -8,22 +8,12 @@ import { Event } from '../../elements/event'
 import { Timestamp } from '../types'
 import { AggregateSnapshot, EventStore } from './types'
 
-type GenerateTestDataFn = (
+export const generateTestData = (
   timestamp: (timestamp: string) => Timestamp,
-) => {
+): {
   events: { [id: string]: Event }
   aggregates: { [id: string]: AggregateSnapshot }
-}
-
-export type SetupFn = (options?: {
-  generateTestData?: GenerateTestDataFn
-}) => Promise<{
-  eventStore: EventStore
-  testEvents: { [id: string]: Event }
-  testAggregates: { [id: string]: AggregateSnapshot }
-}>
-
-const generateTestData: GenerateTestDataFn = timestamp => ({
+} => ({
   events: {
     '1': {
       aggregateName: SHOPPING_CART,
@@ -134,27 +124,27 @@ const generateTestData: GenerateTestDataFn = timestamp => ({
   },
 })
 
-export const testGenerateId = (setup: SetupFn): void => {
-  test('generateId', async () => {
-    const { eventStore } = await setup()
-
+export const testGenerateId = (eventStore: EventStore): void => {
+  test('generateId', () => {
     const id = eventStore.generateId()
     expect(typeof id).toBe('string')
   })
 }
 
-export const testGetEvent = (setup: SetupFn): void => {
+export const testGetEvent = (
+  eventStore: EventStore,
+  testEvents: { [id: string]: Event },
+): void => {
   test('getEvent', async () => {
-    const { eventStore, testEvents } = await setup({ generateTestData })
-
     expect(await eventStore.getEvent('1')).toEqual(testEvents['1'])
   })
 }
 
-export const testEventsByCausationId = (setup: SetupFn): void => {
+export const testEventsByCausationId = (
+  eventStore: EventStore,
+  testEvents: { [id: string]: Event },
+): void => {
   test('getEventsByCausationId', async () => {
-    const { eventStore, testEvents } = await setup({ generateTestData })
-
     expect(await eventStore.getEventsByCausationId('1')).toEqual([
       testEvents['1'],
     ])
@@ -165,10 +155,11 @@ export const testEventsByCausationId = (setup: SetupFn): void => {
   })
 }
 
-export const testGetEventsByCorrelationId = (setup: SetupFn): void => {
+export const testGetEventsByCorrelationId = (
+  eventStore: EventStore,
+  testEvents: { [id: string]: Event },
+): void => {
   test('getEventsByCorrelationId', async () => {
-    const { eventStore, testEvents } = await setup({ generateTestData })
-
     expect(await eventStore.getEventsByCorrelationId('1')).toEqual([
       testEvents['1'],
     ])
@@ -181,10 +172,11 @@ export const testGetEventsByCorrelationId = (setup: SetupFn): void => {
   })
 }
 
-export const testGetEventsByUserId = (setup: SetupFn): void => {
+export const testGetEventsByUserId = (
+  eventStore: EventStore,
+  testEvents: { [id: string]: Event },
+): void => {
   test('getEventsByUserId', async () => {
-    const { eventStore, testEvents } = await setup({ generateTestData })
-
     const events: Event[] = []
     await eventStore.getEventsByUserId('john', event => {
       events.push(event)
@@ -194,10 +186,11 @@ export const testGetEventsByUserId = (setup: SetupFn): void => {
   })
 }
 
-export const testGetReplay = (setup: SetupFn): void => {
+export const testGetReplay = (
+  eventStore: EventStore,
+  testEvents: { [id: string]: Event },
+): void => {
   test('getReplay', async () => {
-    const { eventStore, testEvents } = await setup({ generateTestData })
-
     const events: Event[] = []
     await eventStore.getReplay(new Date('2020-07-03T00:00:00Z'), event => {
       events.push(event)
@@ -213,10 +206,11 @@ export const testGetReplay = (setup: SetupFn): void => {
   })
 }
 
-export const testGetReplayForAggregate = (setup: SetupFn): void => {
+export const testGetReplayForAggregate = (
+  eventStore: EventStore,
+  testEvents: { [id: string]: Event },
+): void => {
   test('getReplayForAggregate', async () => {
-    const { eventStore, testEvents } = await setup({ generateTestData })
-
     const events: Event[] = []
     await eventStore.getReplayForAggregate('E', 2, event => {
       events.push(event)
@@ -226,10 +220,11 @@ export const testGetReplayForAggregate = (setup: SetupFn): void => {
   })
 }
 
-export const testGetAggregateSnapshot = (setup: SetupFn): void => {
+export const testGetAggregateSnapshot = (
+  eventStore: EventStore,
+  testAggregates: { [id: string]: AggregateSnapshot },
+): void => {
   test('getAggregateSnapshot', async () => {
-    const { eventStore, testAggregates } = await setup({ generateTestData })
-
     const aggregate = await eventStore.getAggregateSnapshot(
       testAggregates['E'].aggregateId,
     )
@@ -238,10 +233,8 @@ export const testGetAggregateSnapshot = (setup: SetupFn): void => {
   })
 }
 
-export const testSaveNewEvent = (setup: SetupFn): void => {
+export const testSaveNewEvent = (eventStore: EventStore): void => {
   test('saveNewEvent', async () => {
-    const { eventStore } = await setup({ generateTestData })
-
     const { id } = await eventStore.saveNewEvent<ShoppingCartInitialized>({
       aggregateName: 'some.name',
       aggregateId: 'x',
@@ -266,10 +259,8 @@ export const testSaveNewEvent = (setup: SetupFn): void => {
   })
 }
 
-export const testMarkEventAsX = (setup: SetupFn): void => {
+export const testMarkEventAsX = (eventStore: EventStore): void => {
   test('markEventAs{Approved,Rejected,Failed}', async () => {
-    const { eventStore } = await setup({ generateTestData })
-
     let event = (await eventStore.getEvent('1'))!
 
     await eventStore.markEventAsRejected(event)
@@ -286,10 +277,8 @@ export const testMarkEventAsX = (setup: SetupFn): void => {
   })
 }
 
-export const testSaveAggregateSnapshot = (setup: SetupFn): void => {
+export const testSaveAggregateSnapshot = (eventStore: EventStore): void => {
   test('saveAggregateSnapshot', async () => {
-    const { eventStore } = await setup({ generateTestData })
-
     await eventStore.saveAggregateSnapshot({
       aggregateId: 'x',
       revision: 7,
@@ -302,10 +291,11 @@ export const testSaveAggregateSnapshot = (setup: SetupFn): void => {
   })
 }
 
-export const testImportEvents = (setup: SetupFn): void => {
+export const testImportEvents = (
+  eventStore: EventStore,
+  testEvents: { [id: string]: Event },
+): void => {
   test('importEvents', async () => {
-    const { eventStore, testEvents } = await setup()
-
     const events = Object.values(testEvents)
     await eventStore.importEvents(events)
 

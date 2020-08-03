@@ -5,7 +5,7 @@ import { config } from '../../../example/src/config'
 import { EVENTS, SNAPSHOTS } from './constants'
 import { createFirebaseEventStore } from './firebase'
 import {
-  SetupFn,
+  generateTestData,
   testEventsByCausationId,
   testGenerateId,
   testGetAggregateSnapshot,
@@ -20,78 +20,61 @@ import {
   testSaveNewEvent,
 } from './shared-tests'
 
-const setup: SetupFn = async ({ generateTestData } = {}) => {
-  const firebaseApp = testing.initializeTestApp({
-    projectId: config.firebase.projectId,
-    auth: { uid: 'admin' },
-  })
+const firebaseApp = testing.initializeTestApp({
+  projectId: config.firebase.projectId,
+  auth: { uid: 'admin' },
+})
 
-  // @ts-ignore: https://github.com/firebase/firebase-js-sdk/issues/3354
-  firebaseApp.firestore()._settings.ignoreUndefinedProperties = true
+// @ts-ignore: https://github.com/firebase/firebase-js-sdk/issues/3354
+firebaseApp.firestore()._settings.ignoreUndefinedProperties = true
 
-  const eventStore = createFirebaseEventStore(firebaseApp)
+const eventStore = createFirebaseEventStore(firebaseApp)
 
-  if (!generateTestData) {
-    return {
-      eventStore,
-      testEvents: {},
-      testAggregates: {},
-    }
-  }
+const testData = generateTestData(timestamp =>
+  firebase.firestore.Timestamp.fromDate(new Date(timestamp)),
+)
 
-  const { events, aggregates } = generateTestData((timestamp: string) =>
-    firebase.firestore.Timestamp.fromDate(new Date(timestamp)),
-  )
-
-  for (const event of Object.values(events)) {
+beforeAll(async () => {
+  for (const event of Object.values(testData.events)) {
     await firebaseApp.firestore().collection(EVENTS).doc(event.id).set(event)
   }
 
-  for (const aggregate of Object.values(aggregates)) {
+  for (const aggregate of Object.values(testData.aggregates)) {
     await firebaseApp
       .firestore()
       .collection(SNAPSHOTS)
       .doc(aggregate.aggregateId)
       .set(aggregate)
   }
-
-  return {
-    eventStore,
-    testEvents: events,
-    testAggregates: aggregates,
-  }
-}
-
-beforeEach(async () => {
-  await testing.clearFirestoreData({ projectId: config.firebase.projectId })
 })
 
 afterAll(async () => {
+  await testing.clearFirestoreData({ projectId: config.firebase.projectId })
   await Promise.all(testing.apps().map(app => app.delete()))
 })
 
 describe('Event Store', () => {
-  testGenerateId(setup)
+  testGenerateId(eventStore)
 
-  testGetEvent(setup)
+  testGetEvent(eventStore, testData.events)
 
-  testEventsByCausationId(setup)
+  testEventsByCausationId(eventStore, testData.events)
 
-  testGetEventsByCorrelationId(setup)
+  testGetEventsByCorrelationId(eventStore, testData.events)
 
-  testGetEventsByUserId(setup)
+  testGetEventsByUserId(eventStore, testData.events)
 
-  testGetReplay(setup)
+  testGetReplay(eventStore, testData.events)
 
-  testGetReplayForAggregate(setup)
+  testGetReplayForAggregate(eventStore, testData.events)
 
-  testGetAggregateSnapshot(setup)
+  testGetAggregateSnapshot(eventStore, testData.aggregates)
 
-  testSaveNewEvent(setup)
+  testSaveNewEvent(eventStore)
 
-  testMarkEventAsX(setup)
+  testMarkEventAsX(eventStore)
 
-  testSaveAggregateSnapshot(setup)
+  testSaveAggregateSnapshot(eventStore)
 
-  testImportEvents(setup)
+  testImportEvents(eventStore, testData.events)
 })

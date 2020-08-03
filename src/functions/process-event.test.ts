@@ -15,19 +15,15 @@ import {
 } from '../../example/src/domain/shopping/cart/events/item-added'
 import { EVENTS } from '../stores/event-store/constants'
 
-const setup = () => {
-  const firebaseApp = testing.initializeTestApp({
-    projectId: config.firebase.projectId,
-    auth: { uid: 'admin' },
-  })
+const firebaseApp = testing.initializeTestApp({
+  projectId: config.firebase.projectId,
+  auth: { uid: 'admin' },
+})
 
-  // @ts-ignore: https://github.com/firebase/firebase-js-sdk/issues/3354
-  firebaseApp.firestore()._settings.ignoreUndefinedProperties = true
+// @ts-ignore: https://github.com/firebase/firebase-js-sdk/issues/3354
+firebaseApp.firestore()._settings.ignoreUndefinedProperties = true
 
-  const app = initializeApp(firebaseApp)
-
-  return { app, firebaseApp }
-}
+const app = initializeApp(firebaseApp)
 
 const aggregateId = 'cart'
 
@@ -97,17 +93,12 @@ const thirdItemAddedEvent: ShoppingCartItemAdded = {
   },
 }
 
-beforeEach(async () => {
-  await testing.clearFirestoreData({ projectId: config.firebase.projectId })
-})
-
 afterAll(async () => {
+  await testing.clearFirestoreData({ projectId: config.firebase.projectId })
   await Promise.all(testing.apps().map(app => app.delete()))
 })
 
 it('gracefully handles wrongly ordered function invocations', async () => {
-  const { app, firebaseApp } = setup()
-
   const eventsCollection = firebaseApp.firestore().collection(EVENTS)
 
   await Promise.all([

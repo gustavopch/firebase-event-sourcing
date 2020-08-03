@@ -5,7 +5,7 @@ import { config } from '../../../example/src/config'
 import { EVENTS, SNAPSHOTS } from './constants'
 import { createFirebaseAdminEventStore } from './firebase-admin'
 import {
-  SetupFn,
+  generateTestData,
   testEventsByCausationId,
   testGenerateId,
   testGetAggregateSnapshot,
@@ -28,22 +28,14 @@ firebaseAdmin.firestore().settings({
   ignoreUndefinedProperties: true,
 })
 
-const setup: SetupFn = async ({ generateTestData } = {}) => {
-  const eventStore = createFirebaseAdminEventStore(firebaseAdminApp)
+const eventStore = createFirebaseAdminEventStore(firebaseAdminApp)
 
-  if (!generateTestData) {
-    return {
-      eventStore,
-      testEvents: {},
-      testAggregates: {},
-    }
-  }
+const testData = generateTestData(timestamp =>
+  firebaseAdmin.firestore.Timestamp.fromDate(new Date(timestamp)),
+)
 
-  const { events, aggregates } = generateTestData((timestamp: string) =>
-    firebaseAdmin.firestore.Timestamp.fromDate(new Date(timestamp)),
-  )
-
-  for (const event of Object.values(events)) {
+beforeAll(async () => {
+  for (const event of Object.values(testData.events)) {
     await firebaseAdminApp
       .firestore()
       .collection(EVENTS)
@@ -51,51 +43,42 @@ const setup: SetupFn = async ({ generateTestData } = {}) => {
       .set(event)
   }
 
-  for (const aggregate of Object.values(aggregates)) {
+  for (const aggregate of Object.values(testData.aggregates)) {
     await firebaseAdminApp
       .firestore()
       .collection(SNAPSHOTS)
       .doc(aggregate.aggregateId)
       .set(aggregate)
   }
-
-  return {
-    eventStore,
-    testEvents: events,
-    testAggregates: aggregates,
-  }
-}
-
-beforeEach(async () => {
-  await testing.clearFirestoreData({ projectId: config.firebase.projectId })
 })
 
 afterAll(async () => {
+  await testing.clearFirestoreData({ projectId: config.firebase.projectId })
   await firebaseAdminApp.delete()
 })
 
 describe('Event Store', () => {
-  testGenerateId(setup)
+  testGenerateId(eventStore)
 
-  testGetEvent(setup)
+  testGetEvent(eventStore, testData.events)
 
-  testEventsByCausationId(setup)
+  testEventsByCausationId(eventStore, testData.events)
 
-  testGetEventsByCorrelationId(setup)
+  testGetEventsByCorrelationId(eventStore, testData.events)
 
-  testGetEventsByUserId(setup)
+  testGetEventsByUserId(eventStore, testData.events)
 
-  testGetReplay(setup)
+  testGetReplay(eventStore, testData.events)
 
-  testGetReplayForAggregate(setup)
+  testGetReplayForAggregate(eventStore, testData.events)
 
-  testGetAggregateSnapshot(setup)
+  testGetAggregateSnapshot(eventStore, testData.aggregates)
 
-  testSaveNewEvent(setup)
+  testSaveNewEvent(eventStore)
 
-  testMarkEventAsX(setup)
+  testMarkEventAsX(eventStore)
 
-  testSaveAggregateSnapshot(setup)
+  testSaveAggregateSnapshot(eventStore)
 
-  testImportEvents(setup)
+  testImportEvents(eventStore, testData.events)
 })
