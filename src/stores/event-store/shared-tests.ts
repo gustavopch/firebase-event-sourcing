@@ -1,5 +1,3 @@
-import type firebaseAdmin from 'firebase-admin'
-
 import { SHOPPING_CART } from '../../../example/src/domain/shopping/cart'
 import {
   SHOPPING_CART_INITIALIZED,
@@ -7,11 +5,8 @@ import {
 } from '../../../example/src/domain/shopping/cart/events/initialized'
 import { SHOPPING_CART_ITEM_ADDED } from '../../../example/src/domain/shopping/cart/events/item-added'
 import { Event } from '../../elements/event'
+import { Timestamp } from '../types'
 import { AggregateSnapshot, EventStore } from './types'
-
-type Timestamp =
-  | firebase.firestore.Timestamp
-  | firebaseAdmin.firestore.Timestamp
 
 type GenerateTestDataFn = (
   timestamp: (timestamp: string) => Timestamp,
