@@ -1,3 +1,4 @@
+import waitForExpect from 'wait-for-expect'
 import { SHOPPING_CART } from '../../../example/src/domain/shopping/cart'
 import {
   SHOPPING_CART_INITIALIZED,
@@ -255,6 +256,10 @@ export const testSaveNewEvent = (eventStore: EventStore): void => {
         revision: 1,
         status: 'pending',
       },
+    })
+
+    await waitForExpect(async () => {
+      expect((await eventStore.getEvent(id))?.metadata.status).toBe('approved')
     })
   })
 }
