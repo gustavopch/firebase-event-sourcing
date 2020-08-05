@@ -13,8 +13,7 @@
   "license": "MIT",
   "author": "Gustavo P. Cardoso <https://twitter.com/gustavo_pch>",
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "main": "dist/index.js",
   "module": "dist/firebase-event-sourcing.esm.js",
