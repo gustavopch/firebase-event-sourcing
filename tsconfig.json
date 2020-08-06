@@ -3,7 +3,7 @@
     "declaration": true,
     "esModuleInterop": true,
     "importHelpers": true,
-    "lib": ["esnext"],
+    "lib": ["dom", "esnext"],
     "module": "esnext",
     "moduleResolution": "node",
     "noImplicitReturns": true,
