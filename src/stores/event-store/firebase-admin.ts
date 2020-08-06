@@ -11,9 +11,6 @@ import {
   getReplay,
   getReplayForAggregate,
   importEvents,
-  markEventAsApproved,
-  markEventAsFailed,
-  markEventAsRejected,
   saveAggregateSnapshot,
   saveNewEvent,
 } from './shared'
@@ -49,12 +46,6 @@ export const createFirebaseAdminEventStore = (
       firebaseAdmin.firestore.FieldValue.increment,
       () => undefined,
     ),
-
-    markEventAsApproved: markEventAsApproved(eventsCollection),
-
-    markEventAsRejected: markEventAsRejected(eventsCollection),
-
-    markEventAsFailed: markEventAsFailed(eventsCollection),
 
     saveAggregateSnapshot: saveAggregateSnapshot(snapshotsCollection),
 

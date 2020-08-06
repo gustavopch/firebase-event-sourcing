@@ -1,4 +1,3 @@
-import waitForExpect from 'wait-for-expect'
 import { SHOPPING_CART } from '../../../example/src/domain/shopping/cart'
 import {
   SHOPPING_CART_INITIALIZED,
@@ -27,7 +26,6 @@ export const generateTestData = (
         correlationId: '1',
         timestamp: timestamp('2020-07-01'),
         revision: 1,
-        status: 'approved',
         userId: 'john',
       },
     },
@@ -42,7 +40,6 @@ export const generateTestData = (
         correlationId: '2',
         timestamp: timestamp('2020-07-02'),
         revision: 1,
-        status: 'approved',
       },
     },
     '3': {
@@ -56,7 +53,6 @@ export const generateTestData = (
         correlationId: '3',
         timestamp: timestamp('2020-07-03'),
         revision: 1,
-        status: 'approved',
         userId: 'john',
       },
     },
@@ -71,7 +67,6 @@ export const generateTestData = (
         correlationId: '4',
         timestamp: timestamp('2020-07-04'),
         revision: 1,
-        status: 'approved',
       },
     },
     '5': {
@@ -85,7 +80,6 @@ export const generateTestData = (
         correlationId: '5',
         timestamp: timestamp('2020-07-05'),
         revision: 1,
-        status: 'approved',
       },
     },
     '5.1': {
@@ -99,7 +93,6 @@ export const generateTestData = (
         correlationId: '5',
         timestamp: timestamp('2020-07-05'),
         revision: 2,
-        status: 'approved',
       },
     },
     '5.2': {
@@ -113,7 +106,6 @@ export const generateTestData = (
         correlationId: '5',
         timestamp: timestamp('2020-07-05'),
         revision: 3,
-        status: 'approved',
       },
     },
   },
@@ -254,31 +246,8 @@ export const testSaveNewEvent = (eventStore: EventStore): void => {
         correlationId: id,
         timestamp: expect.objectContaining({ seconds: expect.anything() }), // Duck type: firebase.firestore.Timestamp
         revision: 1,
-        status: 'pending',
       },
     })
-
-    await waitForExpect(async () => {
-      expect((await eventStore.getEvent(id))?.metadata.status).toBe('approved')
-    })
-  })
-}
-
-export const testMarkEventAsX = (eventStore: EventStore): void => {
-  test('markEventAs{Approved,Rejected,Failed}', async () => {
-    let event = (await eventStore.getEvent('1'))!
-
-    await eventStore.markEventAsRejected(event)
-    event = (await eventStore.getEvent('1'))!
-    expect(event.metadata.status).toBe('rejected')
-
-    await eventStore.markEventAsFailed(event)
-    event = (await eventStore.getEvent('1'))!
-    expect(event.metadata.status).toBe('failed')
-
-    await eventStore.markEventAsApproved(event)
-    event = (await eventStore.getEvent('1'))!
-    expect(event.metadata.status).toBe('approved')
   })
 }
 

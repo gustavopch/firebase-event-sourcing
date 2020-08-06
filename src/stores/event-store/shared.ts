@@ -1,5 +1,4 @@
 import { Event } from '../../elements/event'
-import { EventStatus } from '../../elements/event-metadata'
 import {
   CollectionReference,
   DocumentSnapshot,
@@ -57,12 +56,8 @@ export const getEvent = (
 export const getEventsByCausationId = (
   eventsCollection: CollectionReference,
 ): EventStore['getEventsByCausationId'] => {
-  return async (causationId, options = {}) => {
-    let query = eventsCollection.where('metadata.causationId', '==', causationId) // prettier-ignore
-
-    if (options.status) {
-      query = query.where('metadata.status', '==', options.status)
-    }
+  return async causationId => {
+    const query = eventsCollection.where('metadata.causationId', '==', causationId) // prettier-ignore
 
     const querySnap = await query.get()
     const docs = querySnap.docs as QueryDocumentSnapshot[]
@@ -73,12 +68,8 @@ export const getEventsByCausationId = (
 export const getEventsByCorrelationId = (
   eventsCollection: CollectionReference,
 ): EventStore['getEventsByCorrelationId'] => {
-  return async (correlationId, options = {}) => {
-    let query = eventsCollection.where('metadata.correlationId', '==', correlationId) // prettier-ignore
-
-    if (options.status) {
-      query = query.where('metadata.status', '==', options.status)
-    }
+  return async correlationId => {
+    const query = eventsCollection.where('metadata.correlationId', '==', correlationId) // prettier-ignore
 
     const querySnap = await query.get()
     const docs = querySnap.docs as QueryDocumentSnapshot[]
@@ -89,12 +80,8 @@ export const getEventsByCorrelationId = (
 export const getEventsByUserId = (
   eventsCollection: CollectionReference,
 ): EventStore['getEventsByUserId'] => {
-  return async (userId, onNext, options = {}) => {
-    let query = eventsCollection.where('metadata.userId', '==', userId)
-
-    if (options.status) {
-      query = query.where('metadata.status', '==', options.status)
-    }
+  return async (userId, onNext) => {
+    const query = eventsCollection.where('metadata.userId', '==', userId)
 
     await queryInBatches(query, onNext)
   }
@@ -103,12 +90,8 @@ export const getEventsByUserId = (
 export const getReplay = (
   eventsCollection: CollectionReference,
 ): EventStore['getReplay'] => {
-  return async (fromTimestamp, onNext, options = {}) => {
-    let query = eventsCollection.where('metadata.timestamp', '>=', fromTimestamp) // prettier-ignore
-
-    if (options.status) {
-      query = query.where('metadata.status', '==', options.status)
-    }
+  return async (fromTimestamp, onNext) => {
+    const query = eventsCollection.where('metadata.timestamp', '>=', fromTimestamp) // prettier-ignore
 
     await queryInBatches(query, onNext)
   }
@@ -117,14 +100,10 @@ export const getReplay = (
 export const getReplayForAggregate = (
   eventsCollection: CollectionReference,
 ): EventStore['getReplayForAggregate'] => {
-  return async (aggregateId, fromRevision, onNext, options = {}) => {
-    let query = eventsCollection
+  return async (aggregateId, fromRevision, onNext) => {
+    const query = eventsCollection
       .where('aggregateId', '==', aggregateId)
       .where('metadata.revision', '>=', fromRevision)
-
-    if (options.status) {
-      query = query.where('metadata.status', '==', options.status)
-    }
 
     await queryInBatches(query, onNext)
   }
@@ -170,7 +149,6 @@ export const saveNewEvent = (
         correlationId: correlationId ?? eventId,
         timestamp: now(),
         revision: increment(1) as any,
-        status: 'pending',
         userId: currentUserId(),
       },
     }
@@ -179,35 +157,6 @@ export const saveNewEvent = (
 
     return eventId
   }
-}
-
-const updateEventStatus = (
-  eventsCollection: CollectionReference,
-  status: EventStatus,
-) => {
-  return async (event: Event) => {
-    await eventsCollection.doc(event.id).update({
-      'metadata.status': status,
-    })
-  }
-}
-
-export const markEventAsApproved = (
-  eventsCollection: CollectionReference,
-): EventStore['markEventAsApproved'] => {
-  return updateEventStatus(eventsCollection, 'approved')
-}
-
-export const markEventAsRejected = (
-  eventsCollection: CollectionReference,
-): EventStore['markEventAsRejected'] => {
-  return updateEventStatus(eventsCollection, 'rejected')
-}
-
-export const markEventAsFailed = (
-  eventsCollection: CollectionReference,
-): EventStore['markEventAsFailed'] => {
-  return updateEventStatus(eventsCollection, 'failed')
 }
 
 export const saveAggregateSnapshot = (

@@ -15,7 +15,6 @@ import {
   testGetReplay,
   testGetReplayForAggregate,
   testImportEvents,
-  testMarkEventAsX,
   testSaveAggregateSnapshot,
   testSaveNewEvent,
 } from './shared-tests'
@@ -71,8 +70,6 @@ describe('Event Store', () => {
   testGetAggregateSnapshot(eventStore, testData.aggregates)
 
   testSaveNewEvent(eventStore)
-
-  testMarkEventAsX(eventStore)
 
   testSaveAggregateSnapshot(eventStore)
 

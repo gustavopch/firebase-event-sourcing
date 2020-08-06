@@ -1,29 +1,17 @@
 import firebaseAdmin from 'firebase-admin'
-import * as functions from 'firebase-functions'
 
 import { ApplicationDefinition } from '../application/definitions/application-definition'
-import { createProcessEventFirebaseFunction } from './firestore/process-event'
+import { createCommandsEndpoint } from './https/commands'
 import { createCronJobFirebaseFunctions } from './pubsub/cron-jobs'
 import { createProcessJobsFirebaseFunction } from './pubsub/process-jobs'
 
-type Functions = {
-  processEvent: functions.CloudFunction<any>
-  processJobs: functions.CloudFunction<any>
-  [functionName: string]: functions.CloudFunction<any>
-}
-
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const createFunctions = <
   TApplicationDefinition extends ApplicationDefinition
 >(
   firebaseAdminApp: firebaseAdmin.app.App,
   application: TApplicationDefinition,
-): Functions => {
-  const processEvent = createProcessEventFirebaseFunction(
-    firebaseAdminApp,
-    application.flows,
-    application.views,
-  )
-
+) => {
   const processJobs = createProcessJobsFirebaseFunction(
     firebaseAdminApp,
     application.domain,
@@ -35,7 +23,12 @@ export const createFunctions = <
   )
 
   return {
-    processEvent,
+    commands: createCommandsEndpoint(
+      firebaseAdminApp,
+      application.domain,
+      application.flows,
+      application.views,
+    ),
     processJobs,
     ...cronJobs,
   }

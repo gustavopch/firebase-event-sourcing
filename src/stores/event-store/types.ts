@@ -1,5 +1,4 @@
 import { Event } from '../../elements/event'
-import { EventStatus } from '../../elements/event-metadata'
 
 export type OnEvent = (event: Event) => void | Promise<void>
 
@@ -13,33 +12,18 @@ export type EventStore = {
 
   getEvent: (eventId: string | null | undefined) => Promise<Event | null>
 
-  getEventsByCausationId: (
-    causationId: string,
-    options?: { status?: EventStatus },
-  ) => Promise<Event[]>
+  getEventsByCausationId: (causationId: string) => Promise<Event[]>
 
-  getEventsByCorrelationId: (
-    correlationId: string,
-    options?: { status?: EventStatus },
-  ) => Promise<Event[]>
+  getEventsByCorrelationId: (correlationId: string) => Promise<Event[]>
 
-  getEventsByUserId: (
-    userId: string,
-    onNext: OnEvent,
-    options?: { status?: EventStatus },
-  ) => Promise<void>
+  getEventsByUserId: (userId: string, onNext: OnEvent) => Promise<void>
 
-  getReplay: (
-    fromTimestamp: Date,
-    onNext: OnEvent,
-    options?: { status?: EventStatus },
-  ) => Promise<void>
+  getReplay: (fromTimestamp: Date, onNext: OnEvent) => Promise<void>
 
   getReplayForAggregate: (
     aggregateId: string,
     fromRevision: number,
     onNext: OnEvent,
-    options?: { status?: EventStatus },
   ) => Promise<void>
 
   getAggregateSnapshot: (
@@ -56,12 +40,6 @@ export type EventStore = {
   }) => Promise<string>
 
   saveAggregateSnapshot: (aggregate: AggregateSnapshot) => Promise<void>
-
-  markEventAsApproved: (event: Event) => Promise<void>
-
-  markEventAsRejected: (event: Event) => Promise<void>
-
-  markEventAsFailed: (event: Event) => Promise<void>
 
   importEvents: (events: Event[]) => Promise<void>
 }
