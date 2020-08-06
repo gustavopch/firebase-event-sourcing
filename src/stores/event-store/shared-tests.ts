@@ -236,7 +236,7 @@ export const testGetAggregateSnapshot = (
 
 export const testSaveNewEvent = (eventStore: EventStore): void => {
   test('saveNewEvent', async () => {
-    const { id } = await eventStore.saveNewEvent<ShoppingCartInitialized>({
+    const id = await eventStore.saveNewEvent<ShoppingCartInitialized>({
       aggregateName: 'some.name',
       aggregateId: 'x',
       name: SHOPPING_CART_INITIALIZED,

@@ -177,7 +177,7 @@ export const saveNewEvent = (
 
     await eventsCollection.doc(eventId).set(event)
 
-    return event
+    return eventId
   }
 }
 

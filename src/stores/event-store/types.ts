@@ -53,7 +53,7 @@ export type EventStore = {
     data: TEvent['data']
     causationId?: string
     correlationId?: string
-  }) => Promise<Event>
+  }) => Promise<string>
 
   saveAggregateSnapshot: (aggregate: AggregateSnapshot) => Promise<void>
 
