@@ -7,7 +7,7 @@ import { views } from './views'
 
 const firebaseAdminApp = firebaseAdmin.initializeApp()
 
-export default createFunctions(firebaseAdminApp, {
+module.exports = createFunctions(firebaseAdminApp, {
   domain,
   flows,
   views,
