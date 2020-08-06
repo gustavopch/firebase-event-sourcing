@@ -1,11 +1,11 @@
 import firebaseAdmin from 'firebase-admin'
 import * as functions from 'firebase-functions'
 
-import { createFlowManager } from '../../src/services/flow-manager'
-import { createEventStore } from '../../src/stores/event-store'
-import { createJobStore } from '../../src/stores/job-store'
-import { FlowsDefinition } from '../application/definitions/flows-definition'
-import { createViewStore } from '../stores/view-store'
+import { FlowsDefinition } from '../../application/definitions/flows-definition'
+import { createFlowManager } from '../../services/flow-manager'
+import { createEventStore } from '../../stores/event-store'
+import { createJobStore } from '../../stores/job-store'
+import { createViewStore } from '../../stores/view-store'
 
 type CronJobFunctions = {
   [functionName: string]: functions.CloudFunction<any>

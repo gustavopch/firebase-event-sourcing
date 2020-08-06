@@ -1,9 +1,9 @@
 import firebaseAdmin from 'firebase-admin'
 import * as functions from 'firebase-functions'
 
-import { DomainDefinition } from '../application/definitions/domain-definition'
-import { createEventStore } from '../stores/event-store'
-import { createJobStore } from '../stores/job-store'
+import { DomainDefinition } from '../../application/definitions/domain-definition'
+import { createEventStore } from '../../stores/event-store'
+import { createJobStore } from '../../stores/job-store'
 
 export const createProcessJobsFirebaseFunction = (
   firebaseAdminApp: firebaseAdmin.app.App,

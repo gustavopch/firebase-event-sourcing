@@ -2,9 +2,9 @@ import firebaseAdmin from 'firebase-admin'
 import * as functions from 'firebase-functions'
 
 import { ApplicationDefinition } from '../application/definitions/application-definition'
-import { createCronJobFirebaseFunctions } from './cron-jobs'
-import { createProcessEventFirebaseFunction } from './process-event'
-import { createProcessJobsFirebaseFunction } from './process-jobs'
+import { createProcessEventFirebaseFunction } from './firestore/process-event'
+import { createCronJobFirebaseFunctions } from './pubsub/cron-jobs'
+import { createProcessJobsFirebaseFunction } from './pubsub/process-jobs'
 
 type Functions = {
   processEvent: functions.CloudFunction<any>

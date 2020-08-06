@@ -1,13 +1,13 @@
 import firebaseAdmin from 'firebase-admin'
 import * as functions from 'firebase-functions'
 
-import { FlowsDefinition } from '../application/definitions/flows-definition'
-import { ViewsDefinition } from '../application/definitions/views-definition'
-import { createProjectionsTriggerer } from '../application/projections-triggerer'
-import { createReactionsTriggerer } from '../application/reactions-triggerer'
-import { Event } from '../elements/event'
-import { createEventStore } from '../stores/event-store'
-import { EVENTS } from '../stores/event-store/constants'
+import { FlowsDefinition } from '../../application/definitions/flows-definition'
+import { ViewsDefinition } from '../../application/definitions/views-definition'
+import { createProjectionsTriggerer } from '../../application/projections-triggerer'
+import { createReactionsTriggerer } from '../../application/reactions-triggerer'
+import { Event } from '../../elements/event'
+import { createEventStore } from '../../stores/event-store'
+import { EVENTS } from '../../stores/event-store/constants'
 
 export const createProcessEventFirebaseFunction = (
   firebaseAdminApp: firebaseAdmin.app.App,

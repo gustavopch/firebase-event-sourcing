@@ -1,3 +1,4 @@
+export { createFunctions } from './apis'
 export { defineAggregate } from './application/define-aggregate'
 export { defineFlow } from './application/define-flow'
 export { defineView } from './application/define-view'
@@ -11,7 +12,6 @@ export type { Job } from './elements/job'
 export type { ProjectionHandler } from './elements/projection-handler'
 export type { QueryHandler } from './elements/query-handler'
 export type { ReactionHandler } from './elements/reaction-handler'
-export { createFunctions } from './functions'
 export type {
   FieldValue,
   GeoPoint,
