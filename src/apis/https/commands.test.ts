@@ -121,6 +121,7 @@ describe('/commands endpoint', () => {
           correlationId: eventId,
           timestamp: expect.any(firebaseAdmin.firestore.Timestamp),
           revision: 1,
+          userId: 'test',
         },
       },
     ])

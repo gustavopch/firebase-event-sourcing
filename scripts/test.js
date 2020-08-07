@@ -18,6 +18,6 @@ execSync('./scripts/build-example.js', {
 
 const jestCommand = `tsdx test --passWithNoTests --runInBand ${jestArgs}`
 
-execSync(`yarn firebase emulators:exec "${jestCommand}"`, {
+execSync(`NODE_ENV=test yarn firebase emulators:exec "${jestCommand}"`, {
   stdio: 'inherit',
 })

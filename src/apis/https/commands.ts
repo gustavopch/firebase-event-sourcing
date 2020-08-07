@@ -8,6 +8,7 @@ import { Command } from '../../elements/command'
 import { createFlowManager } from '../../services/flow-manager'
 import { createEventStore } from '../../stores/event-store'
 import { createJobStore } from '../../stores/job-store'
+import { parseAuthorization } from './utils/parse-authorization'
 
 export const createCommandsEndpoint = (
   firebaseAdminApp: firebaseAdmin.app.App,
@@ -23,6 +24,18 @@ export const createCommandsEndpoint = (
       const message = `Method '${req.method}' not allowed`
       console.log(message)
       res.status(405).send(message)
+      return
+    }
+
+    const userId = await parseAuthorization(
+      firebaseAdminApp,
+      req.header('Authorization'),
+    )
+
+    if (!userId) {
+      const message = 'Unauthorized'
+      console.log(message)
+      res.status(403).send(message)
       return
     }
 
@@ -52,6 +65,7 @@ export const createCommandsEndpoint = (
       aggregateId,
       name: eventName,
       data: eventData,
+      userId,
     })
     const event = (await eventStore.getEvent(eventId))!
     console.log('Saved new event:', event)
