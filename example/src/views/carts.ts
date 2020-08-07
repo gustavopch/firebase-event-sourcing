@@ -1,4 +1,7 @@
-import { Timestamp, defineView } from '../../../src'
+import firebaseAdmin from 'firebase-admin'
+
+import { defineView } from '../../../src'
+import { flatten } from '../../../src/utils/flatten'
 import {
   SHOPPING_CART_INITIALIZED,
   ShoppingCartInitialized,
@@ -26,31 +29,32 @@ type CartItem = {
 
 export type Cart = {
   id: string
-  initializedAt: Timestamp
-  placedAt: Timestamp | null
+  initializedAt: firebaseAdmin.firestore.Timestamp
+  placedAt: firebaseAdmin.firestore.Timestamp | null
   status: CartStatus
   items: { [id: string]: CartItem }
 }
 
 export const carts = defineView({
   projections: {
-    [SHOPPING_CART_INITIALIZED]: async (
-      store,
-      event: ShoppingCartInitialized,
-    ) => {
+    [SHOPPING_CART_INITIALIZED]: async (event: ShoppingCartInitialized) => {
+      const db = firebaseAdmin.firestore()
+
       const cart: Cart = {
         id: event.aggregateId,
-        initializedAt: store.values.timestamp(),
+        initializedAt: firebaseAdmin.firestore.Timestamp.now(),
         placedAt: null,
         status: 'open',
         items: {},
       }
 
-      await store.create(CARTS, event.aggregateId, cart)
+      await db.collection(CARTS).doc(event.aggregateId).set(cart)
     },
 
-    [SHOPPING_CART_ITEM_ADDED]: async (store, event: ShoppingCartItemAdded) => {
-      const itemId = store.generateId()
+    [SHOPPING_CART_ITEM_ADDED]: async (event: ShoppingCartItemAdded) => {
+      const db = firebaseAdmin.firestore()
+
+      const itemId = db.collection('whatever').doc().id
 
       const nfe: Partial<Cart> = {
         items: {
@@ -60,32 +64,30 @@ export const carts = defineView({
         },
       }
 
-      await store.update(CARTS, event.aggregateId, nfe)
+      await db.collection(CARTS).doc(event.aggregateId).update(flatten(nfe))
     },
 
-    [SHOPPING_CART_ITEM_REMOVED]: async (
-      store,
-      event: ShoppingCartItemRemoved,
-    ) => {
+    [SHOPPING_CART_ITEM_REMOVED]: async (event: ShoppingCartItemRemoved) => {
+      const db = firebaseAdmin.firestore()
+
       const nfe: Partial<Cart> = {
         items: {
-          [event.data.itemId]: store.values.delete() as any,
+          [event.data.itemId]: firebaseAdmin.firestore.FieldValue.delete() as any // prettier-ignore
         },
       }
 
-      await store.update(CARTS, event.aggregateId, nfe)
+      await db.collection(CARTS).doc(event.aggregateId).update(flatten(nfe))
     },
 
-    [SHOPPING_CART_ORDER_PLACED]: async (
-      store,
-      event: ShoppingCartOrderPlaced,
-    ) => {
+    [SHOPPING_CART_ORDER_PLACED]: async (event: ShoppingCartOrderPlaced) => {
+      const db = firebaseAdmin.firestore()
+
       const nfe: Partial<Cart> = {
-        placedAt: store.values.timestamp(),
+        placedAt: firebaseAdmin.firestore.Timestamp.now(),
         status: 'placed',
       }
 
-      await store.update(CARTS, event.aggregateId, nfe)
+      await db.collection(CARTS).doc(event.aggregateId).update(flatten(nfe))
     },
   },
 })

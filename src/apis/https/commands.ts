@@ -8,7 +8,6 @@ import { Command } from '../../elements/command'
 import { createFlowManager } from '../../services/flow-manager'
 import { createEventStore } from '../../stores/event-store'
 import { createJobStore } from '../../stores/job-store'
-import { createViewStore } from '../../stores/view-store'
 
 export const createCommandsEndpoint = (
   firebaseAdminApp: firebaseAdmin.app.App,
@@ -17,7 +16,6 @@ export const createCommandsEndpoint = (
   views: ViewsDefinition,
 ): functions.HttpsFunction => {
   const eventStore = createEventStore(firebaseAdminApp)
-  const viewStore = createViewStore(firebaseAdminApp)
   const jobStore = createJobStore(firebaseAdminApp)
 
   return functions.https.onRequest(async (req, res) => {
@@ -64,7 +62,7 @@ export const createCommandsEndpoint = (
         for (const [eventName, handler] of projectionEntries) {
           if (eventName === event.name) {
             promises.push(
-              handler(viewStore, event)
+              handler(event)
                 .then(() => {
                   console.log(`Ran projection in '${viewName}'`)
                 })
@@ -82,12 +80,7 @@ export const createCommandsEndpoint = (
       }, [] as Array<Promise<void>>),
     )
 
-    const flowManager = createFlowManager(
-      eventStore,
-      jobStore,
-      viewStore,
-      event,
-    )
+    const flowManager = createFlowManager(eventStore, jobStore, event)
 
     await Promise.all(
       Object.entries(flows).reduce((promises, [flowName, flow]) => {

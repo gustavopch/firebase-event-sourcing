@@ -1,11 +1,12 @@
-import type { Timestamp } from '../stores/view-store'
+import firebaseAdmin from 'firebase-admin'
+
 import { CommandData } from './command-data'
 
 export type JobStatus = 'scheduled' | 'done' | 'failed'
 
 export type Job<TCommandData extends CommandData = CommandData> = {
   id: string
-  scheduledFor: Timestamp
+  scheduledFor: firebaseAdmin.firestore.Timestamp
   status: JobStatus
 } & {
   type: 'command'

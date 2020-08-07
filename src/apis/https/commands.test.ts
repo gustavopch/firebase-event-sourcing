@@ -8,7 +8,6 @@ import { SHOPPING_CART_INITIALIZED } from '../../../example/src/domain/shopping/
 import { CARTS } from '../../../example/src/views/carts'
 import { Event } from '../../elements/event'
 import { createEventStore } from '../../stores/event-store'
-import { createViewStore } from '../../stores/view-store'
 
 const firebaseAdminApp = firebaseAdmin.initializeApp({
   projectId: config.firebase.projectId,
@@ -18,8 +17,9 @@ firebaseAdminApp.firestore().settings({
   ignoreUndefinedProperties: true,
 })
 
+const db = firebaseAdminApp.firestore()
+
 const eventStore = createEventStore(firebaseAdminApp)
-const viewStore = createViewStore(firebaseAdminApp)
 
 afterEach(async () => {
   await testing.clearFirestoreData({ projectId: config.firebase.projectId })
@@ -140,9 +140,9 @@ describe('/commands endpoint', () => {
       }),
     })
 
-    const cart = await viewStore.get(CARTS, '123')
+    const cartSnap = await db.collection(CARTS).doc('123').get()
 
-    expect(cart).toEqual({
+    expect(cartSnap.data()).toEqual({
       id: '123',
       initializedAt: expect.any(firebaseAdmin.firestore.Timestamp),
       placedAt: null,

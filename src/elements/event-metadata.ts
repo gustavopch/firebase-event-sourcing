@@ -1,9 +1,9 @@
-import type { Timestamp } from '../stores/view-store'
+import type firebaseAdmin from 'firebase-admin'
 
 export type EventMetadata = {
   causationId: string
   correlationId: string
-  timestamp: Timestamp
+  timestamp: firebase.firestore.Timestamp | firebaseAdmin.firestore.Timestamp
   revision: number
   userId?: string
 }

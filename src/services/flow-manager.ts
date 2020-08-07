@@ -2,7 +2,6 @@ import { CommandHandler } from '../elements/command-handler'
 import { Event } from '../elements/event'
 import { EventStore } from '../stores/event-store'
 import { JobStore } from '../stores/job-store'
-import { ViewStore } from '../stores/view-store'
 
 const getAggregateNameFromEventName = (eventName: string): string => {
   return eventName.split('.').slice(0, 2).join('.')
@@ -26,7 +25,6 @@ export type FlowManager = {
 export const createFlowManager = (
   eventStore: EventStore,
   jobStore: JobStore,
-  viewStore: ViewStore,
   causationEvent: Event | null,
 ): FlowManager => {
   return {

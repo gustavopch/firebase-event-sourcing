@@ -12,13 +12,3 @@ export type { EventMetadata } from './elements/event-metadata'
 export type { Job } from './elements/job'
 export type { ProjectionHandler } from './elements/projection-handler'
 export type { ReactionHandler } from './elements/reaction-handler'
-export type {
-  FieldValue,
-  GeoPoint,
-  QueryDirection,
-  QueryOperator,
-  QueryParams,
-  Timestamp,
-  Unsubscribe,
-  ViewStore,
-} from './stores/view-store'
