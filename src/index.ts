@@ -11,7 +11,6 @@ export type { EventData } from './elements/event-data'
 export type { EventMetadata } from './elements/event-metadata'
 export type { Job } from './elements/job'
 export type { ProjectionHandler } from './elements/projection-handler'
-export type { QueryHandler } from './elements/query-handler'
 export type { ReactionHandler } from './elements/reaction-handler'
 export type {
   FieldValue,

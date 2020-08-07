@@ -2,9 +2,7 @@ import type firebaseAdmin from 'firebase-admin'
 
 import { Event } from '../elements/event'
 import { createEventStore } from '../stores/event-store'
-import { createViewStore } from '../stores/view-store'
 import { mapValues } from '../utils/map-values'
-import { RemoveFirstFromTuple } from '../utils/types'
 import { ApplicationDefinition } from './definitions/application-definition'
 import { createProjectionsTriggerer } from './projections-triggerer'
 
@@ -13,7 +11,6 @@ export const loadApp = <TApplicationDefinition extends ApplicationDefinition>(
   firebaseApp: firebase.app.App | firebaseAdmin.app.App,
   application: TApplicationDefinition,
 ) => {
-  const viewStore = createViewStore(firebaseApp)
   const eventStore = createEventStore(firebaseApp)
 
   const triggerProjections = createProjectionsTriggerer(
@@ -51,16 +48,6 @@ export const loadApp = <TApplicationDefinition extends ApplicationDefinition>(
         }
       }
     }),
-
-    views: (mapValues(application.views, view => {
-      return mapValues(view.queries, query => query.bind(null, viewStore))
-    }) as any) as {
-      [viewName in keyof TApplicationDefinition['views']]: {
-        [queryName in keyof TApplicationDefinition['views'][viewName]['queries']]: (
-          ...args: RemoveFirstFromTuple<Parameters<TApplicationDefinition['views'][viewName]['queries'][queryName]>> // prettier-ignore
-        ) => ReturnType<TApplicationDefinition['views'][viewName]['queries'][queryName]> // prettier-ignore
-      }
-    },
 
     replayEvents: async (fromTimestamp = new Date(0)): Promise<void> => {
       await eventStore.getReplay(fromTimestamp, async event => {

@@ -1,21 +1,14 @@
 import { CommandHandler } from '../elements/command-handler'
 import { Event } from '../elements/event'
-import { QueryHandler } from '../elements/query-handler'
 import { EventStore } from '../stores/event-store'
 import { JobStore } from '../stores/job-store'
 import { ViewStore } from '../stores/view-store'
-import { RemoveFirstFromTuple } from '../utils/types'
 
 const getAggregateNameFromEventName = (eventName: string): string => {
   return eventName.split('.').slice(0, 2).join('.')
 }
 
 export type FlowManager = {
-  runQuery: <TQueryHandler extends QueryHandler>(
-    handler: TQueryHandler,
-    ...args: RemoveFirstFromTuple<Parameters<TQueryHandler>>
-  ) => ReturnType<TQueryHandler>
-
   runCommand: <TCommandHandler extends CommandHandler<any>>(
     handler: TCommandHandler,
     aggregateId: string,
@@ -37,10 +30,6 @@ export const createFlowManager = (
   causationEvent: Event | null,
 ): FlowManager => {
   return {
-    runQuery: (handler, ...args) => {
-      return handler(viewStore, ...args)
-    },
-
     runCommand: async (handler, aggregateId, commandData) => {
       const event = handler(commandData)
       const aggregateName = getAggregateNameFromEventName(event.name)

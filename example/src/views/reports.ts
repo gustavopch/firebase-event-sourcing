@@ -27,10 +27,4 @@ export const reports = defineView({
       await store.updateOrCreate(REPORTS, TOTALS_ID, report)
     },
   },
-
-  queries: {
-    getTotals: async (store): Promise<Report> => {
-      return (await store.get<Report>(REPORTS, TOTALS_ID))!
-    },
-  },
 })

@@ -88,10 +88,4 @@ export const carts = defineView({
       await store.update(CARTS, event.aggregateId, nfe)
     },
   },
-
-  queries: {
-    get: (store, id: string): Promise<Cart | null> => {
-      return store.get<Cart>(CARTS, id)
-    },
-  },
 })
