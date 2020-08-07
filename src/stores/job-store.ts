@@ -1,11 +1,28 @@
 import firebaseAdmin from 'firebase-admin'
 
-import { Job } from '../../elements/job'
-import { QueryDocumentSnapshot } from '../types'
-import { JOBS } from './constants'
-import { JobStore } from './types'
+import { CommandData } from '../elements/command-data'
+import { Job, JobStatus } from '../elements/job'
+import { QueryDocumentSnapshot } from './types'
 
-export const createFirebaseAdminJobStore = (
+export const JOBS = 'jobs'
+
+export type JobStore = {
+  getPendingJobs: () => Promise<Array<Job<any>>>
+
+  saveCommandJob: <TCommandData extends CommandData>(jobProps: {
+    scheduledFor: Date
+    aggregateName: string
+    aggregateId: string
+    commandName: string
+    commandData: TCommandData
+    causationId?: string
+    correlationId?: string
+  }) => Promise<void>
+
+  updateJobStatus: (id: string, status: JobStatus) => Promise<void>
+}
+
+export const createJobStore = (
   firebaseAdminApp: firebaseAdmin.app.App,
 ): JobStore => {
   const db = firebaseAdminApp.firestore()
