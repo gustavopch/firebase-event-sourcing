@@ -16,7 +16,7 @@ import {
   ShoppingCartOrderPlaced,
 } from '../domain/shopping/cart/events/order-placed'
 
-const collection = 'carts'
+export const CARTS = 'carts'
 
 type CartStatus = 'open' | 'placed'
 
@@ -46,7 +46,7 @@ export const carts = defineView({
         items: {},
       }
 
-      await store.create(collection, event.aggregateId, cart)
+      await store.create(CARTS, event.aggregateId, cart)
     },
 
     [SHOPPING_CART_ITEM_ADDED]: async (store, event: ShoppingCartItemAdded) => {
@@ -60,7 +60,7 @@ export const carts = defineView({
         },
       }
 
-      await store.update(collection, event.aggregateId, nfe)
+      await store.update(CARTS, event.aggregateId, nfe)
     },
 
     [SHOPPING_CART_ITEM_REMOVED]: async (
@@ -73,7 +73,7 @@ export const carts = defineView({
         },
       }
 
-      await store.update(collection, event.aggregateId, nfe)
+      await store.update(CARTS, event.aggregateId, nfe)
     },
 
     [SHOPPING_CART_ORDER_PLACED]: async (
@@ -85,13 +85,13 @@ export const carts = defineView({
         status: 'placed',
       }
 
-      await store.update(collection, event.aggregateId, nfe)
+      await store.update(CARTS, event.aggregateId, nfe)
     },
   },
 
   queries: {
     get: (store, id: string): Promise<Cart | null> => {
-      return store.get<Cart>(collection, id)
+      return store.get<Cart>(CARTS, id)
     },
   },
 })

@@ -4,8 +4,9 @@ import {
   ShoppingCartOrderPlaced,
 } from '../domain/shopping/cart/events/order-placed'
 
-const collection = 'reports'
-const totalsId = 'totals'
+export const REPORTS = 'reports'
+
+export const TOTALS_ID = 'totals'
 
 export type Report = {
   id: string
@@ -19,17 +20,17 @@ export const reports = defineView({
       event: ShoppingCartOrderPlaced,
     ) => {
       const report: Report = {
-        id: totalsId,
+        id: TOTALS_ID,
         orderCount: store.values.increment(1) as any,
       }
 
-      await store.updateOrCreate(collection, totalsId, report)
+      await store.updateOrCreate(REPORTS, TOTALS_ID, report)
     },
   },
 
   queries: {
     getTotals: async (store): Promise<Report> => {
-      return (await store.get<Report>(collection, totalsId))!
+      return (await store.get<Report>(REPORTS, TOTALS_ID))!
     },
   },
 })

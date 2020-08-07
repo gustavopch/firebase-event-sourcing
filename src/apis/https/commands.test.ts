@@ -5,6 +5,7 @@ import fetch from 'node-fetch'
 import { config } from '../../../example/src/config'
 import { SHOPPING_CART } from '../../../example/src/domain/shopping/cart'
 import { SHOPPING_CART_INITIALIZED } from '../../../example/src/domain/shopping/cart/events/initialized'
+import { CARTS } from '../../../example/src/views/carts'
 import { Event } from '../../elements/event'
 import { createEventStore } from '../../stores/event-store'
 import { createViewStore } from '../../stores/view-store'
@@ -139,7 +140,7 @@ describe('/commands endpoint', () => {
       }),
     })
 
-    const cart = await viewStore.get('carts', '123')
+    const cart = await viewStore.get(CARTS, '123')
 
     expect(cart).toEqual({
       id: '123',
