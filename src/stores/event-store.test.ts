@@ -1,19 +1,27 @@
-import { SHOPPING_CART } from '../../../example/src/domain/shopping/cart'
+import * as testing from '@firebase/testing'
+import firebaseAdmin from 'firebase-admin'
+
+import { config } from '../../example/src/config'
+import { SHOPPING_CART } from '../../example/src/domain/shopping/cart'
 import {
   SHOPPING_CART_INITIALIZED,
   ShoppingCartInitialized,
-} from '../../../example/src/domain/shopping/cart/events/initialized'
-import { SHOPPING_CART_ITEM_ADDED } from '../../../example/src/domain/shopping/cart/events/item-added'
-import { Event } from '../../elements/event'
-import { Timestamp } from '../types'
-import { AggregateSnapshot, EventStore } from './types'
+} from '../../example/src/domain/shopping/cart/events/initialized'
+import { SHOPPING_CART_ITEM_ADDED } from '../../example/src/domain/shopping/cart/events/item-added'
+import { Event } from '../elements/event'
+import { EVENTS, SNAPSHOTS, createEventStore } from './event-store'
 
-export const generateTestData = (
-  timestamp: (timestamp: string) => Timestamp,
-): {
-  events: { [id: string]: Event }
-  aggregates: { [id: string]: AggregateSnapshot }
-} => ({
+const firebaseAdminApp = firebaseAdmin.initializeApp({
+  projectId: config.firebase.projectId,
+})
+
+firebaseAdminApp.firestore().settings({
+  ignoreUndefinedProperties: true,
+})
+
+const eventStore = createEventStore(firebaseAdminApp)
+
+const testData = {
   events: {
     '1': {
       aggregateName: SHOPPING_CART,
@@ -24,7 +32,7 @@ export const generateTestData = (
       metadata: {
         causationId: '1',
         correlationId: '1',
-        timestamp: timestamp('2020-07-01'),
+        timestamp: firebaseAdmin.firestore.Timestamp.fromDate(new Date('2020-07-01')), // prettier-ignore
         revision: 1,
         userId: 'john',
       },
@@ -38,7 +46,7 @@ export const generateTestData = (
       metadata: {
         causationId: '2',
         correlationId: '2',
-        timestamp: timestamp('2020-07-02'),
+        timestamp: firebaseAdmin.firestore.Timestamp.fromDate(new Date('2020-07-02')), // prettier-ignore
         revision: 1,
       },
     },
@@ -51,7 +59,7 @@ export const generateTestData = (
       metadata: {
         causationId: '3',
         correlationId: '3',
-        timestamp: timestamp('2020-07-03'),
+        timestamp: firebaseAdmin.firestore.Timestamp.fromDate(new Date('2020-07-03')), // prettier-ignore
         revision: 1,
         userId: 'john',
       },
@@ -65,7 +73,7 @@ export const generateTestData = (
       metadata: {
         causationId: '4',
         correlationId: '4',
-        timestamp: timestamp('2020-07-04'),
+        timestamp: firebaseAdmin.firestore.Timestamp.fromDate(new Date('2020-07-04')), // prettier-ignore
         revision: 1,
       },
     },
@@ -78,7 +86,7 @@ export const generateTestData = (
       metadata: {
         causationId: '5',
         correlationId: '5',
-        timestamp: timestamp('2020-07-05'),
+        timestamp: firebaseAdmin.firestore.Timestamp.fromDate(new Date('2020-07-05')), // prettier-ignore
         revision: 1,
       },
     },
@@ -91,7 +99,7 @@ export const generateTestData = (
       metadata: {
         causationId: '5',
         correlationId: '5',
-        timestamp: timestamp('2020-07-05'),
+        timestamp: firebaseAdmin.firestore.Timestamp.fromDate(new Date('2020-07-05')), // prettier-ignore
         revision: 2,
       },
     },
@@ -104,7 +112,7 @@ export const generateTestData = (
       metadata: {
         causationId: '5.1',
         correlationId: '5',
-        timestamp: timestamp('2020-07-05'),
+        timestamp: firebaseAdmin.firestore.Timestamp.fromDate(new Date('2020-07-05')), // prettier-ignore
         revision: 3,
       },
     },
@@ -115,74 +123,72 @@ export const generateTestData = (
       revision: 3,
     },
   },
+}
+
+beforeAll(async () => {
+  for (const event of Object.values(testData.events)) {
+    await firebaseAdminApp
+      .firestore()
+      .collection(EVENTS)
+      .doc(event.id)
+      .set(event)
+  }
+
+  for (const aggregate of Object.values(testData.aggregates)) {
+    await firebaseAdminApp
+      .firestore()
+      .collection(SNAPSHOTS)
+      .doc(aggregate.aggregateId)
+      .set(aggregate)
+  }
 })
 
-export const testGenerateId = (eventStore: EventStore): void => {
+afterAll(async () => {
+  await testing.clearFirestoreData({ projectId: config.firebase.projectId })
+  await firebaseAdminApp.delete()
+})
+
+describe('Event Store', () => {
   test('generateId', () => {
     const id = eventStore.generateId()
     expect(typeof id).toBe('string')
   })
-}
 
-export const testGetEvent = (
-  eventStore: EventStore,
-  testEvents: { [id: string]: Event },
-): void => {
   test('getEvent', async () => {
-    expect(await eventStore.getEvent('1')).toEqual(testEvents['1'])
+    expect(await eventStore.getEvent('1')).toEqual(testData.events['1'])
   })
-}
 
-export const testEventsByCausationId = (
-  eventStore: EventStore,
-  testEvents: { [id: string]: Event },
-): void => {
   test('getEventsByCausationId', async () => {
     expect(await eventStore.getEventsByCausationId('1')).toEqual([
-      testEvents['1'],
+      testData.events['1'],
     ])
 
     expect(await eventStore.getEventsByCausationId('5.1')).toEqual([
-      testEvents['5.2'],
+      testData.events['5.2'],
     ])
   })
-}
 
-export const testGetEventsByCorrelationId = (
-  eventStore: EventStore,
-  testEvents: { [id: string]: Event },
-): void => {
   test('getEventsByCorrelationId', async () => {
     expect(await eventStore.getEventsByCorrelationId('1')).toEqual([
-      testEvents['1'],
+      testData.events['1'],
     ])
 
     expect(await eventStore.getEventsByCorrelationId('5')).toEqual([
-      testEvents['5'],
-      testEvents['5.1'],
-      testEvents['5.2'],
+      testData.events['5'],
+      testData.events['5.1'],
+      testData.events['5.2'],
     ])
   })
-}
 
-export const testGetEventsByUserId = (
-  eventStore: EventStore,
-  testEvents: { [id: string]: Event },
-): void => {
   test('getEventsByUserId', async () => {
     const events: Event[] = []
     await eventStore.getEventsByUserId('john', event => {
       events.push(event)
     })
 
-    expect(events).toEqual([testEvents['1'], testEvents['3']])
+    expect(events).toEqual([testData.events['1'], testData.events['3']])
   })
-}
 
-export const testGetReplay = (
-  eventStore: EventStore,
-  testEvents: { [id: string]: Event },
-): void => {
   test('getReplay', async () => {
     const events: Event[] = []
     await eventStore.getReplay(new Date('2020-07-03T00:00:00Z'), event => {
@@ -190,43 +196,31 @@ export const testGetReplay = (
     })
 
     expect(events).toEqual([
-      testEvents['3'],
-      testEvents['4'],
-      testEvents['5'],
-      testEvents['5.1'],
-      testEvents['5.2'],
+      testData.events['3'],
+      testData.events['4'],
+      testData.events['5'],
+      testData.events['5.1'],
+      testData.events['5.2'],
     ])
   })
-}
 
-export const testGetReplayForAggregate = (
-  eventStore: EventStore,
-  testEvents: { [id: string]: Event },
-): void => {
   test('getReplayForAggregate', async () => {
     const events: Event[] = []
     await eventStore.getReplayForAggregate('E', 2, event => {
       events.push(event)
     })
 
-    expect(events).toEqual([testEvents['5.1'], testEvents['5.2']])
+    expect(events).toEqual([testData.events['5.1'], testData.events['5.2']])
   })
-}
 
-export const testGetAggregateSnapshot = (
-  eventStore: EventStore,
-  testAggregates: { [id: string]: AggregateSnapshot },
-): void => {
   test('getAggregateSnapshot', async () => {
     const aggregate = await eventStore.getAggregateSnapshot(
-      testAggregates['E'].aggregateId,
+      testData.aggregates['E'].aggregateId,
     )
 
-    expect(aggregate).toEqual(testAggregates['E'])
+    expect(aggregate).toEqual(testData.aggregates['E'])
   })
-}
 
-export const testSaveNewEvent = (eventStore: EventStore): void => {
   test('saveNewEvent', async () => {
     const id = await eventStore.saveNewEvent<ShoppingCartInitialized>({
       aggregateName: 'some.name',
@@ -244,14 +238,12 @@ export const testSaveNewEvent = (eventStore: EventStore): void => {
       metadata: {
         causationId: id,
         correlationId: id,
-        timestamp: expect.objectContaining({ seconds: expect.anything() }), // Duck type: firebase.firestore.Timestamp
+        timestamp: expect.any(firebaseAdmin.firestore.Timestamp),
         revision: 1,
       },
     })
   })
-}
 
-export const testSaveAggregateSnapshot = (eventStore: EventStore): void => {
   test('saveAggregateSnapshot', async () => {
     await eventStore.saveAggregateSnapshot({
       aggregateId: 'x',
@@ -263,18 +255,13 @@ export const testSaveAggregateSnapshot = (eventStore: EventStore): void => {
       revision: 7,
     })
   })
-}
 
-export const testImportEvents = (
-  eventStore: EventStore,
-  testEvents: { [id: string]: Event },
-): void => {
   test('importEvents', async () => {
-    const events = Object.values(testEvents)
+    const events = Object.values(testData.events)
     await eventStore.importEvents(events)
 
     for (const event of events) {
       expect(await eventStore.getEvent(event.id)).toEqual(event)
     }
   })
-}
+})
