@@ -1,4 +1,5 @@
 import { Event } from '../../elements/event'
+import { flatten } from '../../utils/flatten'
 import {
   CollectionReference,
   DocumentSnapshot,
@@ -8,7 +9,6 @@ import {
   QuerySnapshot,
 } from '../types'
 import { QueryParams, ViewStore } from './types'
-import { flatten } from './utils'
 
 const createQuery = (
   db: Firestore,
