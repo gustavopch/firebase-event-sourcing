@@ -1,6 +1,7 @@
 import firebaseAdmin from 'firebase-admin'
 
 import { Event } from '../elements/event'
+import { Location } from '../elements/location'
 
 export const EVENTS = 'events'
 export const SNAPSHOTS = 'snapshots'
@@ -72,6 +73,9 @@ export type EventStore = {
     causationId?: string
     correlationId?: string
     userId?: string
+    ip?: string
+    userAgent?: string
+    location?: Location
   }) => Promise<string>
 
   saveAggregateSnapshot: (aggregate: AggregateSnapshot) => Promise<void>
@@ -153,6 +157,9 @@ export const createEventStore = (
       causationId,
       correlationId,
       userId,
+      ip,
+      userAgent,
+      location,
     }) => {
       const eventId = generateId()
 
@@ -168,6 +175,9 @@ export const createEventStore = (
           timestamp: firebaseAdmin.firestore.Timestamp.now(),
           revision: firebaseAdmin.firestore.FieldValue.increment(1) as any,
           userId,
+          ip,
+          userAgent,
+          location,
         },
       }
 

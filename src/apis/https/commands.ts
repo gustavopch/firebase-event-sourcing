@@ -60,12 +60,27 @@ export const createCommandsEndpoint = (
 
     const { name: eventName, data: eventData } = handleCommand(commandData)
 
+    const [latitude, longitude] = (
+      req.header('X-Appengine-CityLatLong') || '0,0'
+    )
+      .split(',')
+      .map(Number)
+
     const eventId = await eventStore.saveNewEvent({
       aggregateName: `${contextName}.${aggregateName}`,
       aggregateId,
       name: eventName,
       data: eventData,
       userId,
+      ip: req.ip,
+      userAgent: req.header('User-Agent'),
+      location: {
+        city: String(req.header('X-Appengine-City')),
+        region: String(req.header('X-Appengine-Region')),
+        country: String(req.header('X-Appengine-Country')),
+        latitude,
+        longitude,
+      },
     })
     const event = (await eventStore.getEvent(eventId))!
     console.log('Saved new event:', event)

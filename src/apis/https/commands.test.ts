@@ -93,6 +93,7 @@ describe('/commands endpoint', () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'X-Forwarded-For': '127.0.0.1',
       },
       body: JSON.stringify({
         aggregateName: SHOPPING_CART,
@@ -122,6 +123,15 @@ describe('/commands endpoint', () => {
           timestamp: expect.any(firebaseAdmin.firestore.Timestamp),
           revision: 1,
           userId: 'test',
+          ip: '127.0.0.1',
+          userAgent: expect.any(String),
+          location: {
+            city: expect.any(String),
+            region: expect.any(String),
+            country: expect.any(String),
+            latitude: expect.any(Number),
+            longitude: expect.any(Number),
+          },
         },
       },
     ])
