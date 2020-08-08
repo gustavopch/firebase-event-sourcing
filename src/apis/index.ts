@@ -5,7 +5,6 @@ import { createCommandsEndpoint } from './https/commands'
 import { createCronJobFirebaseFunctions } from './pubsub/cron-jobs'
 import { createProcessJobsFirebaseFunction } from './pubsub/process-jobs'
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const createFunctions = <
   TApplicationDefinition extends ApplicationDefinition
 >(
