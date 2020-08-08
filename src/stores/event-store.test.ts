@@ -32,7 +32,7 @@ const testData = {
       metadata: {
         causationId: '1',
         correlationId: '1',
-        timestamp: firebaseAdmin.firestore.Timestamp.fromDate(new Date('2020-07-01')), // prettier-ignore
+        timestamp: new Date('2020-07-01').getTime(),
         revision: 1,
         userId: 'john',
       },
@@ -46,7 +46,7 @@ const testData = {
       metadata: {
         causationId: '2',
         correlationId: '2',
-        timestamp: firebaseAdmin.firestore.Timestamp.fromDate(new Date('2020-07-02')), // prettier-ignore
+        timestamp: new Date('2020-07-02').getTime(),
         revision: 1,
       },
     },
@@ -59,7 +59,7 @@ const testData = {
       metadata: {
         causationId: '3',
         correlationId: '3',
-        timestamp: firebaseAdmin.firestore.Timestamp.fromDate(new Date('2020-07-03')), // prettier-ignore
+        timestamp: new Date('2020-07-03').getTime(),
         revision: 1,
         userId: 'john',
       },
@@ -73,7 +73,7 @@ const testData = {
       metadata: {
         causationId: '4',
         correlationId: '4',
-        timestamp: firebaseAdmin.firestore.Timestamp.fromDate(new Date('2020-07-04')), // prettier-ignore
+        timestamp: new Date('2020-07-04').getTime(),
         revision: 1,
       },
     },
@@ -86,7 +86,7 @@ const testData = {
       metadata: {
         causationId: '5',
         correlationId: '5',
-        timestamp: firebaseAdmin.firestore.Timestamp.fromDate(new Date('2020-07-05')), // prettier-ignore
+        timestamp: new Date('2020-07-05').getTime(),
         revision: 1,
       },
     },
@@ -99,7 +99,7 @@ const testData = {
       metadata: {
         causationId: '5',
         correlationId: '5',
-        timestamp: firebaseAdmin.firestore.Timestamp.fromDate(new Date('2020-07-05')), // prettier-ignore
+        timestamp: new Date('2020-07-05').getTime(),
         revision: 2,
       },
     },
@@ -112,7 +112,7 @@ const testData = {
       metadata: {
         causationId: '5.1',
         correlationId: '5',
-        timestamp: firebaseAdmin.firestore.Timestamp.fromDate(new Date('2020-07-05')), // prettier-ignore
+        timestamp: new Date('2020-07-05').getTime(),
         revision: 3,
       },
     },
@@ -238,7 +238,7 @@ describe('Event Store', () => {
       metadata: {
         causationId: id,
         correlationId: id,
-        timestamp: expect.any(firebaseAdmin.firestore.Timestamp),
+        timestamp: expect.any(Number),
         revision: 1,
       },
     })

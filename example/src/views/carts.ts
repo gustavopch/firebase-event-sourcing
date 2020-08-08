@@ -29,8 +29,8 @@ type CartItem = {
 
 export type Cart = {
   id: string
-  initializedAt: firebaseAdmin.firestore.Timestamp
-  placedAt: firebaseAdmin.firestore.Timestamp | null
+  initializedAt: number
+  placedAt: number | null
   status: CartStatus
   items: { [id: string]: CartItem }
 }
@@ -42,7 +42,7 @@ export const carts = defineView({
 
       const cart: Cart = {
         id: event.aggregateId,
-        initializedAt: firebaseAdmin.firestore.Timestamp.now(),
+        initializedAt: Date.now(),
         placedAt: null,
         status: 'open',
         items: {},
@@ -83,7 +83,7 @@ export const carts = defineView({
       const db = firebaseAdmin.firestore()
 
       const nfe: Partial<Cart> = {
-        placedAt: firebaseAdmin.firestore.Timestamp.now(),
+        placedAt: Date.now(),
         status: 'placed',
       }
 

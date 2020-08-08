@@ -120,7 +120,7 @@ describe('/commands endpoint', () => {
         metadata: {
           causationId: eventId,
           correlationId: eventId,
-          timestamp: expect.any(firebaseAdmin.firestore.Timestamp),
+          timestamp: expect.any(Number),
           revision: 1,
           userId: 'test',
           ip: '127.0.0.1',
@@ -155,7 +155,7 @@ describe('/commands endpoint', () => {
 
     expect(cartSnap.data()).toEqual({
       id: '123',
-      initializedAt: expect.any(firebaseAdmin.firestore.Timestamp),
+      initializedAt: expect.any(Number),
       placedAt: null,
       status: 'open',
       items: {},

@@ -35,7 +35,7 @@ export const createJobStore = (
     getPendingJobs: async () => {
       const query = jobsCollection
         .where('status', '==', 'scheduled')
-        .where('scheduledFor', '<=', firebaseAdmin.firestore.Timestamp.now())
+        .where('scheduledFor', '<=', Date.now())
 
       const querySnap = await query.get()
       return querySnap.docs.map(docSnap => docSnap.data() as Job<any>)
@@ -50,11 +50,13 @@ export const createJobStore = (
       causationId,
       correlationId,
     }) => {
+      scheduledFor = new Date(scheduledFor)
+
       const jobId = generateId()
 
       const job: Job = {
         id: jobId,
-        scheduledFor: firebaseAdmin.firestore.Timestamp.fromDate(new Date(scheduledFor)), // prettier-ignore
+        scheduledFor: scheduledFor.getTime(),
         status: 'scheduled',
         type: 'command',
         aggregateName,
