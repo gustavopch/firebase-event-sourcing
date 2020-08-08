@@ -1,9 +1,9 @@
 import { Command } from '../elements/command'
-import { CommandHandler } from '../elements/command-handler'
 import { Event } from '../elements/event'
+import { CommandDefinition } from './command-definition'
 
 export type AggregateDefinition = {
   commands: {
-    [commandName: string]: CommandHandler<Command<any, any>, Event<any, any>>
+    [commandName: string]: CommandDefinition<Command<any, any>, Event<any, any>>
   }
 }

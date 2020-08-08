@@ -1,12 +1,14 @@
-import { Command, CommandHandler } from '../../../../../../src'
+import { Command, CommandDefinition } from '../../../../../../src'
 import { ShoppingCartOrderPlaced } from '../events/order-placed'
 
 export type ShoppingCartPlaceOrder = Command<'shopping.cart.placeOrder', null>
 
-export const placeOrder: CommandHandler<
+export const placeOrder: CommandDefinition<
   ShoppingCartPlaceOrder,
   ShoppingCartOrderPlaced
-> = data => ({
-  name: 'shopping.cart.orderPlaced',
-  data: null,
-})
+> = {
+  handle: data => ({
+    name: 'shopping.cart.orderPlaced',
+    data: null,
+  }),
+}

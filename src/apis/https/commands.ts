@@ -49,7 +49,7 @@ export const createCommandsEndpoint = (
     const [contextName, aggregateName] = fullyQualifiedAggregateName.split('.')
 
     const handleCommand =
-      domain[contextName]?.[aggregateName]?.commands?.[commandName]
+      domain[contextName]?.[aggregateName]?.commands?.[commandName]?.handle
 
     if (!handleCommand) {
       const message = `Command handler for '${aggregateName}.${commandName}' not found`

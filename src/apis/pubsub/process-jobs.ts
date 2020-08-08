@@ -19,10 +19,10 @@ export const createProcessJobsFirebaseFunction = (
     for (const job of pendingJobs) {
       const [contextName, aggregateName] = job.aggregateName.split('.')
 
-      const handler =
-        domain[contextName][aggregateName].commands[job.commandName]
+      const handleCommand =
+        domain[contextName][aggregateName].commands[job.commandName].handle
 
-      const { name, data } = handler(job.commandData)
+      const { name, data } = handleCommand(job.commandData)
 
       await eventStore.saveNewEvent({
         aggregateName,

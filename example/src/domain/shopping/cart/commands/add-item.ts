@@ -1,4 +1,4 @@
-import { Command, CommandHandler } from '../../../../../../src'
+import { Command, CommandDefinition } from '../../../../../../src'
 import { ShoppingCartItemAdded } from '../events/item-added'
 
 export type ShoppingCartAddItem = Command<
@@ -8,12 +8,14 @@ export type ShoppingCartAddItem = Command<
   }
 >
 
-export const addItem: CommandHandler<
+export const addItem: CommandDefinition<
   ShoppingCartAddItem,
   ShoppingCartItemAdded
-> = data => ({
-  name: 'shopping.cart.itemAdded',
-  data: {
-    title: data.title,
-  },
-})
+> = {
+  handle: data => ({
+    name: 'shopping.cart.itemAdded',
+    data: {
+      title: data.title,
+    },
+  }),
+}
