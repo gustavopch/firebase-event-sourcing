@@ -1,6 +1,6 @@
 import firebaseAdmin from 'firebase-admin'
 
-import { defineView } from '../../../src'
+import { ViewDefinition } from '../../../src'
 import { flatten } from '../../../src/utils/flatten'
 import {
   SHOPPING_CART_INITIALIZED,
@@ -35,7 +35,7 @@ export type Cart = {
   items: { [id: string]: CartItem }
 }
 
-export const carts = defineView({
+export const carts: ViewDefinition = {
   projections: {
     [SHOPPING_CART_INITIALIZED]: async (event: ShoppingCartInitialized) => {
       const db = firebaseAdmin.firestore()
@@ -90,4 +90,4 @@ export const carts = defineView({
       await db.collection(CARTS).doc(event.aggregateId).update(flatten(nfe))
     },
   },
-})
+}

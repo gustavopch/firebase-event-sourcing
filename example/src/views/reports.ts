@@ -1,6 +1,6 @@
 import firebaseAdmin from 'firebase-admin'
 
-import { defineView } from '../../../src'
+import { ViewDefinition } from '../../../src'
 import {
   SHOPPING_CART_ORDER_PLACED,
   ShoppingCartOrderPlaced,
@@ -15,7 +15,7 @@ export type Report = {
   orderCount: number
 }
 
-export const reports = defineView({
+export const reports: ViewDefinition = {
   projections: {
     [SHOPPING_CART_ORDER_PLACED]: async (event: ShoppingCartOrderPlaced) => {
       const db = firebaseAdmin.firestore()
@@ -28,4 +28,4 @@ export const reports = defineView({
       await db.collection(REPORTS).doc(TOTALS_ID).set(report)
     },
   },
-})
+}

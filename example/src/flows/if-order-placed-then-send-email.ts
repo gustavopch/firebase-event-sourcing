@@ -1,4 +1,4 @@
-import { defineFlow } from '../../../src'
+import { FlowDefinition } from '../../../src'
 import {
   SHOPPING_CART_ORDER_PLACED,
   ShoppingCartOrderPlaced,
@@ -6,7 +6,7 @@ import {
 
 import { getEmailService } from '../services/email-service'
 
-export const ifOrderPlacedThenSendEmail = defineFlow({
+export const ifOrderPlacedThenSendEmail: FlowDefinition = {
   reactions: {
     [SHOPPING_CART_ORDER_PLACED]: async (
       manager,
@@ -20,4 +20,4 @@ export const ifOrderPlacedThenSendEmail = defineFlow({
       })
     },
   },
-})
+}

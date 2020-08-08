@@ -1,10 +1,10 @@
 import firebaseAdmin from 'firebase-admin'
 
-import { defineFlow } from '../../../src'
+import { FlowDefinition } from '../../../src'
 import { getEmailService } from '../services/email-service'
 import { REPORTS, Report, TOTALS_ID } from '../views/reports'
 
-export const everyNightSendReportEmail = defineFlow({
+export const everyNightSendReportEmail: FlowDefinition = {
   cron: {
     'every day 01:00': async manager => {
       const db = firebaseAdmin.firestore()
@@ -19,4 +19,4 @@ export const everyNightSendReportEmail = defineFlow({
       })
     },
   },
-})
+}
