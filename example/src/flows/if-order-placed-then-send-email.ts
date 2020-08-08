@@ -1,14 +1,11 @@
 import { FlowDefinition } from '../../../src'
-import {
-  SHOPPING_CART_ORDER_PLACED,
-  ShoppingCartOrderPlaced,
-} from '../domain/shopping/cart/events/order-placed'
+import { ShoppingCartOrderPlaced } from '../domain/shopping/cart/events/order-placed'
 
 import { getEmailService } from '../services/email-service'
 
 export const ifOrderPlacedThenSendEmail: FlowDefinition = {
   reactions: {
-    [SHOPPING_CART_ORDER_PLACED]: async (
+    'shopping.cart.orderPlaced': async (
       manager,
       event: ShoppingCartOrderPlaced,
     ) => {

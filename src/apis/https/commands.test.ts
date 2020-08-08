@@ -3,8 +3,6 @@ import firebaseAdmin from 'firebase-admin'
 import fetch from 'node-fetch'
 
 import { config } from '../../../example/src/config'
-import { SHOPPING_CART } from '../../../example/src/domain/shopping/cart'
-import { SHOPPING_CART_INITIALIZED } from '../../../example/src/domain/shopping/cart/events/initialized'
 import { CARTS } from '../../../example/src/views/carts'
 import { Event } from '../../elements/event'
 import { createEventStore } from '../../stores/event-store'
@@ -75,7 +73,7 @@ describe('/commands endpoint', () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        aggregateName: SHOPPING_CART,
+        aggregateName: 'shopping.cart',
         aggregateId: '123',
         name: 'initialize',
         data: null,
@@ -96,7 +94,7 @@ describe('/commands endpoint', () => {
         'X-Forwarded-For': '127.0.0.1',
       },
       body: JSON.stringify({
-        aggregateName: SHOPPING_CART,
+        aggregateName: 'shopping.cart',
         aggregateId: '123',
         name: 'initialize',
         data: null,
@@ -112,9 +110,9 @@ describe('/commands endpoint', () => {
 
     expect(events).toEqual([
       {
-        aggregateName: SHOPPING_CART,
+        aggregateName: 'shopping.cart',
         aggregateId: '123',
-        name: SHOPPING_CART_INITIALIZED,
+        name: 'shopping.cart.initialized',
         id: eventId,
         data: null,
         metadata: {
@@ -144,7 +142,7 @@ describe('/commands endpoint', () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        aggregateName: SHOPPING_CART,
+        aggregateName: 'shopping.cart',
         aggregateId: '123',
         name: 'initialize',
         data: null,

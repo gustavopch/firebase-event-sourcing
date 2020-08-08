@@ -2,22 +2,10 @@ import firebaseAdmin from 'firebase-admin'
 
 import { ViewDefinition } from '../../../src'
 import { flatten } from '../../../src/utils/flatten'
-import {
-  SHOPPING_CART_INITIALIZED,
-  ShoppingCartInitialized,
-} from '../domain/shopping/cart/events/initialized'
-import {
-  SHOPPING_CART_ITEM_ADDED,
-  ShoppingCartItemAdded,
-} from '../domain/shopping/cart/events/item-added'
-import {
-  SHOPPING_CART_ITEM_REMOVED,
-  ShoppingCartItemRemoved,
-} from '../domain/shopping/cart/events/item-removed'
-import {
-  SHOPPING_CART_ORDER_PLACED,
-  ShoppingCartOrderPlaced,
-} from '../domain/shopping/cart/events/order-placed'
+import { ShoppingCartInitialized } from '../domain/shopping/cart/events/initialized'
+import { ShoppingCartItemAdded } from '../domain/shopping/cart/events/item-added'
+import { ShoppingCartItemRemoved } from '../domain/shopping/cart/events/item-removed'
+import { ShoppingCartOrderPlaced } from '../domain/shopping/cart/events/order-placed'
 
 export const CARTS = 'carts'
 
@@ -37,7 +25,7 @@ export type Cart = {
 
 export const carts: ViewDefinition = {
   projections: {
-    [SHOPPING_CART_INITIALIZED]: async (event: ShoppingCartInitialized) => {
+    'shopping.cart.initialized': async (event: ShoppingCartInitialized) => {
       const db = firebaseAdmin.firestore()
 
       const cart: Cart = {
@@ -51,7 +39,7 @@ export const carts: ViewDefinition = {
       await db.collection(CARTS).doc(event.aggregateId).set(cart)
     },
 
-    [SHOPPING_CART_ITEM_ADDED]: async (event: ShoppingCartItemAdded) => {
+    'shopping.cart.itemAdded': async (event: ShoppingCartItemAdded) => {
       const db = firebaseAdmin.firestore()
 
       const itemId = db.collection('whatever').doc().id
@@ -67,7 +55,7 @@ export const carts: ViewDefinition = {
       await db.collection(CARTS).doc(event.aggregateId).update(flatten(nfe))
     },
 
-    [SHOPPING_CART_ITEM_REMOVED]: async (event: ShoppingCartItemRemoved) => {
+    'shopping.cart.itemRemoved': async (event: ShoppingCartItemRemoved) => {
       const db = firebaseAdmin.firestore()
 
       const nfe: Partial<Cart> = {
@@ -79,7 +67,7 @@ export const carts: ViewDefinition = {
       await db.collection(CARTS).doc(event.aggregateId).update(flatten(nfe))
     },
 
-    [SHOPPING_CART_ORDER_PLACED]: async (event: ShoppingCartOrderPlaced) => {
+    'shopping.cart.orderPlaced': async (event: ShoppingCartOrderPlaced) => {
       const db = firebaseAdmin.firestore()
 
       const nfe: Partial<Cart> = {

@@ -2,12 +2,7 @@ import * as testing from '@firebase/testing'
 import firebaseAdmin from 'firebase-admin'
 
 import { config } from '../../example/src/config'
-import { SHOPPING_CART } from '../../example/src/domain/shopping/cart'
-import {
-  SHOPPING_CART_INITIALIZED,
-  ShoppingCartInitialized,
-} from '../../example/src/domain/shopping/cart/events/initialized'
-import { SHOPPING_CART_ITEM_ADDED } from '../../example/src/domain/shopping/cart/events/item-added'
+import { ShoppingCartInitialized } from '../../example/src/domain/shopping/cart/events/initialized'
 import { Event } from '../elements/event'
 import { EVENTS, SNAPSHOTS, createEventStore } from './event-store'
 
@@ -24,9 +19,9 @@ const eventStore = createEventStore(firebaseAdminApp)
 const testData = {
   events: {
     '1': {
-      aggregateName: SHOPPING_CART,
+      aggregateName: 'shopping.cart',
       aggregateId: 'A',
-      name: SHOPPING_CART_INITIALIZED,
+      name: 'shopping.cart.initialized',
       id: '1',
       data: { title: 'Whatever' },
       metadata: {
@@ -38,9 +33,9 @@ const testData = {
       },
     },
     '2': {
-      aggregateName: SHOPPING_CART,
+      aggregateName: 'shopping.cart',
       aggregateId: 'B',
-      name: SHOPPING_CART_INITIALIZED,
+      name: 'shopping.cart.initialized',
       id: '2',
       data: { title: 'Whatever' },
       metadata: {
@@ -51,9 +46,9 @@ const testData = {
       },
     },
     '3': {
-      aggregateName: SHOPPING_CART,
+      aggregateName: 'shopping.cart',
       aggregateId: 'C',
-      name: SHOPPING_CART_INITIALIZED,
+      name: 'shopping.cart.initialized',
       id: '3',
       data: { title: 'Whatever' },
       metadata: {
@@ -65,9 +60,9 @@ const testData = {
       },
     },
     '4': {
-      aggregateName: SHOPPING_CART,
+      aggregateName: 'shopping.cart',
       aggregateId: 'D',
-      name: SHOPPING_CART_INITIALIZED,
+      name: 'shopping.cart.initialized',
       id: '4',
       data: { title: 'Whatever' },
       metadata: {
@@ -78,9 +73,9 @@ const testData = {
       },
     },
     '5': {
-      aggregateName: SHOPPING_CART,
+      aggregateName: 'shopping.cart',
       aggregateId: 'E',
-      name: SHOPPING_CART_INITIALIZED,
+      name: 'shopping.cart.initialized',
       id: '5',
       data: { title: 'Whatever' },
       metadata: {
@@ -91,9 +86,9 @@ const testData = {
       },
     },
     '5.1': {
-      aggregateName: SHOPPING_CART,
+      aggregateName: 'shopping.cart',
       aggregateId: 'E',
-      name: SHOPPING_CART_ITEM_ADDED,
+      name: 'shopping.cart.itemAdded',
       id: '5.1',
       data: { title: 'Whatever' },
       metadata: {
@@ -104,9 +99,9 @@ const testData = {
       },
     },
     '5.2': {
-      aggregateName: SHOPPING_CART,
+      aggregateName: 'shopping.cart',
       aggregateId: 'E',
-      name: SHOPPING_CART_ITEM_ADDED,
+      name: 'shopping.cart.itemAdded',
       id: '5.2',
       data: { title: 'Whatever' },
       metadata: {
@@ -225,7 +220,7 @@ describe('Event Store', () => {
     const id = await eventStore.saveNewEvent<ShoppingCartInitialized>({
       aggregateName: 'some.name',
       aggregateId: 'x',
-      name: SHOPPING_CART_INITIALIZED,
+      name: 'shopping.cart.initialized',
       data: null,
     })
 
@@ -233,7 +228,7 @@ describe('Event Store', () => {
       aggregateName: 'some.name',
       aggregateId: 'x',
       id,
-      name: SHOPPING_CART_INITIALIZED,
+      name: 'shopping.cart.initialized',
       data: null,
       metadata: {
         causationId: id,
