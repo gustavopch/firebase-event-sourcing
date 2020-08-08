@@ -10,6 +10,7 @@ export type JobStore = {
 
   saveCommandJob: <TCommandData extends CommandData>(jobProps: {
     scheduledFor: Date | string | number
+    contextName: string
     aggregateName: string
     aggregateId: string
     commandName: string
@@ -43,6 +44,7 @@ export const createJobStore = (
 
     saveCommandJob: async ({
       scheduledFor,
+      contextName,
       aggregateName,
       aggregateId,
       commandName,
@@ -59,6 +61,7 @@ export const createJobStore = (
         scheduledFor: scheduledFor.getTime(),
         status: 'scheduled',
         type: 'command',
+        contextName,
         aggregateName,
         aggregateId,
         commandName,

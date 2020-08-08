@@ -4,10 +4,6 @@ import { Event } from '../elements/event'
 import { EventStore } from '../stores/event-store'
 import { JobStore } from '../stores/job-store'
 
-const getAggregateNameFromEventName = (eventName: string): string => {
-  return eventName.split('.').slice(0, 2).join('.')
-}
-
 export type FlowManager = {
   runCommand: <TCommandHandler extends CommandHandler<Command, Event>>(
     handler: TCommandHandler,
@@ -31,9 +27,10 @@ export const createFlowManager = (
   return {
     runCommand: async (handler, aggregateId, commandData) => {
       const event = handler(commandData)
-      const aggregateName = getAggregateNameFromEventName(event.name)
+      const [contextName, aggregateName] = event.name.split('.')
 
       await eventStore.saveNewEvent({
+        contextName,
         aggregateName,
         aggregateId,
         name: event.name,
@@ -47,10 +44,11 @@ export const createFlowManager = (
       date = new Date(date)
 
       const event = handler(commandData)
-      const aggregateName = getAggregateNameFromEventName(event.name)
+      const [contextName, aggregateName] = event.name.split('.')
 
       await jobStore.saveCommandJob({
         scheduledFor: date.getTime(),
+        contextName,
         aggregateName,
         aggregateId,
         commandName: handler.name,

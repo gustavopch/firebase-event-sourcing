@@ -43,18 +43,19 @@ describe('/commands endpoint', () => {
   )
 
   it.each([
-    ['context', 'xxxxxxxx.cart', 'initialize'],
-    ['aggregate', 'shopping.xxxx', 'initialize'],
-    ['command', 'shopping.cart', 'xxxxxxxxxx'],
+    ['context', 'xxxxxxxx', 'cart', 'initialize'],
+    ['aggregate', 'shopping', 'xxxx', 'initialize'],
+    ['command', 'shopping', 'cart', 'xxxxxxxxxx'],
   ])(
     'gracefully fails when %s is not found',
-    async (_, aggregateName, commandName) => {
+    async (_, contextName, aggregateName, commandName) => {
       const res = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          contextName,
           aggregateName,
           aggregateId: '123',
           name: commandName,
@@ -73,7 +74,8 @@ describe('/commands endpoint', () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        aggregateName: 'shopping.cart',
+        contextName: 'shopping',
+        aggregateName: 'cart',
         aggregateId: '123',
         name: 'initialize',
         data: null,
@@ -94,7 +96,8 @@ describe('/commands endpoint', () => {
         'X-Forwarded-For': '127.0.0.1',
       },
       body: JSON.stringify({
-        aggregateName: 'shopping.cart',
+        contextName: 'shopping',
+        aggregateName: 'cart',
         aggregateId: '123',
         name: 'initialize',
         data: null,
@@ -110,7 +113,8 @@ describe('/commands endpoint', () => {
 
     expect(events).toEqual([
       {
-        aggregateName: 'shopping.cart',
+        contextName: 'shopping',
+        aggregateName: 'cart',
         aggregateId: '123',
         name: 'shopping.cart.initialized',
         id: eventId,
@@ -142,7 +146,8 @@ describe('/commands endpoint', () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        aggregateName: 'shopping.cart',
+        contextName: 'shopping',
+        aggregateName: 'cart',
         aggregateId: '123',
         name: 'initialize',
         data: null,

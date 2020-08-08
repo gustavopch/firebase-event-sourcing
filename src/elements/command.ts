@@ -4,6 +4,7 @@ export type Command<
   TCommandName extends string = string,
   TCommandData extends CommandData = CommandData
 > = {
+  contextName: string
   aggregateName: string
   aggregateId: string
   name: TCommandName

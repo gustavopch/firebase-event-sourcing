@@ -8,6 +8,7 @@ export type Job<TCommandData extends CommandData = CommandData> = {
   status: JobStatus
 } & {
   type: 'command'
+  contextName: string
   aggregateName: string
   aggregateId: string
   commandName: string

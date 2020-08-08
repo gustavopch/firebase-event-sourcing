@@ -40,19 +40,18 @@ export const createCommandsEndpoint = (
     }
 
     const {
-      aggregateName: fullyQualifiedAggregateName,
+      contextName,
+      aggregateName,
       aggregateId,
       name: commandName,
       data: commandData,
     } = req.body as Command
 
-    const [contextName, aggregateName] = fullyQualifiedAggregateName.split('.')
-
     const handleCommand =
       domain[contextName]?.[aggregateName]?.commands?.[commandName]?.handle
 
     if (!handleCommand) {
-      const message = `Command handler for '${aggregateName}.${commandName}' not found`
+      const message = `Command handler for '${contextName}.${aggregateName}.${commandName}' not found`
       console.log(message)
       res.status(422).send(message)
       return
@@ -67,7 +66,8 @@ export const createCommandsEndpoint = (
       .map(Number)
 
     const eventId = await eventStore.saveNewEvent({
-      aggregateName: `${contextName}.${aggregateName}`,
+      contextName,
+      aggregateName,
       aggregateId,
       name: eventName,
       data: eventData,

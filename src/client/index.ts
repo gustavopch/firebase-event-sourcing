@@ -22,7 +22,13 @@ export const createClient = <
   baseUrl: string
 }): Client<TDomainDefinition> => {
   return {
-    sendCommand: async ({ aggregateName, aggregateId, name, data }) => {
+    sendCommand: async ({
+      contextName,
+      aggregateName,
+      aggregateId,
+      name,
+      data,
+    }) => {
       const url = `${options.baseUrl}/${String(name)}`
 
       const res = await window.fetch(url, {
@@ -31,6 +37,7 @@ export const createClient = <
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          contextName,
           aggregateName,
           aggregateId,
           name,

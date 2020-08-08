@@ -5,6 +5,7 @@ export type Event<
   TEventName extends string = string,
   TEventData extends EventData = EventData
 > = {
+  contextName: string
   aggregateName: string
   aggregateId: string
   id: string

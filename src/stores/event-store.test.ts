@@ -19,7 +19,8 @@ const eventStore = createEventStore(firebaseAdminApp)
 const testData = {
   events: {
     '1': {
-      aggregateName: 'shopping.cart',
+      contextName: 'shopping',
+      aggregateName: 'cart',
       aggregateId: 'A',
       name: 'shopping.cart.initialized',
       id: '1',
@@ -33,7 +34,8 @@ const testData = {
       },
     },
     '2': {
-      aggregateName: 'shopping.cart',
+      contextName: 'shopping',
+      aggregateName: 'cart',
       aggregateId: 'B',
       name: 'shopping.cart.initialized',
       id: '2',
@@ -46,7 +48,8 @@ const testData = {
       },
     },
     '3': {
-      aggregateName: 'shopping.cart',
+      contextName: 'shopping',
+      aggregateName: 'cart',
       aggregateId: 'C',
       name: 'shopping.cart.initialized',
       id: '3',
@@ -60,7 +63,8 @@ const testData = {
       },
     },
     '4': {
-      aggregateName: 'shopping.cart',
+      contextName: 'shopping',
+      aggregateName: 'cart',
       aggregateId: 'D',
       name: 'shopping.cart.initialized',
       id: '4',
@@ -73,7 +77,8 @@ const testData = {
       },
     },
     '5': {
-      aggregateName: 'shopping.cart',
+      contextName: 'shopping',
+      aggregateName: 'cart',
       aggregateId: 'E',
       name: 'shopping.cart.initialized',
       id: '5',
@@ -86,7 +91,8 @@ const testData = {
       },
     },
     '5.1': {
-      aggregateName: 'shopping.cart',
+      contextName: 'shopping',
+      aggregateName: 'cart',
       aggregateId: 'E',
       name: 'shopping.cart.itemAdded',
       id: '5.1',
@@ -99,7 +105,8 @@ const testData = {
       },
     },
     '5.2': {
-      aggregateName: 'shopping.cart',
+      contextName: 'shopping',
+      aggregateName: 'cart',
       aggregateId: 'E',
       name: 'shopping.cart.itemAdded',
       id: '5.2',
@@ -218,14 +225,16 @@ describe('Event Store', () => {
 
   test('saveNewEvent', async () => {
     const id = await eventStore.saveNewEvent<ShoppingCartInitialized>({
-      aggregateName: 'some.name',
+      contextName: 'some',
+      aggregateName: 'name',
       aggregateId: 'x',
       name: 'shopping.cart.initialized',
       data: null,
     })
 
     expect(await eventStore.getEvent(id)).toEqual({
-      aggregateName: 'some.name',
+      contextName: 'some',
+      aggregateName: 'name',
       aggregateId: 'x',
       id,
       name: 'shopping.cart.initialized',
