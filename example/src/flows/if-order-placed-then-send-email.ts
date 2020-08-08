@@ -1,13 +1,16 @@
 import { defineFlow } from '../../../src'
-import { ShoppingCartInitialized } from '../domain/shopping/cart/events/initialized'
-import { SHOPPING_CART_ORDER_PLACED } from '../domain/shopping/cart/events/order-placed'
+import {
+  SHOPPING_CART_ORDER_PLACED,
+  ShoppingCartOrderPlaced,
+} from '../domain/shopping/cart/events/order-placed'
+
 import { getEmailService } from '../services/email-service'
 
 export const ifOrderPlacedThenSendEmail = defineFlow({
   reactions: {
     [SHOPPING_CART_ORDER_PLACED]: async (
       manager,
-      event: ShoppingCartInitialized,
+      event: ShoppingCartOrderPlaced,
     ) => {
       const emailService = getEmailService()
 
