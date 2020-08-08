@@ -1,7 +1,7 @@
 import firebaseAdmin from 'firebase-admin'
 import * as functions from 'firebase-functions'
 
-import { FlowsDefinition } from '../../application/definitions/flows-definition'
+import { FlowsDefinition } from '../../application/flows-definition'
 import { createFlowManager } from '../../services/flow-manager'
 import { createEventStore } from '../../stores/event-store'
 import { createJobStore } from '../../stores/job-store'

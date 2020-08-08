@@ -1,7 +1,7 @@
 import firebaseAdmin from 'firebase-admin'
 import * as functions from 'firebase-functions'
 
-import { DomainDefinition } from '../../application/definitions/domain-definition'
+import { DomainDefinition } from '../../application/domain-definition'
 import { createEventStore } from '../../stores/event-store'
 import { createJobStore } from '../../stores/job-store'
 

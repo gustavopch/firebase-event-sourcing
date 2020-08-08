@@ -1,9 +1,9 @@
 import firebaseAdmin from 'firebase-admin'
 import * as functions from 'firebase-functions'
 
-import { DomainDefinition } from '../../application/definitions/domain-definition'
-import { FlowsDefinition } from '../../application/definitions/flows-definition'
-import { ViewsDefinition } from '../../application/definitions/views-definition'
+import { DomainDefinition } from '../../application/domain-definition'
+import { FlowsDefinition } from '../../application/flows-definition'
+import { ViewsDefinition } from '../../application/views-definition'
 import { Command } from '../../elements/command'
 import { createFlowManager } from '../../services/flow-manager'
 import { createEventStore } from '../../stores/event-store'

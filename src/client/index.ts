@@ -1,4 +1,4 @@
-import { DomainDefinition } from '../application/definitions/domain-definition'
+import { DomainDefinition } from '../application/domain-definition'
 
 export type Client<TDomainDefinition extends DomainDefinition> = {
   sendCommand: <
