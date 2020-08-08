@@ -1,54 +1,48 @@
-import { ApplicationDefinition } from '../application/definitions/application-definition'
-import { Event } from '../elements/event'
-import { mapValues } from '../utils/map-values'
+import { DomainDefinition } from '../application/definitions/domain-definition'
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export type Client<TDomainDefinition extends DomainDefinition> = {
+  sendCommand: <
+    TContextName extends keyof TDomainDefinition,
+    TAggregateName extends keyof TDomainDefinition[TContextName],
+    TCommandName extends keyof TDomainDefinition[TContextName][TAggregateName]['commands']
+  >(params: {
+    contextName: TContextName
+    aggregateName: TAggregateName
+    aggregateId: string
+    name: TCommandName
+    data: Parameters<
+      TDomainDefinition[TContextName][TAggregateName]['commands'][TCommandName]
+    >[0]
+  }) => Promise<{ eventId: string }>
+}
+
 export const createClient = <
-  TApplicationDefinition extends ApplicationDefinition
->(
-  application: TApplicationDefinition,
-  options: {
-    baseUrl: string
-  },
-) => {
+  TDomainDefinition extends DomainDefinition
+>(options: {
+  baseUrl: string
+}): Client<TDomainDefinition> => {
   return {
-    ...((mapValues(application.domain, context => {
-      return mapValues(context, (aggregate, aggregateName) => {
-        return mapValues(aggregate.commands, (commandHandler, commandName) => {
-          type CommandData = Parameters<typeof commandHandler>[0]
+    sendCommand: async ({ aggregateName, aggregateId, name, data }) => {
+      const url = `${options.baseUrl}/${String(name)}`
 
-          return async (aggregateId: string, commandData: CommandData) => {
-            const url = `${options.baseUrl}/${commandName}`
-            const res = await window.fetch(url, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                aggregateName,
-                aggregateId,
-                name: commandName,
-                data: commandData,
-              }),
-            })
-
-            if (!res.ok) {
-              throw new Error('Command rejected')
-            }
-
-            return res.json()
-          }
-        })
+      const res = await window.fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          aggregateName,
+          aggregateId,
+          name,
+          data,
+        }),
       })
-    }) as any) as {
-      [contextName in keyof TApplicationDefinition['domain']]: {
-        [aggregateName in keyof TApplicationDefinition['domain'][contextName]]: {
-          [commandName in keyof TApplicationDefinition['domain'][contextName][aggregateName]['commands']]: (
-            aggregateId: string,
-            commandData: Parameters<TApplicationDefinition['domain'][contextName][aggregateName]['commands'][commandName]>[0], // prettier-ignore
-          ) => Promise<Event<ReturnType<TApplicationDefinition['domain'][contextName][aggregateName]['commands'][commandName]>['data']>> // prettier-ignore
-        }
+
+      if (!res.ok) {
+        throw new Error('Command rejected')
       }
-    }),
+
+      return res.json()
+    },
   }
 }

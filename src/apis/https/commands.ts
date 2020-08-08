@@ -52,7 +52,7 @@ export const createCommandsEndpoint = (
       domain[contextName]?.[aggregateName]?.commands?.[commandName]
 
     if (!handleCommand) {
-      const message = `Command handler for '${commandName}' not found`
+      const message = `Command handler for '${aggregateName}.${commandName}' not found`
       console.log(message)
       res.status(422).send(message)
       return
