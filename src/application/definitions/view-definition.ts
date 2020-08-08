@@ -3,6 +3,6 @@ import { ProjectionHandler } from '../../elements/projection-handler'
 
 export type ViewDefinition = {
   projections: {
-    [eventName: string]: ProjectionHandler<Event<any>>
+    [eventName: string]: ProjectionHandler<Event<any, any>>
   }
 }
