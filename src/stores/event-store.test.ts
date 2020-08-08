@@ -191,7 +191,7 @@ describe('Event Store', () => {
 
   test('getReplay', async () => {
     const events: Event[] = []
-    await eventStore.getReplay(new Date('2020-07-03T00:00:00Z'), event => {
+    await eventStore.getReplay('2020-07-03T00:00:00Z', event => {
       events.push(event)
     })
 

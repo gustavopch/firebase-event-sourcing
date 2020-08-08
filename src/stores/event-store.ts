@@ -53,7 +53,10 @@ export type EventStore = {
 
   getEventsByUserId: (userId: string, onNext: OnEvent) => Promise<void>
 
-  getReplay: (fromTimestamp: Date, onNext: OnEvent) => Promise<void>
+  getReplay: (
+    fromTimestamp: Date | string | number,
+    onNext: OnEvent,
+  ) => Promise<void>
 
   getReplayForAggregate: (
     aggregateId: string,
@@ -127,6 +130,8 @@ export const createEventStore = (
     },
 
     getReplay: async (fromTimestamp, onNext) => {
+      fromTimestamp = new Date(fromTimestamp)
+
       const query = eventsCollection.where('metadata.timestamp', '>=', fromTimestamp) // prettier-ignore
 
       await queryInBatches(query, onNext)

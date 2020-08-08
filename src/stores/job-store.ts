@@ -9,7 +9,7 @@ export type JobStore = {
   getPendingJobs: () => Promise<Array<Job<any>>>
 
   saveCommandJob: <TCommandData extends CommandData>(jobProps: {
-    scheduledFor: Date
+    scheduledFor: Date | string | number
     aggregateName: string
     aggregateId: string
     commandName: string
@@ -54,7 +54,7 @@ export const createJobStore = (
 
       const job: Job = {
         id: jobId,
-        scheduledFor: firebaseAdmin.firestore.Timestamp.fromDate(scheduledFor),
+        scheduledFor: firebaseAdmin.firestore.Timestamp.fromDate(new Date(scheduledFor)), // prettier-ignore
         status: 'scheduled',
         type: 'command',
         aggregateName,

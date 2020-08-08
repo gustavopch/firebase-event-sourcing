@@ -43,11 +43,13 @@ export const createFlowManager = (
     },
 
     scheduleCommand: async (date, handler, aggregateId, commandData) => {
+      date = new Date(date)
+
       const event = handler(commandData)
       const aggregateName = getAggregateNameFromEventName(event.name)
 
       await jobStore.saveCommandJob({
-        scheduledFor: new Date(date),
+        scheduledFor: date,
         aggregateName,
         aggregateId,
         commandName: handler.name,
