@@ -1,3 +1,4 @@
+import { Command } from '../elements/command'
 import { CommandHandler } from '../elements/command-handler'
 import { Event } from '../elements/event'
 import { EventStore } from '../stores/event-store'
@@ -8,13 +9,13 @@ const getAggregateNameFromEventName = (eventName: string): string => {
 }
 
 export type FlowManager = {
-  runCommand: <TCommandHandler extends CommandHandler<any>>(
+  runCommand: <TCommandHandler extends CommandHandler<Command, Event>>(
     handler: TCommandHandler,
     aggregateId: string,
     commandData: Parameters<TCommandHandler>[0],
   ) => Promise<void>
 
-  scheduleCommand: <TCommandHandler extends CommandHandler<any>>(
+  scheduleCommand: <TCommandHandler extends CommandHandler<Command, Event>>(
     date: Date | string | number,
     handler: TCommandHandler,
     aggregateId: string,

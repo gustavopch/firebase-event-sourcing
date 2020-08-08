@@ -1,8 +1,9 @@
-import { CommandData } from './command-data'
+import { Command } from './command'
+import { Event } from './event'
 
-export type CommandHandler<TCommandData extends CommandData> = (
-  data: TCommandData,
+export type CommandHandler<TCommand extends Command, TEvent extends Event> = (
+  data: TCommand['data'],
 ) => {
-  name: string
-  data: TCommandData
+  name: TEvent['name']
+  data: TEvent['data']
 }
