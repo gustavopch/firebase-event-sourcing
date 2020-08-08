@@ -2,7 +2,6 @@ import firebaseAdmin from 'firebase-admin'
 
 import { CommandData } from '../elements/command-data'
 import { Job, JobStatus } from '../elements/job'
-import { QueryDocumentSnapshot } from './types'
 
 export const JOBS = 'jobs'
 
@@ -39,8 +38,7 @@ export const createJobStore = (
         .where('scheduledFor', '<=', firebaseAdmin.firestore.Timestamp.now())
 
       const querySnap = await query.get()
-      const docs = querySnap.docs as QueryDocumentSnapshot[]
-      return docs.map(docSnap => docSnap.data() as Job<any>)
+      return querySnap.docs.map(docSnap => docSnap.data() as Job<any>)
     },
 
     saveCommandJob: async ({
