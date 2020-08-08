@@ -116,7 +116,7 @@ describe('/commands endpoint', () => {
         contextName: 'shopping',
         aggregateName: 'cart',
         aggregateId: '123',
-        name: 'shopping.cart.initialized',
+        name: 'initialized',
         id: eventId,
         data: null,
         metadata: {

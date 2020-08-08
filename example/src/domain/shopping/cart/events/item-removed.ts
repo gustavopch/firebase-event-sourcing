@@ -1,7 +1,7 @@
 import { Event } from '../../../../../../src'
 
 export type ShoppingCartItemRemoved = Event<
-  'shopping.cart.itemRemoved',
+  'itemRemoved',
   {
     itemId: string
   }

@@ -2,7 +2,7 @@ import { Command, CommandDefinition } from '../../../../../../src'
 import { ShoppingCartItemAdded } from '../events/item-added'
 
 export type ShoppingCartAddItem = Command<
-  'shopping.cart.addItem',
+  'addItem',
   {
     title: string
   }
@@ -13,7 +13,7 @@ export const addItem: CommandDefinition<
   ShoppingCartItemAdded
 > = {
   handle: data => ({
-    name: 'shopping.cart.itemAdded',
+    name: 'itemAdded',
     data: {
       title: data.title,
     },

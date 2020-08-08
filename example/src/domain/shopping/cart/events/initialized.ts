@@ -1,3 +1,3 @@
 import { Event } from '../../../../../../src'
 
-export type ShoppingCartInitialized = Event<'shopping.cart.initialized', null>
+export type ShoppingCartInitialized = Event<'initialized', null>

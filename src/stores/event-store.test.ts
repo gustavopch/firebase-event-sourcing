@@ -22,7 +22,7 @@ const testData = {
       contextName: 'shopping',
       aggregateName: 'cart',
       aggregateId: 'A',
-      name: 'shopping.cart.initialized',
+      name: 'initialized',
       id: '1',
       data: { title: 'Whatever' },
       metadata: {
@@ -37,7 +37,7 @@ const testData = {
       contextName: 'shopping',
       aggregateName: 'cart',
       aggregateId: 'B',
-      name: 'shopping.cart.initialized',
+      name: 'initialized',
       id: '2',
       data: { title: 'Whatever' },
       metadata: {
@@ -51,7 +51,7 @@ const testData = {
       contextName: 'shopping',
       aggregateName: 'cart',
       aggregateId: 'C',
-      name: 'shopping.cart.initialized',
+      name: 'initialized',
       id: '3',
       data: { title: 'Whatever' },
       metadata: {
@@ -66,7 +66,7 @@ const testData = {
       contextName: 'shopping',
       aggregateName: 'cart',
       aggregateId: 'D',
-      name: 'shopping.cart.initialized',
+      name: 'initialized',
       id: '4',
       data: { title: 'Whatever' },
       metadata: {
@@ -80,7 +80,7 @@ const testData = {
       contextName: 'shopping',
       aggregateName: 'cart',
       aggregateId: 'E',
-      name: 'shopping.cart.initialized',
+      name: 'initialized',
       id: '5',
       data: { title: 'Whatever' },
       metadata: {
@@ -94,7 +94,7 @@ const testData = {
       contextName: 'shopping',
       aggregateName: 'cart',
       aggregateId: 'E',
-      name: 'shopping.cart.itemAdded',
+      name: 'itemAdded',
       id: '5.1',
       data: { title: 'Whatever' },
       metadata: {
@@ -108,7 +108,7 @@ const testData = {
       contextName: 'shopping',
       aggregateName: 'cart',
       aggregateId: 'E',
-      name: 'shopping.cart.itemAdded',
+      name: 'itemAdded',
       id: '5.2',
       data: { title: 'Whatever' },
       metadata: {
@@ -228,7 +228,7 @@ describe('Event Store', () => {
       contextName: 'some',
       aggregateName: 'name',
       aggregateId: 'x',
-      name: 'shopping.cart.initialized',
+      name: 'initialized',
       data: null,
     })
 
@@ -237,7 +237,7 @@ describe('Event Store', () => {
       aggregateName: 'name',
       aggregateId: 'x',
       id,
-      name: 'shopping.cart.initialized',
+      name: 'initialized',
       data: null,
       metadata: {
         causationId: id,

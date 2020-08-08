@@ -1,14 +1,14 @@
 import { Command, CommandDefinition } from '../../../../../../src'
 import { ShoppingCartInitialized } from '../events/initialized'
 
-export type ShoppingCartInitialize = Command<'shopping.cart.initialize', null>
+export type ShoppingCartInitialize = Command<'initialize', null>
 
 export const initialize: CommandDefinition<
   ShoppingCartInitialize,
   ShoppingCartInitialized
 > = {
   handle: data => ({
-    name: 'shopping.cart.initialized',
+    name: 'initialized',
     data: null,
   }),
 }

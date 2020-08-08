@@ -85,11 +85,13 @@ export const createCommandsEndpoint = (
     const event = (await eventStore.getEvent(eventId))!
     console.log('Saved new event:', event)
 
+    const fullyQualifiedEventName = `${contextName}.${aggregateName}.${event.name}`
+
     await Promise.all(
       Object.entries(views).reduce((promises, [viewName, view]) => {
         const projectionEntries = Object.entries(view.projections)
-        for (const [eventName, handler] of projectionEntries) {
-          if (eventName === event.name) {
+        for (const [handlerKey, handler] of projectionEntries) {
+          if (handlerKey === fullyQualifiedEventName) {
             promises.push(
               handler(event)
                 .then(() => {
@@ -114,8 +116,8 @@ export const createCommandsEndpoint = (
     await Promise.all(
       Object.entries(flows).reduce((promises, [flowName, flow]) => {
         const reactionEntries = Object.entries(flow.reactions ?? {})
-        for (const [eventName, handler] of reactionEntries) {
-          if (eventName === event.name) {
+        for (const [handlerKey, handler] of reactionEntries) {
+          if (handlerKey === fullyQualifiedEventName) {
             promises.push(
               handler(flowManager, event)
                 .then(() => {
