@@ -1,3 +1,6 @@
+import firebase from 'firebase/app'
+import 'firebase/auth'
+
 import { DomainDefinition } from '../application/domain-definition'
 
 export type Client<TDomainDefinition extends DomainDefinition> = {
@@ -30,11 +33,13 @@ export const createClient = <
       data,
     }) => {
       const url = `${options.baseUrl}/${String(name)}`
+      const idToken = await firebase.auth().currentUser?.getIdToken()
 
       const res = await window.fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}),
         },
         body: JSON.stringify({
           contextName,
