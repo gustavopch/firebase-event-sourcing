@@ -11,6 +11,7 @@ import { createFlowManager } from '../../services/flow-manager'
 import { createEventStore } from '../../stores/event-store'
 import { createJobStore } from '../../stores/job-store'
 import { validateFirebaseIdToken } from './middlewares/validate-firebase-id-token'
+import { parseLocationFromHeaders } from './utils/parse-location-from-headers'
 
 export const createCommandsEndpoint = (
   firebaseAdminApp: firebaseAdmin.app.App,
@@ -76,12 +77,6 @@ export const createCommandsEndpoint = (
       data: commandData,
     })
 
-    const [latitude, longitude] = (
-      req.header('X-Appengine-CityLatLong') || '0,0'
-    )
-      .split(',')
-      .map(Number)
-
     const eventId = await eventStore.saveEvent({
       contextName,
       aggregateName,
@@ -91,13 +86,7 @@ export const createCommandsEndpoint = (
       userId: req.userId,
       ip: req.ip,
       userAgent: req.header('User-Agent'),
-      location: {
-        city: String(req.header('X-Appengine-City')),
-        region: String(req.header('X-Appengine-Region')),
-        country: String(req.header('X-Appengine-Country')),
-        latitude,
-        longitude,
-      },
+      location: parseLocationFromHeaders(req),
     })
     const event = (await eventStore.getEvent(eventId))!
     console.log('Saved event:', event)
