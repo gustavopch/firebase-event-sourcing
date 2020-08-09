@@ -47,8 +47,16 @@ export const createCommandsEndpoint = (
       data: commandData,
     } = req.body as Command
 
-    const commandDefinition =
-      domain[contextName]?.[aggregateName]?.commands?.[commandName]
+    const aggregateDefinition = domain[contextName]?.[aggregateName]
+
+    if (!aggregateDefinition) {
+      const message = `Aggregate '${contextName}.${aggregateName}' not found`
+      console.log(message)
+      res.status(422).send(message)
+      return
+    }
+
+    const commandDefinition = aggregateDefinition.commands[commandName]
 
     if (!commandDefinition) {
       const message = `Command handler for '${contextName}.${aggregateName}.${commandName}' not found`
