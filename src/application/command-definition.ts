@@ -6,5 +6,6 @@ export type CommandDefinition<
   TCommand extends Command,
   TEvent extends Event
 > = {
+  isAuthorized: (command: TCommand) => boolean | Promise<boolean>
   handle: CommandHandler<TCommand, TEvent>
 }

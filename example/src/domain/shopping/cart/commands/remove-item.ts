@@ -12,6 +12,10 @@ export const removeItem: CommandDefinition<
   ShoppingCartRemoveItem,
   ShoppingCartItemRemoved
 > = {
+  isAuthorized: () => {
+    return true
+  },
+
   handle: command => ({
     name: 'itemRemoved',
     data: {

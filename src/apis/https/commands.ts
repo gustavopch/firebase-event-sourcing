@@ -47,17 +47,32 @@ export const createCommandsEndpoint = (
       data: commandData,
     } = req.body as Command
 
-    const handleCommand =
-      domain[contextName]?.[aggregateName]?.commands?.[commandName]?.handle
+    const commandDefinition =
+      domain[contextName]?.[aggregateName]?.commands?.[commandName]
 
-    if (!handleCommand) {
+    if (!commandDefinition) {
       const message = `Command handler for '${contextName}.${aggregateName}.${commandName}' not found`
       console.log(message)
       res.status(422).send(message)
       return
     }
 
-    const { name: eventName, data: eventData } = handleCommand({
+    const isAuthorized = await commandDefinition.isAuthorized({
+      contextName,
+      aggregateName,
+      aggregateId,
+      name: commandName,
+      data: commandData,
+    })
+
+    if (!isAuthorized) {
+      const message = 'Unauthorized'
+      console.log(message)
+      res.status(403).send(message)
+      return
+    }
+
+    const { name: eventName, data: eventData } = commandDefinition.handle({
       contextName,
       aggregateName,
       aggregateId,

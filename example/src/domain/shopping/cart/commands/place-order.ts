@@ -7,6 +7,10 @@ export const placeOrder: CommandDefinition<
   ShoppingCartPlaceOrder,
   ShoppingCartOrderPlaced
 > = {
+  isAuthorized: () => {
+    return true
+  },
+
   handle: command => ({
     name: 'orderPlaced',
     data: null,
