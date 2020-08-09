@@ -114,6 +114,21 @@ export const createCommandsEndpoint = (
     const event = (await eventStore.getEvent(eventId))!
     console.log('Saved event:', event)
 
+    const eventDefinition = aggregateDefinition.events[event.name]
+
+    if (eventDefinition) {
+      const snapshot = await eventStore.getSnapshot(aggregateId)
+      const revision = snapshot?.revision ?? 0
+
+      const state = await eventDefinition.handle(event)
+
+      await eventStore.saveSnapshot({
+        aggregateId,
+        revision: revision + 1, // TODO: Increment within a transaction
+        state,
+      })
+    }
+
     const fullyQualifiedEventName = `${contextName}.${aggregateName}.${event.name}`
 
     await Promise.all(

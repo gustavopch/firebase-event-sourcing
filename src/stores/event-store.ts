@@ -2,6 +2,7 @@ import firebaseAdmin from 'firebase-admin'
 
 import { Event } from '../elements/event'
 import { Location } from '../elements/location'
+import { State } from '../elements/state'
 
 export const EVENTS = 'events'
 export const SNAPSHOTS = 'snapshots'
@@ -37,9 +38,10 @@ const queryInBatches = async (
 
 export type OnEvent = (event: Event) => void | Promise<void>
 
-export type Snapshot = {
+export type Snapshot<TState extends State = State> = {
   aggregateId: string
   revision: number
+  state: TState
 }
 
 export type EventStore = {

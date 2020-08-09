@@ -261,11 +261,17 @@ describe('Event Store', () => {
     await eventStore.saveSnapshot({
       aggregateId: 'x',
       revision: 7,
+      state: {
+        foo: 'bar',
+      },
     })
 
     expect(await eventStore.getSnapshot('x')).toEqual({
       aggregateId: 'x',
       revision: 7,
+      state: {
+        foo: 'bar',
+      },
     })
   })
 })

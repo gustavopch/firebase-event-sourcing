@@ -1,6 +1,7 @@
 export { createFunctions } from './apis'
 export { AggregateDefinition } from './application/aggregate-definition'
 export { CommandDefinition } from './application/command-definition'
+export { EventDefinition } from './application/event-definition'
 export { FlowDefinition } from './application/flow-definition'
 export { ViewDefinition } from './application/view-definition'
 export { createClient } from './client'
