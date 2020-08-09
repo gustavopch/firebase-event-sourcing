@@ -37,7 +37,7 @@ const queryInBatches = async (
 
 export type OnEvent = (event: Event) => void | Promise<void>
 
-export type AggregateSnapshot = {
+export type Snapshot = {
   aggregateId: string
   revision: number
 }
@@ -80,11 +80,11 @@ export type EventStore = {
 
   importEvents: (events: Event[]) => Promise<void>
 
-  getAggregateSnapshot: (
+  getSnapshot: (
     aggregateId: string | null | undefined,
-  ) => Promise<AggregateSnapshot | null>
+  ) => Promise<Snapshot | null>
 
-  saveAggregateSnapshot: (aggregate: AggregateSnapshot) => Promise<void>
+  saveSnapshot: (snapshot: Snapshot) => Promise<void>
 }
 
 export const createEventStore = (
@@ -191,16 +191,16 @@ export const createEventStore = (
       }
     },
 
-    getAggregateSnapshot: async aggregateId => {
+    getSnapshot: async aggregateId => {
       if (!aggregateId) {
         return null
       }
 
       const docSnap = await snapshotsCollection.doc(aggregateId).get()
-      return (docSnap.data() ?? null) as AggregateSnapshot | null
+      return (docSnap.data() ?? null) as Snapshot | null
     },
 
-    saveAggregateSnapshot: async aggregate => {
+    saveSnapshot: async aggregate => {
       await snapshotsCollection.doc(aggregate.aggregateId).set(aggregate)
     },
   }

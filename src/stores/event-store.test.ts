@@ -119,7 +119,7 @@ const testData = {
       },
     },
   },
-  aggregates: {
+  snapshots: {
     E: {
       aggregateId: 'E',
       revision: 3,
@@ -136,12 +136,12 @@ beforeAll(async () => {
       .set(event)
   }
 
-  for (const aggregate of Object.values(testData.aggregates)) {
+  for (const snapshot of Object.values(testData.snapshots)) {
     await firebaseAdminApp
       .firestore()
       .collection(SNAPSHOTS)
-      .doc(aggregate.aggregateId)
-      .set(aggregate)
+      .doc(snapshot.aggregateId)
+      .set(snapshot)
   }
 })
 
@@ -249,21 +249,21 @@ describe('Event Store', () => {
     }
   })
 
-  test('getAggregateSnapshot', async () => {
-    const aggregate = await eventStore.getAggregateSnapshot(
-      testData.aggregates['E'].aggregateId,
+  test('getSnapshot', async () => {
+    const snapshot = await eventStore.getSnapshot(
+      testData.snapshots['E'].aggregateId,
     )
 
-    expect(aggregate).toEqual(testData.aggregates['E'])
+    expect(snapshot).toEqual(testData.snapshots['E'])
   })
 
-  test('saveAggregateSnapshot', async () => {
-    await eventStore.saveAggregateSnapshot({
+  test('saveSnapshot', async () => {
+    await eventStore.saveSnapshot({
       aggregateId: 'x',
       revision: 7,
     })
 
-    expect(await eventStore.getAggregateSnapshot('x')).toEqual({
+    expect(await eventStore.getSnapshot('x')).toEqual({
       aggregateId: 'x',
       revision: 7,
     })
