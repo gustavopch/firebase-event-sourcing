@@ -57,7 +57,13 @@ export const createCommandsEndpoint = (
       return
     }
 
-    const { name: eventName, data: eventData } = handleCommand(commandData)
+    const { name: eventName, data: eventData } = handleCommand({
+      contextName,
+      aggregateName,
+      aggregateId,
+      name: commandName,
+      data: commandData,
+    })
 
     const [latitude, longitude] = (
       req.header('X-Appengine-CityLatLong') || '0,0'

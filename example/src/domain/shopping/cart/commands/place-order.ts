@@ -7,7 +7,7 @@ export const placeOrder: CommandDefinition<
   ShoppingCartPlaceOrder,
   ShoppingCartOrderPlaced
 > = {
-  handle: data => ({
+  handle: command => ({
     name: 'orderPlaced',
     data: null,
   }),

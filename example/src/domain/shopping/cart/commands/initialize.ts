@@ -7,7 +7,7 @@ export const initialize: CommandDefinition<
   ShoppingCartInitialize,
   ShoppingCartInitialized
 > = {
-  handle: data => ({
+  handle: command => ({
     name: 'initialized',
     data: null,
   }),

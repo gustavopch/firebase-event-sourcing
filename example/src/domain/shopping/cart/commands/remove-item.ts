@@ -12,10 +12,10 @@ export const removeItem: CommandDefinition<
   ShoppingCartRemoveItem,
   ShoppingCartItemRemoved
 > = {
-  handle: data => ({
+  handle: command => ({
     name: 'itemRemoved',
     data: {
-      itemId: data.itemId,
+      itemId: command.data.itemId,
     },
   }),
 }

@@ -12,10 +12,10 @@ export const addItem: CommandDefinition<
   ShoppingCartAddItem,
   ShoppingCartItemAdded
 > = {
-  handle: data => ({
+  handle: command => ({
     name: 'itemAdded',
     data: {
-      title: data.title,
+      title: command.data.title,
     },
   }),
 }
