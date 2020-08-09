@@ -4,7 +4,6 @@ import * as functions from 'firebase-functions'
 import { FlowsDefinition } from '../../application/flows-definition'
 import { createFlowManager } from '../../services/flow-manager'
 import { createEventStore } from '../../stores/event-store'
-import { createJobStore } from '../../stores/job-store'
 
 type CronJobFunctions = {
   [functionName: string]: functions.CloudFunction<any>
@@ -15,8 +14,7 @@ export const createCronJobFirebaseFunctions = (
   flows: FlowsDefinition,
 ): CronJobFunctions => {
   const eventStore = createEventStore(firebaseAdminApp)
-  const jobStore = createJobStore(firebaseAdminApp)
-  const flowManager = createFlowManager(eventStore, jobStore, null)
+  const flowManager = createFlowManager(eventStore, null)
 
   const cronJobFirebaseFunctions: CronJobFunctions = {}
 

@@ -9,7 +9,6 @@ import { ViewsDefinition } from '../../application/views-definition'
 import { Command } from '../../elements/command'
 import { createFlowManager } from '../../services/flow-manager'
 import { createEventStore } from '../../stores/event-store'
-import { createJobStore } from '../../stores/job-store'
 import { validateFirebaseIdToken } from './middlewares/validate-firebase-id-token'
 import { parseLocationFromHeaders } from './utils/parse-location-from-headers'
 
@@ -25,7 +24,6 @@ export const createCommandsEndpoint = (
   app.use(validateFirebaseIdToken(firebaseAdminApp))
 
   const eventStore = createEventStore(firebaseAdminApp)
-  const jobStore = createJobStore(firebaseAdminApp)
 
   app.post('/', async (req, res) => {
     const {
@@ -132,7 +130,7 @@ export const createCommandsEndpoint = (
       }, [] as Array<Promise<void>>),
     )
 
-    const flowManager = createFlowManager(eventStore, jobStore, event)
+    const flowManager = createFlowManager(eventStore, event)
 
     await Promise.all(
       Object.entries(flows).reduce((promises, [flowName, flow]) => {
