@@ -10,7 +10,7 @@ import { Command } from '../../elements/command'
 import { createFlowManager } from '../../services/flow-manager'
 import { createEventStore } from '../../stores/event-store'
 import { createJobStore } from '../../stores/job-store'
-import { parseAuthorization } from './utils/parse-authorization'
+import { validateFirebaseIdToken } from './middlewares/validate-firebase-id-token'
 
 export const createCommandsEndpoint = (
   firebaseAdminApp: firebaseAdmin.app.App,
@@ -21,23 +21,12 @@ export const createCommandsEndpoint = (
   const app = express()
   app.set('trust proxy', true)
   app.use(cors({ origin: true }))
+  app.use(validateFirebaseIdToken(firebaseAdminApp))
 
   const eventStore = createEventStore(firebaseAdminApp)
   const jobStore = createJobStore(firebaseAdminApp)
 
   app.post('/', async (req, res) => {
-    const userId = await parseAuthorization(
-      firebaseAdminApp,
-      req.header('Authorization'),
-    )
-
-    if (!userId) {
-      const message = 'Unauthorized'
-      console.log(message)
-      res.status(403).send(message)
-      return
-    }
-
     const {
       contextName,
       aggregateName,
@@ -99,7 +88,7 @@ export const createCommandsEndpoint = (
       aggregateId,
       name: eventName,
       data: eventData,
-      userId,
+      userId: req.userId,
       ip: req.ip,
       userAgent: req.header('User-Agent'),
       location: {
