@@ -64,10 +64,6 @@ export type EventStore = {
     onNext: OnEvent,
   ) => Promise<void>
 
-  getAggregateSnapshot: (
-    aggregateId: string | null | undefined,
-  ) => Promise<AggregateSnapshot | null>
-
   saveNewEvent: <TEvent extends Event>(eventProps: {
     contextName: TEvent['contextName']
     aggregateName: TEvent['aggregateName']
@@ -82,9 +78,13 @@ export type EventStore = {
     location?: Location
   }) => Promise<string>
 
-  saveAggregateSnapshot: (aggregate: AggregateSnapshot) => Promise<void>
-
   importEvents: (events: Event[]) => Promise<void>
+
+  getAggregateSnapshot: (
+    aggregateId: string | null | undefined,
+  ) => Promise<AggregateSnapshot | null>
+
+  saveAggregateSnapshot: (aggregate: AggregateSnapshot) => Promise<void>
 }
 
 export const createEventStore = (
@@ -146,15 +146,6 @@ export const createEventStore = (
       await queryInBatches(query, onNext)
     },
 
-    getAggregateSnapshot: async aggregateId => {
-      if (!aggregateId) {
-        return null
-      }
-
-      const docSnap = await snapshotsCollection.doc(aggregateId).get()
-      return (docSnap.data() ?? null) as AggregateSnapshot | null
-    },
-
     saveNewEvent: async ({
       contextName,
       aggregateName,
@@ -194,14 +185,23 @@ export const createEventStore = (
       return eventId
     },
 
-    saveAggregateSnapshot: async aggregate => {
-      await snapshotsCollection.doc(aggregate.aggregateId).set(aggregate)
-    },
-
     importEvents: async events => {
       for (const event of events) {
         await eventsCollection.doc(event.id).set(event)
       }
+    },
+
+    getAggregateSnapshot: async aggregateId => {
+      if (!aggregateId) {
+        return null
+      }
+
+      const docSnap = await snapshotsCollection.doc(aggregateId).get()
+      return (docSnap.data() ?? null) as AggregateSnapshot | null
+    },
+
+    saveAggregateSnapshot: async aggregate => {
+      await snapshotsCollection.doc(aggregate.aggregateId).set(aggregate)
     },
   }
 }

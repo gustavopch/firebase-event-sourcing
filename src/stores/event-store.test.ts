@@ -215,14 +215,6 @@ describe('Event Store', () => {
     expect(events).toEqual([testData.events['5.1'], testData.events['5.2']])
   })
 
-  test('getAggregateSnapshot', async () => {
-    const aggregate = await eventStore.getAggregateSnapshot(
-      testData.aggregates['E'].aggregateId,
-    )
-
-    expect(aggregate).toEqual(testData.aggregates['E'])
-  })
-
   test('saveNewEvent', async () => {
     const id = await eventStore.saveNewEvent<ShoppingCartInitialized>({
       contextName: 'some',
@@ -248,6 +240,23 @@ describe('Event Store', () => {
     })
   })
 
+  test('importEvents', async () => {
+    const events = Object.values(testData.events)
+    await eventStore.importEvents(events)
+
+    for (const event of events) {
+      expect(await eventStore.getEvent(event.id)).toEqual(event)
+    }
+  })
+
+  test('getAggregateSnapshot', async () => {
+    const aggregate = await eventStore.getAggregateSnapshot(
+      testData.aggregates['E'].aggregateId,
+    )
+
+    expect(aggregate).toEqual(testData.aggregates['E'])
+  })
+
   test('saveAggregateSnapshot', async () => {
     await eventStore.saveAggregateSnapshot({
       aggregateId: 'x',
@@ -258,14 +267,5 @@ describe('Event Store', () => {
       aggregateId: 'x',
       revision: 7,
     })
-  })
-
-  test('importEvents', async () => {
-    const events = Object.values(testData.events)
-    await eventStore.importEvents(events)
-
-    for (const event of events) {
-      expect(await eventStore.getEvent(event.id)).toEqual(event)
-    }
   })
 })
