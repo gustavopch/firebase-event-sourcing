@@ -13,7 +13,6 @@ execSync(
 const packageJson = {
   main: './functions',
   dependencies: {
-    firebase: '7.17.1',
     'firebase-admin': '9.0.0',
     'firebase-functions': '3.9.0',
   },
