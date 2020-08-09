@@ -1,3 +1,4 @@
+import cors from 'cors'
 import express from 'express'
 import firebaseAdmin from 'firebase-admin'
 import * as functions from 'firebase-functions'
@@ -19,6 +20,7 @@ export const createCommandsEndpoint = (
 ): functions.HttpsFunction => {
   const app = express()
   app.set('trust proxy', true)
+  app.use(cors({ origin: true }))
 
   const eventStore = createEventStore(firebaseAdminApp)
   const jobStore = createJobStore(firebaseAdminApp)
