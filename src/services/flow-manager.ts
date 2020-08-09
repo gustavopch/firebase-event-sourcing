@@ -29,7 +29,7 @@ export const createFlowManager = (
       const event = handler(commandData)
       const [contextName, aggregateName] = event.name.split('.')
 
-      await eventStore.saveNewEvent({
+      await eventStore.saveEvent({
         contextName,
         aggregateName,
         aggregateId,

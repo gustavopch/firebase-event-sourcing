@@ -64,7 +64,7 @@ export type EventStore = {
     onNext: OnEvent,
   ) => Promise<void>
 
-  saveNewEvent: <TEvent extends Event>(eventProps: {
+  saveEvent: <TEvent extends Event>(eventProps: {
     contextName: TEvent['contextName']
     aggregateName: TEvent['aggregateName']
     aggregateId: TEvent['aggregateId']
@@ -146,7 +146,7 @@ export const createEventStore = (
       await queryInBatches(query, onNext)
     },
 
-    saveNewEvent: async ({
+    saveEvent: async ({
       contextName,
       aggregateName,
       aggregateId,

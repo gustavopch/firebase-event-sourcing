@@ -32,7 +32,7 @@ export const createProcessJobsFirebaseFunction = (
 
       const { name, data } = handleCommand(commandData)
 
-      await eventStore.saveNewEvent({
+      await eventStore.saveEvent({
         contextName,
         aggregateName,
         aggregateId,

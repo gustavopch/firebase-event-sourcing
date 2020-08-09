@@ -86,7 +86,7 @@ export const createCommandsEndpoint = (
       .split(',')
       .map(Number)
 
-    const eventId = await eventStore.saveNewEvent({
+    const eventId = await eventStore.saveEvent({
       contextName,
       aggregateName,
       aggregateId,
@@ -104,7 +104,7 @@ export const createCommandsEndpoint = (
       },
     })
     const event = (await eventStore.getEvent(eventId))!
-    console.log('Saved new event:', event)
+    console.log('Saved event:', event)
 
     const fullyQualifiedEventName = `${contextName}.${aggregateName}.${event.name}`
 

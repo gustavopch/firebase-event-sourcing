@@ -215,8 +215,8 @@ describe('Event Store', () => {
     expect(events).toEqual([testData.events['5.1'], testData.events['5.2']])
   })
 
-  test('saveNewEvent', async () => {
-    const id = await eventStore.saveNewEvent<ShoppingCartInitialized>({
+  test('saveEvent', async () => {
+    const id = await eventStore.saveEvent<ShoppingCartInitialized>({
       contextName: 'some',
       aggregateName: 'name',
       aggregateId: 'x',
