@@ -1,3 +1,4 @@
+import express from 'express'
 import firebaseAdmin from 'firebase-admin'
 import * as functions from 'firebase-functions'
 
@@ -16,17 +17,13 @@ export const createCommandsEndpoint = (
   flows: FlowsDefinition,
   views: ViewsDefinition,
 ): functions.HttpsFunction => {
+  const app = express()
+  app.set('trust proxy', true)
+
   const eventStore = createEventStore(firebaseAdminApp)
   const jobStore = createJobStore(firebaseAdminApp)
 
-  return functions.https.onRequest(async (req, res) => {
-    if (!/^POST$/i.test(req.method)) {
-      const message = `Method '${req.method}' not allowed`
-      console.log(message)
-      res.status(405).send(message)
-      return
-    }
-
+  app.post('/', async (req, res) => {
     const userId = await parseAuthorization(
       firebaseAdminApp,
       req.header('Authorization'),
@@ -184,4 +181,6 @@ export const createCommandsEndpoint = (
     res.status(201).send({ eventId: event.id })
     return
   })
+
+  return functions.https.onRequest(app)
 }

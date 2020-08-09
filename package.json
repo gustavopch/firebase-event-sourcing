@@ -25,6 +25,9 @@
     "type-check": "tsc --noEmit",
     "test": "./scripts/test.js"
   },
+  "dependencies": {
+    "express": "^4.17.1"
+  },
   "devDependencies": {
     "@commitlint/cli": "9.1.1",
     "@commitlint/config-conventional": "9.1.1",

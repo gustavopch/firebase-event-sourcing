@@ -31,17 +31,6 @@ const projectName = process.env.GCLOUD_PROJECT!
 const endpoint = `http://localhost:5001/${projectName}/us-central1/commands`
 
 describe('/commands endpoint', () => {
-  it.each(['DELETE', 'GET', 'HEAD', 'PATCH', 'PUT'])(
-    'rejects method %s',
-    async method => {
-      const res = await fetch(endpoint, {
-        method,
-      })
-
-      expect(res.status).toBe(405)
-    },
-  )
-
   it.each([
     ['context', 'xxxxxxxx', 'cart', 'initialize'],
     ['aggregate', 'shopping', 'xxxx', 'initialize'],
