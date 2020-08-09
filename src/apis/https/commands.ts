@@ -7,7 +7,8 @@ import { DomainDefinition } from '../../application/domain-definition'
 import { FlowsDefinition } from '../../application/flows-definition'
 import { ViewsDefinition } from '../../application/views-definition'
 import { Command } from '../../elements/command'
-import { createFlowManager } from '../../services/flow-manager'
+import { runProjections } from '../../logic/run-projections'
+import { runReactions } from '../../logic/run-reactions'
 import { createEventStore } from '../../stores/event-store'
 import { validateFirebaseIdToken } from './middlewares/validate-firebase-id-token'
 import { parseLocationFromHeaders } from './utils/parse-location-from-headers'
@@ -104,57 +105,9 @@ export const createCommandsEndpoint = (
       })
     }
 
-    const fullyQualifiedEventName = `${contextName}.${aggregateName}.${event.name}`
+    await runProjections(views, event)
 
-    await Promise.all(
-      Object.entries(views).reduce((promises, [viewName, view]) => {
-        const projectionEntries = Object.entries(view.projections)
-        for (const [handlerKey, handler] of projectionEntries) {
-          if (handlerKey === fullyQualifiedEventName) {
-            promises.push(
-              handler(event)
-                .then(() => {
-                  console.log(`Ran projection in '${viewName}'`)
-                })
-                .catch(error => {
-                  console.error(
-                    `Failed to run projection in '${viewName}'`,
-                    error,
-                  )
-                }),
-            )
-          }
-        }
-
-        return promises
-      }, [] as Array<Promise<void>>),
-    )
-
-    const flowManager = createFlowManager(eventStore, event)
-
-    await Promise.all(
-      Object.entries(flows).reduce((promises, [flowName, flow]) => {
-        const reactionEntries = Object.entries(flow.reactions ?? {})
-        for (const [handlerKey, handler] of reactionEntries) {
-          if (handlerKey === fullyQualifiedEventName) {
-            promises.push(
-              handler(flowManager, event)
-                .then(() => {
-                  console.log(`Ran reaction in '${flowName}'`)
-                })
-                .catch(error => {
-                  console.error(
-                    `Failed to run reaction in '${flowName}'`,
-                    error,
-                  )
-                }),
-            )
-          }
-        }
-
-        return promises
-      }, [] as Array<Promise<void>>),
-    )
+    await runReactions(eventStore, flows, event)
 
     res.status(201).send({ eventId: event.id })
     return
