@@ -1,34 +1,27 @@
+import { ApplicationDefinition } from '../application/application-definition'
 import { Command } from '../elements/command'
-import { CommandHandler } from '../elements/command-handler'
 import { Event } from '../elements/event'
+import { processCommand } from '../logic/process-command'
 import { EventStore } from '../stores/event-store'
 
 export type FlowManager = {
-  runCommand: <TCommandHandler extends CommandHandler<Command, Event>>(
-    handler: TCommandHandler,
-    aggregateId: string,
-    commandData: Parameters<TCommandHandler>[0],
-  ) => Promise<void>
+  runCommand: <TCommand extends Command>(command: TCommand) => Promise<void>
 }
 
 export const createFlowManager = (
   eventStore: EventStore,
+  application: ApplicationDefinition,
   causationEvent: Event | null,
 ): FlowManager => {
   return {
-    runCommand: async (handler, aggregateId, commandData) => {
-      const event = handler(commandData)
-      const [contextName, aggregateName] = event.name.split('.')
-
-      await eventStore.saveEvent({
-        contextName,
-        aggregateName,
-        aggregateId,
-        name: event.name,
-        data: event.data,
-        causationId: causationEvent?.id ?? null,
-        correlationId: causationEvent?.metadata.correlationId ?? null,
-        client: null,
+    runCommand: async command => {
+      await processCommand(eventStore, application, {
+        ...command,
+        metadata: {
+          causationId: causationEvent?.id ?? null,
+          correlationId: causationEvent?.metadata.correlationId ?? null,
+          client: null,
+        },
       })
     },
   }

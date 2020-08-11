@@ -8,7 +8,7 @@ export const runReactions = async (
   application: ApplicationDefinition,
   event: Event,
 ): Promise<void> => {
-  const flowManager = createFlowManager(eventStore, event)
+  const flowManager = createFlowManager(eventStore, application, event)
 
   const fullyQualifiedEventName = `${event.contextName}.${event.aggregateName}.${event.name}`
 

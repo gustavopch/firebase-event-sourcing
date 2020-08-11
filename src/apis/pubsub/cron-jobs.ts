@@ -14,7 +14,7 @@ export const createCronJobFirebaseFunctions = (
   application: ApplicationDefinition,
 ): CronJobFunctions => {
   const eventStore = createEventStore(firebaseAdminApp)
-  const flowManager = createFlowManager(eventStore, null)
+  const flowManager = createFlowManager(eventStore, application, null)
 
   const cronJobFirebaseFunctions: CronJobFunctions = {}
 
