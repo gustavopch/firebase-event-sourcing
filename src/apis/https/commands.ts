@@ -4,7 +4,7 @@ import firebaseAdmin from 'firebase-admin'
 import * as functions from 'firebase-functions'
 
 import { ApplicationDefinition } from '../../application/application-definition'
-import { Command } from '../../elements/command'
+import { CommandWithMetadata } from '../../elements/command-with-metadata'
 import { processCommand } from '../../logic/process-command'
 import { createEventStore } from '../../stores/event-store'
 import { validateFirebaseIdToken } from './middlewares/validate-firebase-id-token'
@@ -22,20 +22,25 @@ export const createCommandsEndpoint = (
   const eventStore = createEventStore(firebaseAdminApp)
 
   app.post('/', async (req, res) => {
-    const command: Command = {
+    const command: CommandWithMetadata = {
       contextName: req.body.contextName,
       aggregateName: req.body.aggregateName,
       aggregateId: req.body.aggregateId,
       name: req.body.name,
       data: req.body.data,
+      metadata: {
+        causationId: null,
+        correlationId: null,
+        client: {
+          userId: req.userId || null,
+          ip: req.ip || null,
+          userAgent: req.header('User-Agent') || null,
+          location: parseLocationFromHeaders(req),
+        },
+      },
     }
 
-    const result = await processCommand(eventStore, application, command, {
-      userId: req.userId || null,
-      ip: req.ip || null,
-      userAgent: req.header('User-Agent') || null,
-      location: parseLocationFromHeaders(req),
-    })
+    const result = await processCommand(eventStore, application, command)
 
     if (!result.ok && result.reason === 'aggregate-not-found') {
       const message = `Aggregate '${command.contextName}.${command.aggregateName}' not found`
