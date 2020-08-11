@@ -31,9 +31,9 @@ export const createCommandsEndpoint = (
     }
 
     const result = await processCommand(eventStore, application, command, {
-      userId: req.userId,
-      ip: req.ip,
-      userAgent: req.header('User-Agent'),
+      userId: req.userId || null,
+      ip: req.ip || null,
+      userAgent: req.header('User-Agent') || null,
       location: parseLocationFromHeaders(req),
     })
 

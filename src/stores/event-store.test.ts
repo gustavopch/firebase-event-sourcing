@@ -33,7 +33,12 @@ const testData: {
         correlationId: '1',
         timestamp: new Date('2020-07-01').getTime(),
         revision: 1,
-        userId: 'john',
+        client: {
+          userId: 'john',
+          ip: null,
+          userAgent: null,
+          location: null,
+        },
       },
     },
     '2': {
@@ -48,6 +53,7 @@ const testData: {
         correlationId: '2',
         timestamp: new Date('2020-07-02').getTime(),
         revision: 1,
+        client: null,
       },
     },
     '3': {
@@ -62,7 +68,12 @@ const testData: {
         correlationId: '3',
         timestamp: new Date('2020-07-03').getTime(),
         revision: 1,
-        userId: 'john',
+        client: {
+          userId: 'john',
+          ip: null,
+          userAgent: null,
+          location: null,
+        },
       },
     },
     '4': {
@@ -77,6 +88,7 @@ const testData: {
         correlationId: '4',
         timestamp: new Date('2020-07-04').getTime(),
         revision: 1,
+        client: null,
       },
     },
     '5': {
@@ -91,6 +103,7 @@ const testData: {
         correlationId: '5',
         timestamp: new Date('2020-07-05').getTime(),
         revision: 1,
+        client: null,
       },
     },
     '5.1': {
@@ -105,6 +118,7 @@ const testData: {
         correlationId: '5',
         timestamp: new Date('2020-07-05').getTime(),
         revision: 2,
+        client: null,
       },
     },
     '5.2': {
@@ -119,6 +133,7 @@ const testData: {
         correlationId: '5',
         timestamp: new Date('2020-07-05').getTime(),
         revision: 3,
+        client: null,
       },
     },
   },
@@ -240,6 +255,7 @@ describe('Event Store', () => {
         correlationId: id,
         timestamp: expect.any(Number),
         revision: 1,
+        client: null,
       },
     })
   })

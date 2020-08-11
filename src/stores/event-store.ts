@@ -1,7 +1,7 @@
 import firebaseAdmin from 'firebase-admin'
 
+import { ClientInfo } from '../elements/client-info'
 import { Event } from '../elements/event'
-import { Location } from '../elements/location'
 import { State } from '../elements/state'
 
 export const EVENTS = 'events'
@@ -74,10 +74,7 @@ export type EventStore = {
     data: TEvent['data']
     causationId?: string
     correlationId?: string
-    userId?: string
-    ip?: string
-    userAgent?: string
-    location?: Location
+    client?: ClientInfo
   }) => Promise<string>
 
   importEvents: (events: Event[]) => Promise<void>
@@ -127,7 +124,11 @@ export const createEventStore = (
     },
 
     getEventsByUserId: async (userId, onNext) => {
-      const query = eventsCollection.where('metadata.userId', '==', userId)
+      const query = eventsCollection.where(
+        'metadata.client.userId',
+        '==',
+        userId,
+      )
 
       await queryInBatches(query, onNext)
     },
@@ -156,10 +157,7 @@ export const createEventStore = (
       data,
       causationId,
       correlationId,
-      userId,
-      ip,
-      userAgent,
-      location,
+      client,
     }) => {
       const eventId = generateId()
 
@@ -175,10 +173,7 @@ export const createEventStore = (
           correlationId: correlationId ?? eventId,
           timestamp: Date.now(),
           revision: firebaseAdmin.firestore.FieldValue.increment(1) as any,
-          userId,
-          ip,
-          userAgent,
-          location,
+          client: client ?? null,
         },
       }
 

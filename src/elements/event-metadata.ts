@@ -1,12 +1,9 @@
-import { Location } from './location'
+import { ClientInfo } from './client-info'
 
 export type EventMetadata = {
   causationId: string
   correlationId: string
   timestamp: number
   revision: number
-  userId?: string
-  ip?: string
-  userAgent?: string
-  location?: Location
+  client: ClientInfo | null
 }

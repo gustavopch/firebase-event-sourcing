@@ -1,6 +1,6 @@
 import { ApplicationDefinition } from '../application/application-definition'
+import { ClientInfo } from '../elements/client-info'
 import { Command } from '../elements/command'
-import { Location } from '../elements/location'
 import { EventStore } from '../stores/event-store'
 import { runProjections } from './run-projections'
 import { runReactions } from './run-reactions'
@@ -9,12 +9,7 @@ export const processCommand = async (
   eventStore: EventStore,
   application: ApplicationDefinition,
   command: Command,
-  metadata: {
-    userId?: string
-    ip: string
-    userAgent?: string
-    location: Location
-  },
+  client?: ClientInfo,
 ): Promise<
   | { ok: false; reason: 'aggregate-not-found' }
   | { ok: false; reason: 'command-handler-not-found' }
@@ -57,10 +52,7 @@ export const processCommand = async (
     aggregateId: command.aggregateId,
     name: eventName,
     data: eventData,
-    userId: metadata.userId,
-    ip: metadata.ip,
-    userAgent: metadata.userAgent,
-    location: metadata.location,
+    client,
   })
   const event = (await eventStore.getEvent(eventId))!
   console.log('Saved event:', event)
