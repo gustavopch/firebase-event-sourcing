@@ -4,7 +4,7 @@ import firebaseAdmin from 'firebase-admin'
 import { config } from '../../example/src/config'
 import { ShoppingCartInitialized } from '../../example/src/domain/shopping/cart/events/initialized'
 import { Event } from '../elements/event'
-import { EVENTS, SNAPSHOTS, createEventStore } from './event-store'
+import { EVENTS, SNAPSHOTS, Snapshot, createEventStore } from './event-store'
 
 const firebaseAdminApp = firebaseAdmin.initializeApp({
   projectId: config.firebase.projectId,
@@ -16,7 +16,10 @@ firebaseAdminApp.firestore().settings({
 
 const eventStore = createEventStore(firebaseAdminApp)
 
-const testData = {
+const testData: {
+  events: { [id: string]: Event }
+  snapshots: { [id: string]: Snapshot }
+} = {
   events: {
     '1': {
       contextName: 'shopping',
@@ -123,6 +126,7 @@ const testData = {
     E: {
       aggregateId: 'E',
       revision: 3,
+      state: {},
     },
   },
 }
