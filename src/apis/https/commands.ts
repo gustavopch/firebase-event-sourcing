@@ -34,7 +34,7 @@ export const createCommandsEndpoint = (
         client: {
           userId: req.userId || null,
           ip: req.ip || null,
-          userAgent: req.header('User-Agent') || null,
+          ua: req.header('User-Agent') || null,
           location: parseLocationFromHeaders(req),
         },
       },

@@ -116,7 +116,7 @@ describe('/commands endpoint', () => {
           client: {
             userId: 'test',
             ip: '127.0.0.1',
-            userAgent: expect.any(String),
+            ua: expect.any(String),
             location: null,
           },
         },

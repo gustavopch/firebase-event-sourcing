@@ -36,7 +36,7 @@ const testData: {
         client: {
           userId: 'john',
           ip: null,
-          userAgent: null,
+          ua: null,
           location: null,
         },
       },
@@ -71,7 +71,7 @@ const testData: {
         client: {
           userId: 'john',
           ip: null,
-          userAgent: null,
+          ua: null,
           location: null,
         },
       },
