@@ -1,29 +1,29 @@
 import firebase from 'firebase/app'
 import 'firebase/auth'
 
-import { DomainDefinition } from '../application/domain-definition'
+import { ApplicationDefinition } from '../application/application-definition'
 
-export type Client<TDomainDefinition extends DomainDefinition> = {
+export type Client<TApplicationDefinition extends ApplicationDefinition> = {
   sendCommand: <
-    TContextName extends keyof TDomainDefinition,
-    TAggregateName extends keyof TDomainDefinition[TContextName],
-    TCommandName extends keyof TDomainDefinition[TContextName][TAggregateName]['commands']
+    TContextName extends keyof TApplicationDefinition['domain'],
+    TAggregateName extends keyof TApplicationDefinition['domain'][TContextName],
+    TCommandName extends keyof TApplicationDefinition['domain'][TContextName][TAggregateName]['commands']
   >(params: {
     contextName: TContextName
     aggregateName: TAggregateName
     aggregateId: string
     name: TCommandName
     data: Parameters<
-      TDomainDefinition[TContextName][TAggregateName]['commands'][TCommandName]
+      TApplicationDefinition['domain'][TContextName][TAggregateName]['commands'][TCommandName]
     >[0]
   }) => Promise<{ eventId: string }>
 }
 
 export const createClient = <
-  TDomainDefinition extends DomainDefinition
+  TApplicationDefinition extends ApplicationDefinition
 >(options: {
   baseUrl: string
-}): Client<TDomainDefinition> => {
+}): Client<TApplicationDefinition> => {
   return {
     sendCommand: async ({
       contextName,

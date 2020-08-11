@@ -1,7 +1,7 @@
 import firebaseAdmin from 'firebase-admin'
 import * as functions from 'firebase-functions'
 
-import { FlowsDefinition } from '../../application/flows-definition'
+import { ApplicationDefinition } from '../../application/application-definition'
 import { createFlowManager } from '../../services/flow-manager'
 import { createEventStore } from '../../stores/event-store'
 
@@ -11,14 +11,14 @@ type CronJobFunctions = {
 
 export const createCronJobFirebaseFunctions = (
   firebaseAdminApp: firebaseAdmin.app.App,
-  flows: FlowsDefinition,
+  application: ApplicationDefinition,
 ): CronJobFunctions => {
   const eventStore = createEventStore(firebaseAdminApp)
   const flowManager = createFlowManager(eventStore, null)
 
   const cronJobFirebaseFunctions: CronJobFunctions = {}
 
-  for (const [flowName, flow] of Object.entries(flows)) {
+  for (const [flowName, flow] of Object.entries(application.flows)) {
     const [firstEntry, ...ignoredEntries] = Object.entries(flow.cron ?? {})
 
     if (!firstEntry) {

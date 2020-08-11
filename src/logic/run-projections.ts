@@ -1,15 +1,15 @@
-import { ViewsDefinition } from '../application/views-definition'
+import { ApplicationDefinition } from '../application/application-definition'
 import { Event } from '../elements/event'
 
 export const runProjections = async (
-  views: ViewsDefinition,
+  application: ApplicationDefinition,
   event: Event,
 ): Promise<void> => {
   const fullyQualifiedEventName = `${event.contextName}.${event.aggregateName}.${event.name}`
 
   const promises: Array<Promise<void>> = []
 
-  for (const [viewName, view] of Object.entries(views)) {
+  for (const [viewName, view] of Object.entries(application.views)) {
     for (const [handlerKey, handler] of Object.entries(view.projections)) {
       if (handlerKey === fullyQualifiedEventName) {
         const promise = handler(event)

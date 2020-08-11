@@ -10,18 +10,10 @@ export const createFunctions = <
   firebaseAdminApp: firebaseAdmin.app.App,
   application: TApplicationDefinition,
 ) => {
-  const cronJobs = createCronJobFirebaseFunctions(
-    firebaseAdminApp,
-    application.flows,
-  )
+  const cronJobs = createCronJobFirebaseFunctions(firebaseAdminApp, application)
 
   return {
-    commands: createCommandsEndpoint(
-      firebaseAdminApp,
-      application.domain,
-      application.flows,
-      application.views,
-    ),
+    commands: createCommandsEndpoint(firebaseAdminApp, application),
     ...cronJobs,
   }
 }

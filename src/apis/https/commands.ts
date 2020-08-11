@@ -3,9 +3,7 @@ import express from 'express'
 import firebaseAdmin from 'firebase-admin'
 import * as functions from 'firebase-functions'
 
-import { DomainDefinition } from '../../application/domain-definition'
-import { FlowsDefinition } from '../../application/flows-definition'
-import { ViewsDefinition } from '../../application/views-definition'
+import { ApplicationDefinition } from '../../application/application-definition'
 import { Command } from '../../elements/command'
 import { runProjections } from '../../logic/run-projections'
 import { runReactions } from '../../logic/run-reactions'
@@ -15,9 +13,7 @@ import { parseLocationFromHeaders } from './utils/parse-location-from-headers'
 
 export const createCommandsEndpoint = (
   firebaseAdminApp: firebaseAdmin.app.App,
-  domain: DomainDefinition,
-  flows: FlowsDefinition,
-  views: ViewsDefinition,
+  application: ApplicationDefinition,
 ): functions.HttpsFunction => {
   const app = express()
   app.set('trust proxy', true)
@@ -35,7 +31,7 @@ export const createCommandsEndpoint = (
       data: commandData,
     } = req.body as Command
 
-    const aggregateDefinition = domain[contextName]?.[aggregateName]
+    const aggregateDefinition = application.domain[contextName]?.[aggregateName]
 
     if (!aggregateDefinition) {
       const message = `Aggregate '${contextName}.${aggregateName}' not found`
@@ -105,9 +101,9 @@ export const createCommandsEndpoint = (
       })
     }
 
-    await runProjections(views, event)
+    await runProjections(application, event)
 
-    await runReactions(eventStore, flows, event)
+    await runReactions(eventStore, application, event)
 
     res.status(201).send({ eventId: event.id })
     return
