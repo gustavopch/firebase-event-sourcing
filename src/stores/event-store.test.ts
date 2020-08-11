@@ -241,6 +241,9 @@ describe('Event Store', () => {
       aggregateId: 'x',
       name: 'initialized',
       data: null,
+      causationId: null,
+      correlationId: null,
+      client: null,
     })
 
     expect(await eventStore.getEvent(id)).toEqual({

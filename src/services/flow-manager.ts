@@ -26,8 +26,9 @@ export const createFlowManager = (
         aggregateId,
         name: event.name,
         data: event.data,
-        causationId: causationEvent?.id,
-        correlationId: causationEvent?.metadata.correlationId,
+        causationId: causationEvent?.id ?? null,
+        correlationId: causationEvent?.metadata.correlationId ?? null,
+        client: null,
       })
     },
   }

@@ -72,9 +72,9 @@ export type EventStore = {
     aggregateId: TEvent['aggregateId']
     name: TEvent['name']
     data: TEvent['data']
-    causationId?: string
-    correlationId?: string
-    client?: ClientInfo
+    causationId: string | null
+    correlationId: string | null
+    client: ClientInfo | null
   }) => Promise<string>
 
   importEvents: (events: Event[]) => Promise<void>
@@ -173,7 +173,7 @@ export const createEventStore = (
           correlationId: correlationId ?? eventId,
           timestamp: Date.now(),
           revision: firebaseAdmin.firestore.FieldValue.increment(1) as any,
-          client: client ?? null,
+          client,
         },
       }
 

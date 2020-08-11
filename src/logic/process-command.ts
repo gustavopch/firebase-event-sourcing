@@ -52,7 +52,9 @@ export const processCommand = async (
     aggregateId: command.aggregateId,
     name: eventName,
     data: eventData,
-    client,
+    causationId: null,
+    correlationId: null,
+    client: client ?? null,
   })
   const event = (await eventStore.getEvent(eventId))!
   console.log('Saved event:', event)
