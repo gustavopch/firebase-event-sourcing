@@ -44,33 +44,24 @@ export const processCommand = async (
 
   const { name: eventName, data: eventData } = commandDefinition.handle(command)
 
-  const eventId = await eventStore.saveEvent({
-    contextName: command.contextName,
-    aggregateName: command.aggregateName,
-    aggregateId: command.aggregateId,
-    name: eventName,
-    data: eventData,
-    causationId: command.metadata.causationId,
-    correlationId: command.metadata.correlationId,
-    client: command.metadata.client,
-  })
+  const eventId = await eventStore.saveEvent(
+    {
+      contextName: command.contextName,
+      aggregateName: command.aggregateName,
+      aggregateId: command.aggregateId,
+      name: eventName,
+      data: eventData,
+      causationId: command.metadata.causationId,
+      correlationId: command.metadata.correlationId,
+      client: command.metadata.client,
+    },
+    event => {
+      const eventDefinition = aggregateDefinition.events?.[event.name]
+      return eventDefinition?.handle?.(event) ?? {}
+    },
+  )
   const event = (await eventStore.getEvent(eventId))!
   console.log('Saved event:', event)
-
-  const eventDefinition = aggregateDefinition.events[event.name]
-
-  if (eventDefinition) {
-    const snapshot = await eventStore.getSnapshot(command.aggregateId)
-    const revision = snapshot?.revision ?? 0
-
-    const state = await eventDefinition.handle(event)
-
-    await eventStore.saveSnapshot({
-      aggregateId: command.aggregateId,
-      revision: revision + 1, // TODO: Increment within a transaction
-      state,
-    })
-  }
 
   await runProjections(application, event)
 

@@ -66,16 +66,19 @@ export type EventStore = {
     onNext: OnEvent,
   ) => Promise<void>
 
-  saveEvent: <TEvent extends Event>(eventProps: {
-    contextName: TEvent['contextName']
-    aggregateName: TEvent['aggregateName']
-    aggregateId: TEvent['aggregateId']
-    name: TEvent['name']
-    data: TEvent['data']
-    causationId: string | null
-    correlationId: string | null
-    client: ClientInfo | null
-  }) => Promise<string>
+  saveEvent: <TEvent extends Event, TState extends State>(
+    eventProps: {
+      contextName: TEvent['contextName']
+      aggregateName: TEvent['aggregateName']
+      aggregateId: TEvent['aggregateId']
+      name: TEvent['name']
+      data: TEvent['data']
+      causationId: string | null
+      correlationId: string | null
+      client: ClientInfo | null
+    },
+    getSnapshotState: (event: Event) => TState,
+  ) => Promise<string>
 
   importEvents: (events: Event[]) => Promise<void>
 
@@ -149,35 +152,67 @@ export const createEventStore = (
       await queryInBatches(query, onNext)
     },
 
-    saveEvent: async ({
-      contextName,
-      aggregateName,
-      aggregateId,
-      name,
-      data,
-      causationId,
-      correlationId,
-      client,
-    }) => {
-      const eventId = generateId()
-
-      const event: Event = {
+    saveEvent: async (
+      {
         contextName,
         aggregateName,
         aggregateId,
-        id: eventId,
         name,
         data,
-        metadata: {
-          causationId: causationId ?? eventId,
-          correlationId: correlationId ?? eventId,
-          timestamp: Date.now(),
-          revision: firebaseAdmin.firestore.FieldValue.increment(1) as any,
-          client,
-        },
-      }
+        causationId,
+        correlationId,
+        client,
+      },
+      getSnapshotState,
+    ) => {
+      const eventId = generateId()
 
-      await eventsCollection.doc(eventId).set(event)
+      const snapshotRef = snapshotsCollection.doc(aggregateId)
+      const eventRef = eventsCollection.doc(eventId)
+
+      await db.runTransaction(async transaction => {
+        const oldSnapshot = await transaction.get(snapshotRef).then(docSnap => {
+          const existingSnapshot = docSnap.data() as Snapshot | undefined
+
+          if (existingSnapshot) {
+            return existingSnapshot
+          }
+
+          return {
+            aggregateId,
+            revision: 0,
+            state: {},
+          }
+        })
+
+        const newRevision = oldSnapshot.revision + 1
+
+        const event: Event = {
+          contextName,
+          aggregateName,
+          aggregateId,
+          id: eventId,
+          name,
+          data,
+          metadata: {
+            causationId: causationId ?? eventId,
+            correlationId: correlationId ?? eventId,
+            timestamp: Date.now(),
+            revision: newRevision,
+            client,
+          },
+        }
+
+        transaction.set(eventRef, event)
+
+        const newSnapshot: Snapshot = {
+          aggregateId,
+          revision: newRevision,
+          state: getSnapshotState(event),
+        }
+
+        transaction.set(snapshotRef, newSnapshot)
+      })
 
       return eventId
     },

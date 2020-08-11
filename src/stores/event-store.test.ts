@@ -3,6 +3,7 @@ import firebaseAdmin from 'firebase-admin'
 
 import { config } from '../../example/src/config'
 import { ShoppingCartInitialized } from '../../example/src/domain/shopping/cart/events/initialized'
+import { State } from '../../example/src/domain/shopping/cart/state'
 import { Event } from '../elements/event'
 import { EVENTS, SNAPSHOTS, Snapshot, createEventStore } from './event-store'
 
@@ -235,16 +236,21 @@ describe('Event Store', () => {
   })
 
   test('saveEvent', async () => {
-    const id = await eventStore.saveEvent<ShoppingCartInitialized>({
-      contextName: 'some',
-      aggregateName: 'name',
-      aggregateId: 'x',
-      name: 'initialized',
-      data: null,
-      causationId: null,
-      correlationId: null,
-      client: null,
-    })
+    const id = await eventStore.saveEvent<ShoppingCartInitialized, State>(
+      {
+        contextName: 'some',
+        aggregateName: 'name',
+        aggregateId: 'x',
+        name: 'initialized',
+        data: null,
+        causationId: null,
+        correlationId: null,
+        client: null,
+      },
+      event => ({
+        isPlaced: false,
+      }),
+    )
 
     expect(await eventStore.getEvent(id)).toEqual({
       contextName: 'some',
