@@ -5,8 +5,7 @@ import * as functions from 'firebase-functions'
 
 import { ApplicationDefinition } from '../../application/application-definition'
 import { Command } from '../../elements/command'
-import { runProjections } from '../../logic/run-projections'
-import { runReactions } from '../../logic/run-reactions'
+import { processCommand } from '../../logic/process-command'
 import { createEventStore } from '../../stores/event-store'
 import { validateFirebaseIdToken } from './middlewares/validate-firebase-id-token'
 import { parseLocationFromHeaders } from './utils/parse-location-from-headers'
@@ -23,89 +22,43 @@ export const createCommandsEndpoint = (
   const eventStore = createEventStore(firebaseAdminApp)
 
   app.post('/', async (req, res) => {
-    const {
-      contextName,
-      aggregateName,
-      aggregateId,
-      name: commandName,
-      data: commandData,
-    } = req.body as Command
-
-    const aggregateDefinition = application.domain[contextName]?.[aggregateName]
-
-    if (!aggregateDefinition) {
-      const message = `Aggregate '${contextName}.${aggregateName}' not found`
-      console.log(message)
-      res.status(422).send(message)
-      return
+    const command: Command = {
+      contextName: req.body.contextName,
+      aggregateName: req.body.aggregateName,
+      aggregateId: req.body.aggregateId,
+      name: req.body.name,
+      data: req.body.data,
     }
 
-    const commandDefinition = aggregateDefinition.commands[commandName]
-
-    if (!commandDefinition) {
-      const message = `Command handler for '${contextName}.${aggregateName}.${commandName}' not found`
-      console.log(message)
-      res.status(422).send(message)
-      return
-    }
-
-    const isAuthorized = await commandDefinition.isAuthorized({
-      contextName,
-      aggregateName,
-      aggregateId,
-      name: commandName,
-      data: commandData,
+    const result = await processCommand(eventStore, application, command, {
+      userId: req.userId,
+      ip: req.ip,
+      userAgent: req.header('User-Agent'),
+      location: parseLocationFromHeaders(req),
     })
 
-    if (!isAuthorized) {
+    if (!result.ok && result.reason === 'aggregate-not-found') {
+      const message = `Aggregate '${command.contextName}.${command.aggregateName}' not found`
+      console.log(message)
+      res.status(422).send(message)
+      return
+    }
+
+    if (!result.ok && result.reason === 'command-handler-not-found') {
+      const message = `Command handler for '${command.contextName}.${command.aggregateName}.${command.name}' not found`
+      console.log(message)
+      res.status(422).send(message)
+      return
+    }
+
+    if (!result.ok && result.reason === 'unauthorized') {
       const message = 'Unauthorized'
       console.log(message)
       res.status(403).send(message)
       return
     }
 
-    const { name: eventName, data: eventData } = commandDefinition.handle({
-      contextName,
-      aggregateName,
-      aggregateId,
-      name: commandName,
-      data: commandData,
-    })
-
-    const eventId = await eventStore.saveEvent({
-      contextName,
-      aggregateName,
-      aggregateId,
-      name: eventName,
-      data: eventData,
-      userId: req.userId,
-      ip: req.ip,
-      userAgent: req.header('User-Agent'),
-      location: parseLocationFromHeaders(req),
-    })
-    const event = (await eventStore.getEvent(eventId))!
-    console.log('Saved event:', event)
-
-    const eventDefinition = aggregateDefinition.events[event.name]
-
-    if (eventDefinition) {
-      const snapshot = await eventStore.getSnapshot(aggregateId)
-      const revision = snapshot?.revision ?? 0
-
-      const state = await eventDefinition.handle(event)
-
-      await eventStore.saveSnapshot({
-        aggregateId,
-        revision: revision + 1, // TODO: Increment within a transaction
-        state,
-      })
-    }
-
-    await runProjections(application, event)
-
-    await runReactions(eventStore, application, event)
-
-    res.status(201).send({ eventId: event.id })
+    res.status(201).send({ eventId: result.eventId })
     return
   })
 
