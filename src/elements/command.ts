@@ -1,12 +1,21 @@
 import { CommandData } from './command-data'
 
 export type Command<
-  TCommandName extends string = string,
-  TCommandData extends CommandData = CommandData
+  TProps extends {
+    contextName: string
+    aggregateName: string
+    name: string
+    data: CommandData
+  } = {
+    contextName: string
+    aggregateName: string
+    name: string
+    data: CommandData
+  }
 > = {
-  contextName: string
-  aggregateName: string
+  contextName: TProps['contextName']
+  aggregateName: TProps['aggregateName']
   aggregateId: string
-  name: TCommandName
-  data: TCommandData
+  name: TProps['name']
+  data: TProps['data']
 }

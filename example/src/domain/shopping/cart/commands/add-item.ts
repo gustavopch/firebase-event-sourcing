@@ -1,12 +1,14 @@
 import { Command, CommandDefinition } from '../../../../../../src'
 import { ShoppingCartItemAdded } from '../events/item-added'
 
-export type ShoppingCartAddItem = Command<
-  'addItem',
-  {
+export type ShoppingCartAddItem = Command<{
+  contextName: 'shopping'
+  aggregateName: 'cart'
+  name: 'addItem'
+  data: {
     title: string
   }
->
+}>
 
 export const addItem: CommandDefinition<
   ShoppingCartAddItem,

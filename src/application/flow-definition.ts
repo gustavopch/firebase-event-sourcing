@@ -8,6 +8,6 @@ export type FlowDefinition = {
   }
 
   reactions?: {
-    [eventName: string]: ReactionHandler<Event<any, any>>
+    [eventName: string]: ReactionHandler<Event<any>>
   }
 }

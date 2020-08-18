@@ -2,14 +2,23 @@ import { EventData } from './event-data'
 import { EventMetadata } from './event-metadata'
 
 export type Event<
-  TEventName extends string = string,
-  TEventData extends EventData = EventData
+  TProps extends {
+    contextName: string
+    aggregateName: string
+    name: string
+    data: EventData
+  } = {
+    contextName: string
+    aggregateName: string
+    name: string
+    data: EventData
+  }
 > = {
-  contextName: string
-  aggregateName: string
+  contextName: TProps['contextName']
+  aggregateName: TProps['aggregateName']
   aggregateId: string
   id: string
-  name: TEventName
-  data: TEventData
+  name: TProps['name']
+  data: TProps['data']
   metadata: EventMetadata
 }

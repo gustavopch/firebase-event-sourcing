@@ -238,8 +238,8 @@ describe('Event Store', () => {
   test('saveEvent', async () => {
     const id = await eventStore.saveEvent<ShoppingCartInitialized, State>(
       {
-        contextName: 'some',
-        aggregateName: 'name',
+        contextName: 'shopping',
+        aggregateName: 'cart',
         aggregateId: 'x',
         name: 'initialized',
         data: null,
@@ -253,8 +253,8 @@ describe('Event Store', () => {
     )
 
     expect(await eventStore.getEvent(id)).toEqual({
-      contextName: 'some',
-      aggregateName: 'name',
+      contextName: 'shopping',
+      aggregateName: 'cart',
       aggregateId: 'x',
       id,
       name: 'initialized',
