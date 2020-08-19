@@ -22,49 +22,55 @@ export const createCommandsEndpoint = (
   const eventStore = createEventStore(firebaseAdminApp)
 
   app.post('/', async (req, res) => {
-    const command: CommandWithMetadata = {
-      contextName: req.body.contextName,
-      aggregateName: req.body.aggregateName,
-      aggregateId: req.body.aggregateId,
-      name: req.body.name,
-      data: req.body.data,
-      metadata: {
-        causationId: null,
-        correlationId: null,
-        client: {
-          userId: req.userId || null,
-          ip: req.ip || null,
-          ua: req.header('User-Agent') || null,
-          location: parseLocationFromHeaders(req),
+    try {
+      const command: CommandWithMetadata = {
+        contextName: req.body.contextName,
+        aggregateName: req.body.aggregateName,
+        aggregateId: req.body.aggregateId,
+        name: req.body.name,
+        data: req.body.data,
+        metadata: {
+          causationId: null,
+          correlationId: null,
+          client: {
+            userId: req.userId || null,
+            ip: req.ip || null,
+            ua: req.header('User-Agent') || null,
+            location: parseLocationFromHeaders(req),
+          },
         },
-      },
-    }
+      }
 
-    const result = await processCommand(eventStore, application, command)
+      const result = await processCommand(eventStore, application, command)
 
-    if (!result.ok && result.reason === 'aggregate-not-found') {
-      const message = `Aggregate '${command.contextName}.${command.aggregateName}' not found`
-      console.log(message)
-      res.status(422).send(message)
+      if (!result.ok && result.reason === 'aggregate-not-found') {
+        const message = `Aggregate '${command.contextName}.${command.aggregateName}' not found`
+        console.log(message)
+        res.status(422).send(message)
+        return
+      }
+
+      if (!result.ok && result.reason === 'command-handler-not-found') {
+        const message = `Command handler for '${command.contextName}.${command.aggregateName}.${command.name}' not found`
+        console.log(message)
+        res.status(422).send(message)
+        return
+      }
+
+      if (!result.ok && result.reason === 'unauthorized') {
+        const message = 'Unauthorized'
+        console.log(message)
+        res.status(403).send(message)
+        return
+      }
+
+      res.status(201).send({ eventId: result.eventId })
+      return
+    } catch (error) {
+      console.error('Error while handling command:', error)
+      res.status(500).send()
       return
     }
-
-    if (!result.ok && result.reason === 'command-handler-not-found') {
-      const message = `Command handler for '${command.contextName}.${command.aggregateName}.${command.name}' not found`
-      console.log(message)
-      res.status(422).send(message)
-      return
-    }
-
-    if (!result.ok && result.reason === 'unauthorized') {
-      const message = 'Unauthorized'
-      console.log(message)
-      res.status(403).send(message)
-      return
-    }
-
-    res.status(201).send({ eventId: result.eventId })
-    return
   })
 
   return functions.https.onRequest(app)
