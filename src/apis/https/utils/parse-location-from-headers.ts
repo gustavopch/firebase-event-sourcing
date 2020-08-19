@@ -20,8 +20,8 @@ export const parseLocationFromHeaders = (req: Request): Location | null => {
 
   return {
     city,
-    region,
-    country,
+    region: region?.toLowerCase() ?? null,
+    country: country?.toLowerCase() ?? null,
     coordinates,
   }
 }
