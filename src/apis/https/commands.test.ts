@@ -56,6 +56,24 @@ describe('/commands endpoint', () => {
     },
   )
 
+  it('returns an error if the command is invalid', async () => {
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contextName: 'shopping',
+        aggregateName: 'cart',
+        // 'aggregateId' left out to make the command invalid
+        name: 'initialize',
+        data: null,
+      }),
+    })
+
+    expect(res.status).toBe(422)
+  })
+
   it('returns the ID of the new event', async () => {
     const res = await fetch(endpoint, {
       method: 'POST',
