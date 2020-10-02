@@ -1,6 +1,6 @@
-import { ApplicationDefinition } from '../application/application-definition'
-import { CommandWithMetadata } from '../elements/command-with-metadata'
 import { EventStore } from '../stores/event-store'
+import { ApplicationDefinition } from '../types/application'
+import { CommandWithMetadata } from '../types/command'
 import { runProjections } from './run-projections'
 import { runReactions } from './run-reactions'
 

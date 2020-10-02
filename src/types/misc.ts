@@ -7,3 +7,10 @@ export type Location = {
     longitude: number
   } | null
 }
+
+export type ClientInfo = {
+  userId: string | null
+  ip: string | null
+  ua: string | null
+  location: Location | null
+}

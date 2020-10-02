@@ -4,7 +4,7 @@ import firebaseAdmin from 'firebase-admin'
 import { config } from '../../example/src/config'
 import { ShoppingCartInitialized } from '../../example/src/domain/shopping/cart/events/initialized'
 import { State } from '../../example/src/domain/shopping/cart/state'
-import { Event } from '../elements/event'
+import { Event } from '../types/event'
 import { EVENTS, SNAPSHOTS, Snapshot, createEventStore } from './event-store'
 
 const firebaseAdminApp = firebaseAdmin.initializeApp({

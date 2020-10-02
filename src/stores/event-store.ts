@@ -1,8 +1,8 @@
 import firebaseAdmin from 'firebase-admin'
 
-import { AggregateState } from '../elements/aggregate-state'
-import { ClientInfo } from '../elements/client-info'
-import { Event } from '../elements/event'
+import { AggregateState } from '../types/aggregate'
+import { Event } from '../types/event'
+import { ClientInfo } from '../types/misc'
 
 export const EVENTS = 'events'
 export const SNAPSHOTS = 'snapshots'

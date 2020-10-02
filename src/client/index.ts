@@ -1,7 +1,7 @@
 import firebase from 'firebase/app'
 import 'firebase/auth'
 
-import { ApplicationDefinition } from '../application/application-definition'
+import { ApplicationDefinition } from '../types/application'
 
 export type Client<TApplicationDefinition extends ApplicationDefinition> = {
   sendCommand: <

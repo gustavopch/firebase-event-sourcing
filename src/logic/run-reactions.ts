@@ -1,7 +1,7 @@
-import { ApplicationDefinition } from '../application/application-definition'
-import { Event } from '../elements/event'
 import { createFlowService } from '../services/flow-service'
 import { EventStore } from '../stores/event-store'
+import { ApplicationDefinition } from '../types/application'
+import { Event } from '../types/event'
 import { getFullyQualifiedEventName } from '../utils/get-fully-qualified-event-name'
 
 export const runReactions = async (

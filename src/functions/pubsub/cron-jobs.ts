@@ -1,9 +1,9 @@
 import firebaseAdmin from 'firebase-admin'
 import * as functions from 'firebase-functions'
 
-import { ApplicationDefinition } from '../../application/application-definition'
 import { createFlowService } from '../../services/flow-service'
 import { createEventStore } from '../../stores/event-store'
+import { ApplicationDefinition } from '../../types/application'
 
 type CronJobFunctions = {
   [functionName: string]: functions.CloudFunction<any>

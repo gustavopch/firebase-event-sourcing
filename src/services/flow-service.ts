@@ -1,8 +1,8 @@
-import { ApplicationDefinition } from '../application/application-definition'
-import { Command } from '../elements/command'
-import { Event } from '../elements/event'
 import { processCommand } from '../logic/process-command'
 import { EventStore } from '../stores/event-store'
+import { ApplicationDefinition } from '../types/application'
+import { Command } from '../types/command'
+import { Event } from '../types/event'
 
 export type FlowService = {
   runCommand: <TCommand extends Command>(command: TCommand) => Promise<void>

@@ -4,10 +4,10 @@ import express from 'express'
 import firebaseAdmin from 'firebase-admin'
 import * as functions from 'firebase-functions'
 
-import { ApplicationDefinition } from '../../application/application-definition'
-import { CommandWithMetadata } from '../../elements/command-with-metadata'
 import { processCommand } from '../../logic/process-command'
 import { createEventStore } from '../../stores/event-store'
+import { ApplicationDefinition } from '../../types/application'
+import { CommandWithMetadata } from '../../types/command'
 import { validateFirebaseIdToken } from './middlewares/validate-firebase-id-token'
 import { parseLocationFromHeaders } from './utils/parse-location-from-headers'
 

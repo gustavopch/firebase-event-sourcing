@@ -1,6 +1,6 @@
-import { AggregateDefinition } from './aggregate-definition'
-import { FlowDefinition } from './flow-definition'
-import { ViewDefinition } from './view-definition'
+import { AggregateDefinition } from './aggregate'
+import { FlowDefinition } from './flow'
+import { ViewDefinition } from './view'
 
 export type ApplicationDefinition = {
   domain: {

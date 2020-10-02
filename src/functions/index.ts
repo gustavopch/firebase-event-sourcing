@@ -1,6 +1,6 @@
 import firebaseAdmin from 'firebase-admin'
 
-import { ApplicationDefinition } from '../application/application-definition'
+import { ApplicationDefinition } from '../types/application'
 import { createCommandsEndpoint } from './https/commands'
 import { createCronJobFirebaseFunctions } from './pubsub/cron-jobs'
 

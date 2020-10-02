@@ -1,15 +1,19 @@
-export type { AggregateDefinition } from './application/aggregate-definition'
-export type { CommandDefinition } from './application/command-definition'
-export type { EventDefinition } from './application/event-definition'
-export type { FlowDefinition } from './application/flow-definition'
-export type { ViewDefinition } from './application/view-definition'
 export { createClient } from './client'
-export type { Command } from './elements/command'
-export type { CommandData } from './elements/command-data'
-export type { CommandMetadata } from './elements/command-metadata'
-export type { CommandWithMetadata } from './elements/command-with-metadata'
-export type { Event } from './elements/event'
-export type { EventData } from './elements/event-data'
-export type { EventMetadata } from './elements/event-metadata'
 export { createFunctions } from './functions'
+export type { AggregateDefinition } from './types/aggregate'
+export type {
+  Command,
+  CommandData,
+  CommandDefinition,
+  CommandMetadata,
+  CommandWithMetadata,
+} from './types/command'
+export type {
+  Event,
+  EventData,
+  EventDefinition,
+  EventMetadata,
+} from './types/event'
+export type { FlowDefinition } from './types/flow'
+export type { ViewDefinition } from './types/view'
 export { flatten } from './utils/flatten'

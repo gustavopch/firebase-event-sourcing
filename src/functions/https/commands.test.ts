@@ -4,8 +4,8 @@ import fetch from 'node-fetch'
 
 import { config } from '../../../example/src/config'
 import { CARTS } from '../../../example/src/views/carts'
-import { Event } from '../../elements/event'
 import { createEventStore } from '../../stores/event-store'
+import { Event } from '../../types/event'
 
 const firebaseAdminApp = firebaseAdmin.initializeApp({
   projectId: config.firebase.projectId,

@@ -1,6 +1,6 @@
 import { Request } from 'express'
 
-import { Location } from '../../../elements/location'
+import { Location } from '../../../types/misc'
 
 export const parseLocationFromHeaders = (req: Request): Location | null => {
   const city = req.header('X-Appengine-City') || null
