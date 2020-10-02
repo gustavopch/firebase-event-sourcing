@@ -2,7 +2,7 @@ import firebaseAdmin from 'firebase-admin'
 import * as functions from 'firebase-functions'
 
 import { ApplicationDefinition } from '../../application/application-definition'
-import { createFlowManager } from '../../services/flow-manager'
+import { createFlowService } from '../../services/flow-service'
 import { createEventStore } from '../../stores/event-store'
 
 type CronJobFunctions = {
@@ -14,7 +14,7 @@ export const createCronJobFirebaseFunctions = (
   application: ApplicationDefinition,
 ): CronJobFunctions => {
   const eventStore = createEventStore(firebaseAdminApp)
-  const flowManager = createFlowManager(eventStore, application, null)
+  const flowService = createFlowService(eventStore, application, null)
 
   const cronJobFirebaseFunctions: CronJobFunctions = {}
 
@@ -40,7 +40,7 @@ export const createCronJobFirebaseFunctions = (
     cronJobFirebaseFunctions[flowName] = functions.pubsub
       .schedule(schedule)
       .onRun(async ctx => {
-        await handler(flowManager)
+        await handler(flowService)
       })
   }
 

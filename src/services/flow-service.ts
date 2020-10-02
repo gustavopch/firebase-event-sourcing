@@ -4,15 +4,15 @@ import { Event } from '../elements/event'
 import { processCommand } from '../logic/process-command'
 import { EventStore } from '../stores/event-store'
 
-export type FlowManager = {
+export type FlowService = {
   runCommand: <TCommand extends Command>(command: TCommand) => Promise<void>
 }
 
-export const createFlowManager = (
+export const createFlowService = (
   eventStore: EventStore,
   application: ApplicationDefinition,
   causationEvent: Event | null,
-): FlowManager => {
+): FlowService => {
   return {
     runCommand: async command => {
       await processCommand(eventStore, application, {

@@ -1,7 +1,7 @@
-import { FlowManager } from '../services/flow-manager'
+import { FlowService } from '../services/flow-service'
 import { Event } from './event'
 
 export type ReactionHandler<TEvent extends Event> = (
-  manager: FlowManager,
+  flow: FlowService,
   event: TEvent,
 ) => Promise<void>

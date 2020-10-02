@@ -1,3 +1,3 @@
-import { FlowManager } from '../services/flow-manager'
+import { FlowService } from '../services/flow-service'
 
-export type CronHandler = (manager: FlowManager) => Promise<void>
+export type CronHandler = (flow: FlowService) => Promise<void>

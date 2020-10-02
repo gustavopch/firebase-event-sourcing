@@ -1,6 +1,6 @@
 import { ApplicationDefinition } from '../application/application-definition'
 import { Event } from '../elements/event'
-import { createFlowManager } from '../services/flow-manager'
+import { createFlowService } from '../services/flow-service'
 import { EventStore } from '../stores/event-store'
 import { getFullyQualifiedEventName } from '../utils/get-fully-qualified-event-name'
 
@@ -9,7 +9,7 @@ export const runReactions = async (
   application: ApplicationDefinition,
   event: Event,
 ): Promise<void> => {
-  const flowManager = createFlowManager(eventStore, application, event)
+  const flowService = createFlowService(eventStore, application, event)
 
   const fullyQualifiedEventName = getFullyQualifiedEventName(event)
 
@@ -19,7 +19,7 @@ export const runReactions = async (
     const reactions = flow.reactions ?? {}
     for (const [handlerKey, handler] of Object.entries(reactions)) {
       if (handlerKey === fullyQualifiedEventName) {
-        const promise = handler(flowManager, event)
+        const promise = handler(flowService, event)
           .then(() => {
             console.log(`Ran reaction in '${flowName}'`)
           })
