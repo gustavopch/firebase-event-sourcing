@@ -1,4 +1,4 @@
-import * as testing from '@firebase/testing'
+import * as testing from '@firebase/rules-unit-testing'
 import firebaseAdmin from 'firebase-admin'
 import fetch from 'node-fetch'
 
