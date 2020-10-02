@@ -60,7 +60,7 @@ export const carts: ViewDefinition = {
 
       const nfe: Partial<Cart> = {
         items: {
-          [event.data.itemId]: firebaseAdmin.firestore.FieldValue.delete() as any // prettier-ignore
+          [event.data.itemId]: firebaseAdmin.firestore.FieldValue.delete() as any, // prettier-ignore
         },
       }
 
