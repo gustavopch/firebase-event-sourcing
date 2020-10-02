@@ -4,8 +4,8 @@ import { AggregateState } from '../types/aggregate'
 import { Event } from '../types/event'
 import { ClientInfo } from '../types/misc'
 
+export const AGGREGATES = 'aggregates'
 export const EVENTS = 'events'
-export const SNAPSHOTS = 'snapshots'
 
 const queryInBatches = async (
   query: firebase.firestore.Query,
@@ -36,7 +36,7 @@ const queryInBatches = async (
 
 export type OnEvent = (event: Event) => void | Promise<void>
 
-export type Snapshot<
+export type Aggregate<
   TAggregateState extends AggregateState = AggregateState
 > = {
   aggregateId: string
@@ -77,22 +77,22 @@ export type EventStore = {
       correlationId: string | null
       client: ClientInfo | null
     },
-    getSnapshotState: (event: Event) => TAggregateState,
+    getAggregateState: (event: Event) => TAggregateState,
   ) => Promise<string>
 
   importEvents: (events: Event[]) => Promise<void>
 
-  getSnapshot: (
+  getAggregate: (
     aggregateId: string | null | undefined,
-  ) => Promise<Snapshot | null>
+  ) => Promise<Aggregate | null>
 
-  saveSnapshot: (snapshot: Snapshot) => Promise<void>
+  saveAggregate: (aggregate: Aggregate) => Promise<void>
 }
 
 export const createEventStore = (firebaseApp: firebase.app.App): EventStore => {
   const db = firebaseApp.firestore()
+  const aggregatesCollection = db.collection(AGGREGATES)
   const eventsCollection = db.collection(EVENTS)
-  const snapshotsCollection = db.collection(SNAPSHOTS)
 
   const generateId = () => {
     return db.collection('whatever').doc().id
@@ -161,29 +161,31 @@ export const createEventStore = (firebaseApp: firebase.app.App): EventStore => {
         correlationId,
         client,
       },
-      getSnapshotState,
+      getAggregateState,
     ) => {
       const eventId = generateId()
 
-      const snapshotRef = snapshotsCollection.doc(aggregateId)
+      const aggregateRef = aggregatesCollection.doc(aggregateId)
       const eventRef = eventsCollection.doc(eventId)
 
       await db.runTransaction(async transaction => {
-        const oldSnapshot = await transaction.get(snapshotRef).then(docSnap => {
-          const existingSnapshot = docSnap.data() as Snapshot | undefined
+        const oldAggregate = await transaction
+          .get(aggregateRef)
+          .then(docSnap => {
+            const existingAggregate = docSnap.data() as Aggregate | undefined
 
-          if (existingSnapshot) {
-            return existingSnapshot
-          }
+            if (existingAggregate) {
+              return existingAggregate
+            }
 
-          return {
-            aggregateId,
-            revision: 0,
-            state: {},
-          }
-        })
+            return {
+              aggregateId,
+              revision: 0,
+              state: {},
+            }
+          })
 
-        const newRevision = oldSnapshot.revision + 1
+        const newRevision = oldAggregate.revision + 1
 
         const event: Event = {
           contextName,
@@ -203,13 +205,13 @@ export const createEventStore = (firebaseApp: firebase.app.App): EventStore => {
 
         transaction.set(eventRef, event)
 
-        const newSnapshot: Snapshot = {
+        const newAggregate: Aggregate = {
           aggregateId,
           revision: newRevision,
-          state: getSnapshotState(event),
+          state: getAggregateState(event),
         }
 
-        transaction.set(snapshotRef, newSnapshot)
+        transaction.set(aggregateRef, newAggregate)
       })
 
       return eventId
@@ -221,17 +223,17 @@ export const createEventStore = (firebaseApp: firebase.app.App): EventStore => {
       }
     },
 
-    getSnapshot: async aggregateId => {
+    getAggregate: async aggregateId => {
       if (!aggregateId) {
         return null
       }
 
-      const docSnap = await snapshotsCollection.doc(aggregateId).get()
-      return (docSnap.data() ?? null) as Snapshot | null
+      const docSnap = await aggregatesCollection.doc(aggregateId).get()
+      return (docSnap.data() ?? null) as Aggregate | null
     },
 
-    saveSnapshot: async aggregate => {
-      await snapshotsCollection.doc(aggregate.aggregateId).set(aggregate)
+    saveAggregate: async aggregate => {
+      await aggregatesCollection.doc(aggregate.aggregateId).set(aggregate)
     },
   }
 }

@@ -5,7 +5,7 @@ import { config } from '../../example/src/config'
 import { ShoppingCartInitialized } from '../../example/src/domain/shopping/cart/events/initialized'
 import { State } from '../../example/src/domain/shopping/cart/state'
 import { Event } from '../types/event'
-import { EVENTS, SNAPSHOTS, Snapshot, createEventStore } from './event-store'
+import { AGGREGATES, Aggregate, EVENTS, createEventStore } from './event-store'
 
 const firebaseApp = firebase.initializeApp({
   projectId: config.firebase.projectId,
@@ -18,9 +18,16 @@ firebaseApp.firestore().settings({
 const eventStore = createEventStore(firebaseApp)
 
 const testData: {
+  aggregates: { [id: string]: Aggregate }
   events: { [id: string]: Event }
-  snapshots: { [id: string]: Snapshot }
 } = {
+  aggregates: {
+    E: {
+      aggregateId: 'E',
+      revision: 3,
+      state: {},
+    },
+  },
   events: {
     '1': {
       contextName: 'shopping',
@@ -138,13 +145,6 @@ const testData: {
       },
     },
   },
-  snapshots: {
-    E: {
-      aggregateId: 'E',
-      revision: 3,
-      state: {},
-    },
-  },
 }
 
 beforeAll(async () => {
@@ -152,12 +152,12 @@ beforeAll(async () => {
     await firebaseApp.firestore().collection(EVENTS).doc(event.id).set(event)
   }
 
-  for (const snapshot of Object.values(testData.snapshots)) {
+  for (const aggregate of Object.values(testData.aggregates)) {
     await firebaseApp
       .firestore()
-      .collection(SNAPSHOTS)
-      .doc(snapshot.aggregateId)
-      .set(snapshot)
+      .collection(AGGREGATES)
+      .doc(aggregate.aggregateId)
+      .set(aggregate)
   }
 })
 
@@ -274,16 +274,16 @@ describe('Event Store', () => {
     }
   })
 
-  test('getSnapshot', async () => {
-    const snapshot = await eventStore.getSnapshot(
-      testData.snapshots['E'].aggregateId,
+  test('getAggregate', async () => {
+    const aggregate = await eventStore.getAggregate(
+      testData.aggregates['E'].aggregateId,
     )
 
-    expect(snapshot).toEqual(testData.snapshots['E'])
+    expect(aggregate).toEqual(testData.aggregates['E'])
   })
 
-  test('saveSnapshot', async () => {
-    await eventStore.saveSnapshot({
+  test('saveAggregate', async () => {
+    await eventStore.saveAggregate({
       aggregateId: 'x',
       revision: 7,
       state: {
@@ -291,7 +291,7 @@ describe('Event Store', () => {
       },
     })
 
-    expect(await eventStore.getSnapshot('x')).toEqual({
+    expect(await eventStore.getAggregate('x')).toEqual({
       aggregateId: 'x',
       revision: 7,
       state: {
