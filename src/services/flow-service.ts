@@ -5,7 +5,7 @@ import { Command } from '../types/command'
 import { Event } from '../types/event'
 
 export type FlowService = {
-  runCommand: <TCommand extends Command>(command: TCommand) => Promise<void>
+  dispatch: <TCommand extends Command>(command: TCommand) => Promise<void>
 }
 
 export const createFlowService = (
@@ -14,7 +14,7 @@ export const createFlowService = (
   causationEvent: Event | null,
 ): FlowService => {
   return {
-    runCommand: async command => {
+    dispatch: async command => {
       await processCommand(eventStore, application, {
         ...command,
         metadata: {
