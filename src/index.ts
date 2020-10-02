@@ -1,3 +1,4 @@
+export { createApplication } from './application'
 export { createClient } from './client'
 export { createFunctions } from './functions'
 export type { AggregateDefinition } from './types/aggregate'
