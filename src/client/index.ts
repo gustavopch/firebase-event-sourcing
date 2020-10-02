@@ -4,7 +4,7 @@ import 'firebase/auth'
 import { ApplicationDefinition } from '../types/application'
 
 export type Client<TApplicationDefinition extends ApplicationDefinition> = {
-  sendCommand: <
+  dispatch: <
     TContextName extends keyof TApplicationDefinition['domain'],
     TAggregateName extends keyof TApplicationDefinition['domain'][TContextName],
     TCommandName extends keyof TApplicationDefinition['domain'][TContextName][TAggregateName]['commands']
@@ -25,7 +25,7 @@ export const createClient = <
   baseUrl: string
 }): Client<TApplicationDefinition> => {
   return {
-    sendCommand: async ({
+    dispatch: async ({
       contextName,
       aggregateName,
       aggregateId,
