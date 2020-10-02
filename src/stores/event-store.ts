@@ -1,4 +1,4 @@
-import firebaseAdmin from 'firebase-admin'
+import firebase from 'firebase-admin'
 
 import { AggregateState } from '../types/aggregate'
 import { Event } from '../types/event'
@@ -8,12 +8,10 @@ export const EVENTS = 'events'
 export const SNAPSHOTS = 'snapshots'
 
 const queryInBatches = async (
-  query: firebaseAdmin.firestore.Query,
+  query: firebase.firestore.Query,
   onNext: OnEvent,
 ) => {
-  let lastDocSnap:
-    | firebaseAdmin.firestore.DocumentSnapshot
-    | undefined = undefined
+  let lastDocSnap: firebase.firestore.DocumentSnapshot | undefined = undefined
 
   while (true) {
     query = query.limit(1000).limit(10000)
@@ -22,7 +20,7 @@ const queryInBatches = async (
       query = query.startAfter(lastDocSnap)
     }
 
-    const batch: firebaseAdmin.firestore.QuerySnapshot = await query.get()
+    const batch: firebase.firestore.QuerySnapshot = await query.get()
 
     lastDocSnap = batch.docs[batch.size - 1]
     if (batch.empty) {
@@ -91,10 +89,8 @@ export type EventStore = {
   saveSnapshot: (snapshot: Snapshot) => Promise<void>
 }
 
-export const createEventStore = (
-  firebaseAdminApp: firebaseAdmin.app.App,
-): EventStore => {
-  const db = firebaseAdminApp.firestore()
+export const createEventStore = (firebaseApp: firebase.app.App): EventStore => {
+  const db = firebaseApp.firestore()
   const eventsCollection = db.collection(EVENTS)
   const snapshotsCollection = db.collection(SNAPSHOTS)
 

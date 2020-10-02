@@ -1,4 +1,4 @@
-import firebaseAdmin from 'firebase-admin'
+import firebase from 'firebase-admin'
 
 import { ViewDefinition } from '../../../src'
 import { flatten } from '../../../src/utils/flatten'
@@ -26,7 +26,7 @@ export type Cart = {
 export const carts: ViewDefinition = {
   projections: {
     'shopping.cart.initialized': async (event: ShoppingCartInitialized) => {
-      const db = firebaseAdmin.firestore()
+      const db = firebase.firestore()
 
       const cart: Cart = {
         id: event.aggregateId,
@@ -40,7 +40,7 @@ export const carts: ViewDefinition = {
     },
 
     'shopping.cart.itemAdded': async (event: ShoppingCartItemAdded) => {
-      const db = firebaseAdmin.firestore()
+      const db = firebase.firestore()
 
       const itemId = db.collection('whatever').doc().id
 
@@ -56,11 +56,11 @@ export const carts: ViewDefinition = {
     },
 
     'shopping.cart.itemRemoved': async (event: ShoppingCartItemRemoved) => {
-      const db = firebaseAdmin.firestore()
+      const db = firebase.firestore()
 
       const nfe: Partial<Cart> = {
         items: {
-          [event.data.itemId]: firebaseAdmin.firestore.FieldValue.delete() as any, // prettier-ignore
+          [event.data.itemId]: firebase.firestore.FieldValue.delete() as any,
         },
       }
 
@@ -68,7 +68,7 @@ export const carts: ViewDefinition = {
     },
 
     'shopping.cart.orderPlaced': async (event: ShoppingCartOrderPlaced) => {
-      const db = firebaseAdmin.firestore()
+      const db = firebase.firestore()
 
       const nfe: Partial<Cart> = {
         placedAt: Date.now(),

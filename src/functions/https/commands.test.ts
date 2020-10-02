@@ -1,5 +1,5 @@
 import * as testing from '@firebase/rules-unit-testing'
-import firebaseAdmin from 'firebase-admin'
+import firebase from 'firebase-admin'
 import fetch from 'node-fetch'
 
 import { config } from '../../../example/src/config'
@@ -7,17 +7,17 @@ import { CARTS } from '../../../example/src/views/carts'
 import { createEventStore } from '../../stores/event-store'
 import { Event } from '../../types/event'
 
-const firebaseAdminApp = firebaseAdmin.initializeApp({
+const firebaseApp = firebase.initializeApp({
   projectId: config.firebase.projectId,
 })
 
-firebaseAdminApp.firestore().settings({
+firebaseApp.firestore().settings({
   ignoreUndefinedProperties: true,
 })
 
-const db = firebaseAdminApp.firestore()
+const db = firebaseApp.firestore()
 
-const eventStore = createEventStore(firebaseAdminApp)
+const eventStore = createEventStore(firebaseApp)
 
 afterEach(async () => {
   await testing.clearFirestoreData({ projectId: config.firebase.projectId })

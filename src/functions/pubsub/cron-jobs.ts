@@ -1,4 +1,4 @@
-import firebaseAdmin from 'firebase-admin'
+import firebase from 'firebase-admin'
 import * as functions from 'firebase-functions'
 
 import { createFlowService } from '../../services/flow-service'
@@ -10,10 +10,10 @@ type CronJobFunctions = {
 }
 
 export const createCronJobFirebaseFunctions = (
-  firebaseAdminApp: firebaseAdmin.app.App,
+  firebaseApp: firebase.app.App,
   application: ApplicationDefinition,
 ): CronJobFunctions => {
-  const eventStore = createEventStore(firebaseAdminApp)
+  const eventStore = createEventStore(firebaseApp)
   const flowService = createFlowService(eventStore, application, null)
 
   const cronJobFirebaseFunctions: CronJobFunctions = {}

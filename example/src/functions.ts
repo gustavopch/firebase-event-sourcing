@@ -1,17 +1,17 @@
-import firebaseAdmin from 'firebase-admin'
+import firebase from 'firebase-admin'
 
 import { createFunctions } from '../../src'
 import { domain } from './domain'
 import { flows } from './flows'
 import { views } from './views'
 
-const firebaseAdminApp = firebaseAdmin.initializeApp()
+const firebaseApp = firebase.initializeApp()
 
-firebaseAdminApp.firestore().settings({
+firebaseApp.firestore().settings({
   ignoreUndefinedProperties: true,
 })
 
-module.exports = createFunctions(firebaseAdminApp, {
+module.exports = createFunctions(firebaseApp, {
   domain,
   flows,
   views,

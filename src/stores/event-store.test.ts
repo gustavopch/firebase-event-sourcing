@@ -1,5 +1,5 @@
 import * as testing from '@firebase/rules-unit-testing'
-import firebaseAdmin from 'firebase-admin'
+import firebase from 'firebase-admin'
 
 import { config } from '../../example/src/config'
 import { ShoppingCartInitialized } from '../../example/src/domain/shopping/cart/events/initialized'
@@ -7,15 +7,15 @@ import { State } from '../../example/src/domain/shopping/cart/state'
 import { Event } from '../types/event'
 import { EVENTS, SNAPSHOTS, Snapshot, createEventStore } from './event-store'
 
-const firebaseAdminApp = firebaseAdmin.initializeApp({
+const firebaseApp = firebase.initializeApp({
   projectId: config.firebase.projectId,
 })
 
-firebaseAdminApp.firestore().settings({
+firebaseApp.firestore().settings({
   ignoreUndefinedProperties: true,
 })
 
-const eventStore = createEventStore(firebaseAdminApp)
+const eventStore = createEventStore(firebaseApp)
 
 const testData: {
   events: { [id: string]: Event }
@@ -149,15 +149,11 @@ const testData: {
 
 beforeAll(async () => {
   for (const event of Object.values(testData.events)) {
-    await firebaseAdminApp
-      .firestore()
-      .collection(EVENTS)
-      .doc(event.id)
-      .set(event)
+    await firebaseApp.firestore().collection(EVENTS).doc(event.id).set(event)
   }
 
   for (const snapshot of Object.values(testData.snapshots)) {
-    await firebaseAdminApp
+    await firebaseApp
       .firestore()
       .collection(SNAPSHOTS)
       .doc(snapshot.aggregateId)
@@ -167,7 +163,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await testing.clearFirestoreData({ projectId: config.firebase.projectId })
-  await firebaseAdminApp.delete()
+  await firebaseApp.delete()
 })
 
 describe('Event Store', () => {

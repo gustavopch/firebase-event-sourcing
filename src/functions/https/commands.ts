@@ -1,7 +1,7 @@
 import Ajv from 'ajv'
 import cors from 'cors'
 import express from 'express'
-import firebaseAdmin from 'firebase-admin'
+import firebase from 'firebase-admin'
 import * as functions from 'firebase-functions'
 
 import { processCommand } from '../../logic/process-command'
@@ -43,15 +43,15 @@ const ajv = new Ajv()
 const validateCommand = ajv.compile(commandSchema)
 
 export const createCommandsEndpoint = (
-  firebaseAdminApp: firebaseAdmin.app.App,
+  firebaseApp: firebase.app.App,
   application: ApplicationDefinition,
 ): functions.HttpsFunction => {
   const app = express()
   app.set('trust proxy', true)
   app.use(cors({ origin: true }))
-  app.use(validateFirebaseIdToken(firebaseAdminApp))
+  app.use(validateFirebaseIdToken(firebaseApp))
 
-  const eventStore = createEventStore(firebaseAdminApp)
+  const eventStore = createEventStore(firebaseApp)
 
   app.post('/', async (req, res) => {
     try {

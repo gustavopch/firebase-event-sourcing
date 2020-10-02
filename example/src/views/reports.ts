@@ -1,4 +1,4 @@
-import firebaseAdmin from 'firebase-admin'
+import firebase from 'firebase-admin'
 
 import { ViewDefinition } from '../../../src'
 import { ShoppingCartOrderPlaced } from '../domain/shopping/cart/events/order-placed'
@@ -15,11 +15,11 @@ export type Report = {
 export const reports: ViewDefinition = {
   projections: {
     'shopping.cart.orderPlaced': async (event: ShoppingCartOrderPlaced) => {
-      const db = firebaseAdmin.firestore()
+      const db = firebase.firestore()
 
       const report: Report = {
         id: TOTALS_ID,
-        orderCount: firebaseAdmin.firestore.FieldValue.increment(1) as any,
+        orderCount: firebase.firestore.FieldValue.increment(1) as any,
       }
 
       await db.collection(REPORTS).doc(TOTALS_ID).set(report)

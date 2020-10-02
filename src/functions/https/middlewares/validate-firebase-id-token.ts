@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express'
-import firebaseAdmin from 'firebase-admin'
+import firebase from 'firebase-admin'
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -11,7 +11,7 @@ declare global {
 }
 
 export const validateFirebaseIdToken = (
-  firebaseAdminApp: firebaseAdmin.app.App,
+  firebaseApp: firebase.app.App,
 ): RequestHandler => {
   return async (req, res, next) => {
     // Testing?
@@ -30,9 +30,7 @@ export const validateFirebaseIdToken = (
     }
 
     try {
-      const decodedIdToken = await firebaseAdminApp
-        .auth()
-        .verifyIdToken(idToken)
+      const decodedIdToken = await firebaseApp.auth().verifyIdToken(idToken)
 
       req.userId = decodedIdToken.uid
       next()
