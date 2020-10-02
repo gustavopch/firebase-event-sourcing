@@ -47,12 +47,12 @@ export const createCommandsEndpoint = (
 ): functions.HttpsFunction => {
   const application = createApplication(firebaseApp, applicationDefinition)
 
-  const app = express()
-  app.set('trust proxy', true)
-  app.use(cors({ origin: true }))
-  app.use(validateFirebaseIdToken(firebaseApp))
+  const server = express()
+  server.set('trust proxy', true)
+  server.use(cors({ origin: true }))
+  server.use(validateFirebaseIdToken(firebaseApp))
 
-  app.post('/', async (req, res) => {
+  server.post('/', async (req, res) => {
     try {
       const isCommandValid = await validateCommand(req.body)
 
@@ -107,5 +107,5 @@ export const createCommandsEndpoint = (
     }
   })
 
-  return functions.https.onRequest(app)
+  return functions.https.onRequest(server)
 }
