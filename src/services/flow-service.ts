@@ -1,7 +1,4 @@
-import { processCommand } from '../logic/process-command'
-import { EventStore } from '../stores/event-store'
-import { ApplicationDefinition } from '../types/application'
-import { Command } from '../types/command'
+import { Command, CommandWithMetadata } from '../types/command'
 import { Event } from '../types/event'
 
 export type FlowService = {
@@ -9,13 +6,12 @@ export type FlowService = {
 }
 
 export const createFlowService = (
-  eventStore: EventStore,
-  applicationDefinition: ApplicationDefinition,
+  dispatch: (command: CommandWithMetadata) => Promise<{ eventId: string }>,
   causationEvent: Event | null,
 ): FlowService => {
   return {
     dispatch: async command => {
-      await processCommand(eventStore, applicationDefinition, {
+      await dispatch({
         ...command,
         metadata: {
           causationId: causationEvent?.id ?? null,

@@ -4,8 +4,7 @@ import express from 'express'
 import firebase from 'firebase-admin'
 import * as functions from 'firebase-functions'
 
-import { processCommand } from '../../logic/process-command'
-import { createEventStore } from '../../stores/event-store'
+import { createApplication } from '../../application'
 import { ApplicationDefinition } from '../../types/application'
 import { CommandWithMetadata } from '../../types/command'
 import { validateFirebaseIdToken } from './middlewares/validate-firebase-id-token'
@@ -46,12 +45,12 @@ export const createCommandsEndpoint = (
   firebaseApp: firebase.app.App,
   applicationDefinition: ApplicationDefinition,
 ): functions.HttpsFunction => {
+  const application = createApplication(firebaseApp, applicationDefinition)
+
   const app = express()
   app.set('trust proxy', true)
   app.use(cors({ origin: true }))
   app.use(validateFirebaseIdToken(firebaseApp))
-
-  const eventStore = createEventStore(firebaseApp)
 
   app.post('/', async (req, res) => {
     try {
@@ -81,7 +80,7 @@ export const createCommandsEndpoint = (
         },
       }
 
-      const { eventId } = await processCommand(eventStore, applicationDefinition, command) // prettier-ignore
+      const { eventId } = await application.dispatch(command)
 
       res.status(201).send({ eventId })
     } catch (error) {
