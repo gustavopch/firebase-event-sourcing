@@ -1,9 +1,19 @@
-import { DomainDefinition } from './domain-definition'
-import { FlowsDefinition } from './flows-definition'
-import { ViewsDefinition } from './views-definition'
+import { AggregateDefinition } from './aggregate-definition'
+import { FlowDefinition } from './flow-definition'
+import { ViewDefinition } from './view-definition'
 
 export type ApplicationDefinition = {
-  domain: DomainDefinition
-  flows: FlowsDefinition
-  views: ViewsDefinition
+  domain: {
+    [contextName: string]: {
+      [aggregateName: string]: AggregateDefinition
+    }
+  }
+
+  flows: {
+    [flowName: string]: FlowDefinition
+  }
+
+  views: {
+    [viewName: string]: ViewDefinition
+  }
 }
