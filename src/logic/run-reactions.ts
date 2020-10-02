@@ -2,6 +2,7 @@ import { ApplicationDefinition } from '../application/application-definition'
 import { Event } from '../elements/event'
 import { createFlowManager } from '../services/flow-manager'
 import { EventStore } from '../stores/event-store'
+import { getFullyQualifiedEventName } from '../utils/get-fully-qualified-event-name'
 
 export const runReactions = async (
   eventStore: EventStore,
@@ -10,7 +11,7 @@ export const runReactions = async (
 ): Promise<void> => {
   const flowManager = createFlowManager(eventStore, application, event)
 
-  const fullyQualifiedEventName = `${event.contextName}.${event.aggregateName}.${event.name}`
+  const fullyQualifiedEventName = getFullyQualifiedEventName(event)
 
   const promises: Array<Promise<void>> = []
 

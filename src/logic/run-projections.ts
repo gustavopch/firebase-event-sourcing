@@ -1,11 +1,12 @@
 import { ApplicationDefinition } from '../application/application-definition'
 import { Event } from '../elements/event'
+import { getFullyQualifiedEventName } from '../utils/get-fully-qualified-event-name'
 
 export const runProjections = async (
   application: ApplicationDefinition,
   event: Event,
 ): Promise<void> => {
-  const fullyQualifiedEventName = `${event.contextName}.${event.aggregateName}.${event.name}`
+  const fullyQualifiedEventName = getFullyQualifiedEventName(event)
 
   const promises: Array<Promise<void>> = []
 
