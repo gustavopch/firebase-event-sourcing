@@ -105,11 +105,9 @@ export const createCommandsEndpoint = (
       }
 
       res.status(201).send({ eventId: result.eventId })
-      return
     } catch (error) {
       console.error('Error while handling command:', error)
       res.status(500).send()
-      return
     }
   })
 

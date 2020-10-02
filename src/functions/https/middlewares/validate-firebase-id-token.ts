@@ -36,11 +36,9 @@ export const validateFirebaseIdToken = (
 
       req.userId = decodedIdToken.uid
       next()
-      return
     } catch (error) {
       console.error('Error while verifying Firebase ID token:', error)
       res.status(403).send('Unauthorized')
-      return
     }
   }
 }
