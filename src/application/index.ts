@@ -30,10 +30,10 @@ export const createApplication = (
         if (handlerKey === fullyQualifiedEventName) {
           const promise = handler(event)
             .then(() => {
-              console.log(`Ran projection in '${viewName}'`)
+              console.log(`Ran '${viewName}' projection with event '${fullyQualifiedEventName}:${event.id}'`) // prettier-ignore
             })
             .catch(error => {
-              console.error(`Failed to run projection in '${viewName}'`, error)
+              console.error(`Failed to run '${viewName}' projection with event '${fullyQualifiedEventName}:${event.id}':`, error) // prettier-ignore
             })
 
           promises.push(promise)
@@ -60,10 +60,10 @@ export const createApplication = (
 
           const promise = handler(flowService, event)
             .then(() => {
-              console.log(`Ran reaction in '${flowName}'`)
+              console.log(`Ran '${flowName}' reaction with event '${fullyQualifiedEventName}:${event.id}'`) // prettier-ignore
             })
             .catch(error => {
-              console.error(`Failed to run reaction in '${flowName}'`, error)
+              console.error(`Failed to run '${flowName}' reaction with event '${fullyQualifiedEventName}:${event.id}':`, error) // prettier-ignore
             })
 
           promises.push(promise)
