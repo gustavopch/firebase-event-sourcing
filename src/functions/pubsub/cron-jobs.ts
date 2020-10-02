@@ -11,14 +11,14 @@ type CronJobFunctions = {
 
 export const createCronJobFirebaseFunctions = (
   firebaseApp: firebase.app.App,
-  application: ApplicationDefinition,
+  applicationDefinition: ApplicationDefinition,
 ): CronJobFunctions => {
   const eventStore = createEventStore(firebaseApp)
-  const flowService = createFlowService(eventStore, application, null)
+  const flowService = createFlowService(eventStore, applicationDefinition, null)
 
   const cronJobFirebaseFunctions: CronJobFunctions = {}
 
-  for (const [flowName, flow] of Object.entries(application.flows)) {
+  for (const [flowName, flow] of Object.entries(applicationDefinition.flows)) {
     const [firstEntry, ...ignoredEntries] = Object.entries(flow.cron ?? {})
 
     if (!firstEntry) {

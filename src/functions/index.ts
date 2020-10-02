@@ -8,12 +8,12 @@ export const createFunctions = <
   TApplicationDefinition extends ApplicationDefinition
 >(
   firebaseApp: firebase.app.App,
-  application: TApplicationDefinition,
+  applicationDefinition: TApplicationDefinition,
 ) => {
-  const cronJobs = createCronJobFirebaseFunctions(firebaseApp, application)
+  const cronJobs = createCronJobFirebaseFunctions(firebaseApp, applicationDefinition) // prettier-ignore
 
   return {
-    commands: createCommandsEndpoint(firebaseApp, application),
+    commands: createCommandsEndpoint(firebaseApp, applicationDefinition),
     ...cronJobs,
   }
 }

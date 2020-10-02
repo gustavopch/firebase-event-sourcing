@@ -44,7 +44,7 @@ const validateCommand = ajv.compile(commandSchema)
 
 export const createCommandsEndpoint = (
   firebaseApp: firebase.app.App,
-  application: ApplicationDefinition,
+  applicationDefinition: ApplicationDefinition,
 ): functions.HttpsFunction => {
   const app = express()
   app.set('trust proxy', true)
@@ -81,7 +81,7 @@ export const createCommandsEndpoint = (
         },
       }
 
-      const { eventId } = await processCommand(eventStore, application, command)
+      const { eventId } = await processCommand(eventStore, applicationDefinition, command) // prettier-ignore
 
       res.status(201).send({ eventId })
     } catch (error) {

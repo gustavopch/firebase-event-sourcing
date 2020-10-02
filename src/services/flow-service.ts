@@ -10,12 +10,12 @@ export type FlowService = {
 
 export const createFlowService = (
   eventStore: EventStore,
-  application: ApplicationDefinition,
+  applicationDefinition: ApplicationDefinition,
   causationEvent: Event | null,
 ): FlowService => {
   return {
     dispatch: async command => {
-      await processCommand(eventStore, application, {
+      await processCommand(eventStore, applicationDefinition, {
         ...command,
         metadata: {
           causationId: causationEvent?.id ?? null,

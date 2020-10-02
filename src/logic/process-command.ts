@@ -6,11 +6,11 @@ import { runReactions } from './run-reactions'
 
 export const processCommand = async (
   eventStore: EventStore,
-  application: ApplicationDefinition,
+  applicationDefinition: ApplicationDefinition,
   command: CommandWithMetadata,
 ): Promise<{ eventId: string }> => {
   const aggregateDefinition =
-    application.domain[command.contextName]?.[command.aggregateName]
+    applicationDefinition.domain[command.contextName]?.[command.aggregateName]
 
   if (!aggregateDefinition) {
     const error = new Error()
@@ -58,9 +58,9 @@ export const processCommand = async (
   const event = (await eventStore.getEvent(eventId))!
   console.log('Saved event:', event)
 
-  await runProjections(application, event)
+  await runProjections(applicationDefinition, event)
 
-  await runReactions(eventStore, application, event)
+  await runReactions(eventStore, applicationDefinition, event)
 
   return { eventId }
 }

@@ -6,16 +6,16 @@ import { getFullyQualifiedEventName } from '../utils/get-fully-qualified-event-n
 
 export const runReactions = async (
   eventStore: EventStore,
-  application: ApplicationDefinition,
+  applicationDefinition: ApplicationDefinition,
   event: Event,
 ): Promise<void> => {
-  const flowService = createFlowService(eventStore, application, event)
+  const flowService = createFlowService(eventStore, applicationDefinition, event) // prettier-ignore
 
   const fullyQualifiedEventName = getFullyQualifiedEventName(event)
 
   const promises: Array<Promise<void>> = []
 
-  for (const [flowName, flow] of Object.entries(application.flows)) {
+  for (const [flowName, flow] of Object.entries(applicationDefinition.flows)) {
     const reactions = flow.reactions ?? {}
     for (const [handlerKey, handler] of Object.entries(reactions)) {
       if (handlerKey === fullyQualifiedEventName) {
