@@ -1,6 +1,6 @@
 import firebase from 'firebase-admin'
 
-import { AggregateState } from '../types/aggregate'
+import { Aggregate, AggregateState } from '../types/aggregate'
 import { Event } from '../types/event'
 import { ClientInfo } from '../types/misc'
 
@@ -35,14 +35,6 @@ const queryInBatches = async (
 }
 
 export type OnEvent = (event: Event) => void | Promise<void>
-
-export type Aggregate<
-  TAggregateState extends AggregateState = AggregateState
-> = {
-  id: string
-  revision: number
-  state: TAggregateState
-}
 
 export type EventStore = {
   generateId: () => string

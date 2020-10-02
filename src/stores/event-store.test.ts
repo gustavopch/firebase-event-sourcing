@@ -4,8 +4,9 @@ import firebase from 'firebase-admin'
 import { config } from '../../example/src/config'
 import { ShoppingCartInitialized } from '../../example/src/domain/shopping/cart/events/initialized'
 import { State } from '../../example/src/domain/shopping/cart/state'
+import { Aggregate } from '../types/aggregate'
 import { Event } from '../types/event'
-import { AGGREGATES, Aggregate, EVENTS, createEventStore } from './event-store'
+import { AGGREGATES, EVENTS, createEventStore } from './event-store'
 
 const firebaseApp = firebase.initializeApp({
   projectId: config.firebase.projectId,

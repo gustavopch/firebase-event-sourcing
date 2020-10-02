@@ -5,6 +5,14 @@ export type AggregateState = {
   [key: string]: any
 }
 
+export type Aggregate<
+  TAggregateState extends AggregateState = AggregateState
+> = {
+  id: string
+  revision: number
+  state: TAggregateState
+}
+
 export type AggregateDefinition = {
   commands: {
     [commandName: string]: CommandDefinition<Command<any>, Event<any>>
