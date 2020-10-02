@@ -1,8 +1,8 @@
 import firebaseAdmin from 'firebase-admin'
 
+import { AggregateState } from '../elements/aggregate-state'
 import { ClientInfo } from '../elements/client-info'
 import { Event } from '../elements/event'
-import { State } from '../elements/state'
 
 export const EVENTS = 'events'
 export const SNAPSHOTS = 'snapshots'
@@ -38,10 +38,12 @@ const queryInBatches = async (
 
 export type OnEvent = (event: Event) => void | Promise<void>
 
-export type Snapshot<TState extends State = State> = {
+export type Snapshot<
+  TAggregateState extends AggregateState = AggregateState
+> = {
   aggregateId: string
   revision: number
-  state: TState
+  state: TAggregateState
 }
 
 export type EventStore = {
@@ -66,7 +68,7 @@ export type EventStore = {
     onNext: OnEvent,
   ) => Promise<void>
 
-  saveEvent: <TEvent extends Event, TState extends State>(
+  saveEvent: <TEvent extends Event, TAggregateState extends AggregateState>(
     eventProps: {
       contextName: TEvent['contextName']
       aggregateName: TEvent['aggregateName']
@@ -77,7 +79,7 @@ export type EventStore = {
       correlationId: string | null
       client: ClientInfo | null
     },
-    getSnapshotState: (event: Event) => TState,
+    getSnapshotState: (event: Event) => TAggregateState,
   ) => Promise<string>
 
   importEvents: (events: Event[]) => Promise<void>

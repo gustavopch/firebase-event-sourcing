@@ -1,6 +1,7 @@
+import { AggregateState } from './aggregate-state'
 import { Event } from './event'
-import { State } from './state'
 
-export type EventHandler<TEvent extends Event, TState extends State> = (
-  event: TEvent,
-) => TState
+export type EventHandler<
+  TEvent extends Event,
+  TAggregateState extends AggregateState
+> = (event: TEvent) => TAggregateState

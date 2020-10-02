@@ -1,6 +1,6 @@
+import { AggregateState } from '../elements/aggregate-state'
 import { Command } from '../elements/command'
 import { Event } from '../elements/event'
-import { State } from '../elements/state'
 import { CommandDefinition } from './command-definition'
 import { EventDefinition } from './event-definition'
 
@@ -10,6 +10,6 @@ export type AggregateDefinition = {
   }
 
   events: {
-    [eventName: string]: EventDefinition<Event<any>, State>
+    [eventName: string]: EventDefinition<Event<any>, AggregateState>
   }
 }
