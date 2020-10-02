@@ -8,38 +8,33 @@ export const processCommand = async (
   eventStore: EventStore,
   application: ApplicationDefinition,
   command: CommandWithMetadata,
-): Promise<
-  | { ok: false; reason: 'aggregate-not-found' }
-  | { ok: false; reason: 'command-handler-not-found' }
-  | { ok: false; reason: 'unauthorized' }
-  | { ok: true; eventId: string }
-> => {
+): Promise<{ eventId: string }> => {
   const aggregateDefinition =
     application.domain[command.contextName]?.[command.aggregateName]
 
   if (!aggregateDefinition) {
-    return {
-      ok: false,
-      reason: 'aggregate-not-found',
-    }
+    const error = new Error()
+    error.name = 'AggregateNotFound'
+    error.message = `Aggregate '${command.contextName}.${command.aggregateName}' not found`
+    throw error
   }
 
   const commandDefinition = aggregateDefinition.commands[command.name]
 
   if (!commandDefinition) {
-    return {
-      ok: false,
-      reason: 'command-handler-not-found',
-    }
+    const error = new Error()
+    error.name = 'CommandHandlerNotFound'
+    error.message = `Command handler for '${command.contextName}.${command.aggregateName}.${command.name}' not found`
+    throw error
   }
 
   const isAuthorized = (await commandDefinition.isAuthorized?.(command)) ?? true
 
   if (!isAuthorized) {
-    return {
-      ok: false,
-      reason: 'unauthorized',
-    }
+    const error = new Error()
+    error.name = 'Unauthorized'
+    error.message = 'Unauthorized'
+    throw error
   }
 
   const { name: eventName, data: eventData } = commandDefinition.handle(command)
@@ -67,8 +62,5 @@ export const processCommand = async (
 
   await runReactions(eventStore, application, event)
 
-  return {
-    ok: true,
-    eventId,
-  }
+  return { eventId }
 }

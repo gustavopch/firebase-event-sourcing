@@ -81,31 +81,28 @@ export const createCommandsEndpoint = (
         },
       }
 
-      const result = await processCommand(eventStore, application, command)
+      const { eventId } = await processCommand(eventStore, application, command)
 
-      if (!result.ok && result.reason === 'aggregate-not-found') {
-        const message = `Aggregate '${command.contextName}.${command.aggregateName}' not found`
-        console.log(message)
-        res.status(422).send(message)
-        return
-      }
-
-      if (!result.ok && result.reason === 'command-handler-not-found') {
-        const message = `Command handler for '${command.contextName}.${command.aggregateName}.${command.name}' not found`
-        console.log(message)
-        res.status(422).send(message)
-        return
-      }
-
-      if (!result.ok && result.reason === 'unauthorized') {
-        const message = 'Unauthorized'
-        console.log(message)
-        res.status(403).send(message)
-        return
-      }
-
-      res.status(201).send({ eventId: result.eventId })
+      res.status(201).send({ eventId })
     } catch (error) {
+      if (error.name === 'AggregateNotFound') {
+        console.log(error.message)
+        res.status(422).send(error.message)
+        return
+      }
+
+      if (error.name === 'CommandHandlerNotFound') {
+        console.log(error.message)
+        res.status(422).send(error.message)
+        return
+      }
+
+      if (error.name === 'Unauthorized') {
+        console.log(error.message)
+        res.status(403).send(error.message)
+        return
+      }
+
       console.error('Error while handling command:', error)
       res.status(500).send()
     }
