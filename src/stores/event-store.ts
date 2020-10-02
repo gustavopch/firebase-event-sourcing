@@ -39,7 +39,7 @@ export type OnEvent = (event: Event) => void | Promise<void>
 export type Aggregate<
   TAggregateState extends AggregateState = AggregateState
 > = {
-  aggregateId: string
+  id: string
   revision: number
   state: TAggregateState
 }
@@ -179,7 +179,7 @@ export const createEventStore = (firebaseApp: firebase.app.App): EventStore => {
             }
 
             return {
-              aggregateId,
+              id: aggregateId,
               revision: 0,
               state: {},
             }
@@ -206,7 +206,7 @@ export const createEventStore = (firebaseApp: firebase.app.App): EventStore => {
         transaction.set(eventRef, event)
 
         const newAggregate: Aggregate = {
-          aggregateId,
+          id: aggregateId,
           revision: newRevision,
           state: getAggregateState(event),
         }
@@ -233,7 +233,7 @@ export const createEventStore = (firebaseApp: firebase.app.App): EventStore => {
     },
 
     saveAggregate: async aggregate => {
-      await aggregatesCollection.doc(aggregate.aggregateId).set(aggregate)
+      await aggregatesCollection.doc(aggregate.id).set(aggregate)
     },
   }
 }

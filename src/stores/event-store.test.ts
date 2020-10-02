@@ -23,7 +23,7 @@ const testData: {
 } = {
   aggregates: {
     E: {
-      aggregateId: 'E',
+      id: 'E',
       revision: 3,
       state: {},
     },
@@ -156,7 +156,7 @@ beforeAll(async () => {
     await firebaseApp
       .firestore()
       .collection(AGGREGATES)
-      .doc(aggregate.aggregateId)
+      .doc(aggregate.id)
       .set(aggregate)
   }
 })
@@ -275,16 +275,14 @@ describe('Event Store', () => {
   })
 
   test('getAggregate', async () => {
-    const aggregate = await eventStore.getAggregate(
-      testData.aggregates['E'].aggregateId,
-    )
+    const aggregate = await eventStore.getAggregate(testData.aggregates['E'].id)
 
     expect(aggregate).toEqual(testData.aggregates['E'])
   })
 
   test('saveAggregate', async () => {
     await eventStore.saveAggregate({
-      aggregateId: 'x',
+      id: 'x',
       revision: 7,
       state: {
         foo: 'bar',
@@ -292,7 +290,7 @@ describe('Event Store', () => {
     })
 
     expect(await eventStore.getAggregate('x')).toEqual({
-      aggregateId: 'x',
+      id: 'x',
       revision: 7,
       state: {
         foo: 'bar',
