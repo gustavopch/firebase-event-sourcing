@@ -14,10 +14,6 @@ export const addItem: CommandDefinition<
   ShoppingCartAddItem,
   ShoppingCartItemAdded
 > = {
-  isAuthorized: () => {
-    return true
-  },
-
   handle: command => ({
     name: 'itemAdded',
     data: {

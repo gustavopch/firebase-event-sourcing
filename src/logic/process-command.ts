@@ -33,7 +33,7 @@ export const processCommand = async (
     }
   }
 
-  const isAuthorized = await commandDefinition.isAuthorized(command)
+  const isAuthorized = (await commandDefinition.isAuthorized?.(command)) ?? true
 
   if (!isAuthorized) {
     return {

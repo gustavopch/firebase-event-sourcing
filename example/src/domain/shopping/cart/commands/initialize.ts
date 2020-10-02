@@ -12,10 +12,6 @@ export const initialize: CommandDefinition<
   ShoppingCartInitialize,
   ShoppingCartInitialized
 > = {
-  isAuthorized: () => {
-    return true
-  },
-
   handle: command => ({
     name: 'initialized',
     data: null,
