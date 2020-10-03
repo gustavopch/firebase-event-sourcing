@@ -13,7 +13,13 @@ export type Aggregate<
   state: TAggregateState
 }
 
+export type GetInitialAggregateState<
+  TAggregateState extends AggregateState
+> = () => TAggregateState
+
 export type AggregateDefinition = {
+  getInitialState?: GetInitialAggregateState<AggregateState>
+
   commands: {
     [commandName: string]: CommandDefinition<Command<any>, Event<any>>
   }

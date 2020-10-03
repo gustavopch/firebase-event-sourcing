@@ -1,7 +1,10 @@
 export { createApp } from './app'
 export { createClient } from './client'
 export { createFunctions } from './functions'
-export type { AggregateDefinition } from './types/aggregate'
+export type {
+  AggregateDefinition,
+  GetInitialAggregateState,
+} from './types/aggregate'
 export type {
   Command,
   CommandData,

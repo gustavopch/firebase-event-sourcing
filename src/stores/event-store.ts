@@ -1,6 +1,10 @@
 import firebase from 'firebase-admin'
 
-import { Aggregate, AggregateState } from '../types/aggregate'
+import {
+  Aggregate,
+  AggregateState,
+  GetInitialAggregateState,
+} from '../types/aggregate'
 import { Event } from '../types/event'
 import { ClientInfo } from '../types/misc'
 
@@ -69,6 +73,7 @@ export type EventStore = {
       correlationId: string | null
       client: ClientInfo | null
     },
+    getInitialState: GetInitialAggregateState<TAggregateState> | undefined,
     getNewState: (state: TAggregateState, event: Event) => TAggregateState,
   ) => Promise<string>
 
@@ -153,6 +158,7 @@ export const createEventStore = (firebaseApp: firebase.app.App): EventStore => {
         correlationId,
         client,
       },
+      getInitialState,
       getNewState,
     ) => {
       const eventId = generateId()
@@ -173,7 +179,7 @@ export const createEventStore = (firebaseApp: firebase.app.App): EventStore => {
             return {
               id: aggregateId,
               revision: 0,
-              state: {},
+              state: getInitialState?.() ?? {},
             }
           })
 
