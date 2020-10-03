@@ -1,9 +1,9 @@
 import { GetInitialAggregateState } from '../../../../../src'
 
-export type State = {
+export type ShoppingCartState = {
   isPlaced: boolean
 }
 
-export const getInitialState: GetInitialAggregateState<State> = () => ({
+export const getInitialState: GetInitialAggregateState<ShoppingCartState> = () => ({
   isPlaced: false,
 })

@@ -1,5 +1,5 @@
 import { Event, EventDefinition } from '../../../../../../src'
-import { State } from '../state'
+import { ShoppingCartState } from '../state'
 
 export type ShoppingCartOrderPlaced = Event<{
   contextName: 'shopping'
@@ -8,7 +8,10 @@ export type ShoppingCartOrderPlaced = Event<{
   data: null
 }>
 
-export const orderPlaced: EventDefinition<ShoppingCartOrderPlaced, State> = {
+export const orderPlaced: EventDefinition<
+  ShoppingCartOrderPlaced,
+  ShoppingCartState
+> = {
   handle: (state, event) => ({
     isPlaced: true,
   }),
