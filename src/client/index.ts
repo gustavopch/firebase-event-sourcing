@@ -17,9 +17,12 @@ export type Client<TAppDefinition extends AppDefinition> = {
   }) => Promise<{ eventId: string }>
 }
 
-export const createClient = <TAppDefinition extends AppDefinition>(options: {
-  baseUrl: string
-}): Client<TAppDefinition> => {
+export const createClient = <TAppDefinition extends AppDefinition>(
+  firebaseApp: firebase.app.App,
+  options: {
+    baseUrl: string
+  },
+): Client<TAppDefinition> => {
   return {
     dispatch: async ({
       contextName,
@@ -29,7 +32,7 @@ export const createClient = <TAppDefinition extends AppDefinition>(options: {
       data,
     }) => {
       const url = `${options.baseUrl}/${String(name)}`
-      const idToken = await firebase.auth().currentUser?.getIdToken()
+      const idToken = await firebaseApp.auth().currentUser?.getIdToken()
 
       const res = await window.fetch(url, {
         method: 'POST',

@@ -1,3 +1,5 @@
+import firebase from 'firebase/app'
+
 import { createClient } from '../../src'
 import { config } from './config'
 import type { domain } from './domain'
@@ -11,7 +13,7 @@ type App = {
 }
 
 export const createEventSourcingClient = () => {
-  const client = createClient<App>({
+  const client = createClient<App>(firebase.app(), {
     baseUrl: config.firebase.cloudFunctionsBaseUrl,
   })
 
