@@ -13,9 +13,7 @@ export type Client<TAppDefinition extends AppDefinition> = {
     aggregateName: TAggregateName
     aggregateId: string
     name: TCommandName
-    data: Parameters<
-      TAppDefinition['domain'][TContextName][TAggregateName]['commands'][TCommandName]
-    >[0]
+    data: Parameters<TAppDefinition['domain'][TContextName][TAggregateName]['commands'][TCommandName]>[0] // prettier-ignore
   }) => Promise<{ eventId: string }>
 }
 
