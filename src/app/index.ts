@@ -2,21 +2,21 @@ import firebase from 'firebase-admin'
 
 import { FlowService, createFlowService } from '../services/flow-service'
 import { createEventStore } from '../stores/event-store'
-import { ApplicationDefinition } from '../types/application'
+import { AppDefinition } from '../types/app'
 import { CommandWithMetadata } from '../types/command'
 import { Event } from '../types/event'
 import { getFullyQualifiedEventName } from '../utils/get-fully-qualified-event-name'
 
-export type Application = {
+export type App = {
   dispatch: (command: CommandWithMetadata) => Promise<{ eventId: string }>
   replayEvents: () => Promise<void>
   getFlowService: (params: { causationEvent: Event | null }) => FlowService
 }
 
-export const createApplication = (
+export const createApp = (
   firebaseApp: firebase.app.App,
-  applicationDefinition: ApplicationDefinition,
-): Application => {
+  appDefinition: AppDefinition,
+): App => {
   const eventStore = createEventStore(firebaseApp)
 
   const runProjections = async (event: Event) => {
@@ -25,7 +25,7 @@ export const createApplication = (
     const promises: Array<Promise<void>> = []
 
     // prettier-ignore
-    for (const [viewName, view] of Object.entries(applicationDefinition.views)) {
+    for (const [viewName, view] of Object.entries(appDefinition.views)) {
       for (const [handlerKey, handler] of Object.entries(view.projections)) {
         if (handlerKey === fullyQualifiedEventName) {
           const promise = handler(event)
@@ -50,7 +50,7 @@ export const createApplication = (
     const promises: Array<Promise<void>> = []
 
     // prettier-ignore
-    for (const [flowName, flow] of Object.entries(applicationDefinition.flows)) {
+    for (const [flowName, flow] of Object.entries(appDefinition.flows)) {
       const reactions = flow.reactions ?? {}
       for (const [handlerKey, handler] of Object.entries(reactions)) {
         if (handlerKey === fullyQualifiedEventName) {
@@ -74,8 +74,8 @@ export const createApplication = (
     await Promise.all(promises)
   }
 
-  const dispatch: Application['dispatch'] = async command => {
-    const aggregateDefinition = applicationDefinition.domain[command.contextName]?.[command.aggregateName] // prettier-ignore
+  const dispatch: App['dispatch'] = async command => {
+    const aggregateDefinition = appDefinition.domain[command.contextName]?.[command.aggregateName] // prettier-ignore
     if (!aggregateDefinition) {
       const error = new Error()
       error.name = 'AggregateNotFound'
@@ -128,15 +128,13 @@ export const createApplication = (
     return { eventId }
   }
 
-  const replayEvents: Application['replayEvents'] = async () => {
+  const replayEvents: App['replayEvents'] = async () => {
     await eventStore.getReplay(0, async event => {
       await runProjections(event)
     })
   }
 
-  const getFlowService: Application['getFlowService'] = ({
-    causationEvent,
-  }) => {
+  const getFlowService: App['getFlowService'] = ({ causationEvent }) => {
     return createFlowService(dispatch, causationEvent)
   }
 

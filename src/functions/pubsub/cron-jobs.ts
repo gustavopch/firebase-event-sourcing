@@ -1,8 +1,8 @@
 import firebase from 'firebase-admin'
 import * as functions from 'firebase-functions'
 
-import { createApplication } from '../../application'
-import { ApplicationDefinition } from '../../types/application'
+import { createApp } from '../../app'
+import { AppDefinition } from '../../types/app'
 
 type CronJobFunctions = {
   [functionName: string]: functions.CloudFunction<any>
@@ -10,13 +10,13 @@ type CronJobFunctions = {
 
 export const createCronJobFirebaseFunctions = (
   firebaseApp: firebase.app.App,
-  applicationDefinition: ApplicationDefinition,
+  appDefinition: AppDefinition,
 ): CronJobFunctions => {
-  const application = createApplication(firebaseApp, applicationDefinition)
+  const app = createApp(firebaseApp, appDefinition)
 
   const cronJobFirebaseFunctions: CronJobFunctions = {}
 
-  for (const [flowName, flow] of Object.entries(applicationDefinition.flows)) {
+  for (const [flowName, flow] of Object.entries(appDefinition.flows)) {
     const [firstEntry, ...ignoredEntries] = Object.entries(flow.cron ?? {})
 
     if (!firstEntry) {
@@ -38,7 +38,7 @@ export const createCronJobFirebaseFunctions = (
     cronJobFirebaseFunctions[flowName] = functions.pubsub
       .schedule(schedule)
       .onRun(async ctx => {
-        const flowService = application.getFlowService({
+        const flowService = app.getFlowService({
           causationEvent: null,
         })
 

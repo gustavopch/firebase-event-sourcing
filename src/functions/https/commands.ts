@@ -4,8 +4,8 @@ import express from 'express'
 import firebase from 'firebase-admin'
 import * as functions from 'firebase-functions'
 
-import { createApplication } from '../../application'
-import { ApplicationDefinition } from '../../types/application'
+import { createApp } from '../../app'
+import { AppDefinition } from '../../types/app'
 import { CommandWithMetadata } from '../../types/command'
 import { validateFirebaseIdToken } from './middlewares/validate-firebase-id-token'
 import { parseLocationFromHeaders } from './utils/parse-location-from-headers'
@@ -43,9 +43,9 @@ const validateCommand = ajv.compile(commandSchema)
 
 export const createCommandsEndpoint = (
   firebaseApp: firebase.app.App,
-  applicationDefinition: ApplicationDefinition,
+  appDefinition: AppDefinition,
 ): functions.HttpsFunction => {
-  const application = createApplication(firebaseApp, applicationDefinition)
+  const app = createApp(firebaseApp, appDefinition)
 
   const server = express()
   server.set('trust proxy', true)
@@ -80,7 +80,7 @@ export const createCommandsEndpoint = (
         },
       }
 
-      const { eventId } = await application.dispatch(command)
+      const { eventId } = await app.dispatch(command)
 
       res.status(201).send({ eventId })
     } catch (error) {

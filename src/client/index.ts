@@ -1,29 +1,27 @@
 import firebase from 'firebase/app'
 import 'firebase/auth'
 
-import { ApplicationDefinition } from '../types/application'
+import { AppDefinition } from '../types/app'
 
-export type Client<TApplicationDefinition extends ApplicationDefinition> = {
+export type Client<TAppDefinition extends AppDefinition> = {
   dispatch: <
-    TContextName extends keyof TApplicationDefinition['domain'],
-    TAggregateName extends keyof TApplicationDefinition['domain'][TContextName],
-    TCommandName extends keyof TApplicationDefinition['domain'][TContextName][TAggregateName]['commands']
+    TContextName extends keyof TAppDefinition['domain'],
+    TAggregateName extends keyof TAppDefinition['domain'][TContextName],
+    TCommandName extends keyof TAppDefinition['domain'][TContextName][TAggregateName]['commands']
   >(params: {
     contextName: TContextName
     aggregateName: TAggregateName
     aggregateId: string
     name: TCommandName
     data: Parameters<
-      TApplicationDefinition['domain'][TContextName][TAggregateName]['commands'][TCommandName]
+      TAppDefinition['domain'][TContextName][TAggregateName]['commands'][TCommandName]
     >[0]
   }) => Promise<{ eventId: string }>
 }
 
-export const createClient = <
-  TApplicationDefinition extends ApplicationDefinition
->(options: {
+export const createClient = <TAppDefinition extends AppDefinition>(options: {
   baseUrl: string
-}): Client<TApplicationDefinition> => {
+}): Client<TAppDefinition> => {
   return {
     dispatch: async ({
       contextName,

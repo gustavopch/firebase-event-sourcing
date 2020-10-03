@@ -2,7 +2,7 @@ import { AggregateDefinition } from './aggregate'
 import { FlowDefinition } from './flow'
 import { ViewDefinition } from './view'
 
-export type ApplicationDefinition = {
+export type AppDefinition = {
   domain: {
     [contextName: string]: {
       [aggregateName: string]: AggregateDefinition

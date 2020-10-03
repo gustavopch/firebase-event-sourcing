@@ -1,19 +1,17 @@
 import firebase from 'firebase-admin'
 
-import { ApplicationDefinition } from '../types/application'
+import { AppDefinition } from '../types/app'
 import { createCommandsEndpoint } from './https/commands'
 import { createCronJobFirebaseFunctions } from './pubsub/cron-jobs'
 
-export const createFunctions = <
-  TApplicationDefinition extends ApplicationDefinition
->(
+export const createFunctions = <TAppDefinition extends AppDefinition>(
   firebaseApp: firebase.app.App,
-  applicationDefinition: TApplicationDefinition,
+  appDefinition: TAppDefinition,
 ) => {
-  const cronJobs = createCronJobFirebaseFunctions(firebaseApp, applicationDefinition) // prettier-ignore
+  const cronJobs = createCronJobFirebaseFunctions(firebaseApp, appDefinition)
 
   return {
-    commands: createCommandsEndpoint(firebaseApp, applicationDefinition),
+    commands: createCommandsEndpoint(firebaseApp, appDefinition),
     ...cronJobs,
   }
 }
