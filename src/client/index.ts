@@ -31,10 +31,9 @@ export const createClient = <TAppDefinition extends AppDefinition>(
       name,
       data,
     }) => {
-      const url = `${options.baseUrl}/${String(name)}`
       const idToken = await firebaseApp.auth().currentUser?.getIdToken()
 
-      const res = await fetch(url, {
+      const res = await fetch(`${options.baseUrl}/commands`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
