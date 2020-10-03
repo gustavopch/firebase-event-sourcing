@@ -244,7 +244,7 @@ describe('Event Store', () => {
         correlationId: null,
         client: null,
       },
-      event => ({
+      (state, event) => ({
         isPlaced: false,
       }),
     )

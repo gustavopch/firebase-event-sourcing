@@ -19,6 +19,6 @@ export type AggregateDefinition = {
   }
 
   events: {
-    [eventName: string]: EventDefinition<Event<any>, AggregateState>
+    [eventName: string]: EventDefinition<Event<any>, any>
   }
 }

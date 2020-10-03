@@ -69,7 +69,10 @@ export type EventStore = {
       correlationId: string | null
       client: ClientInfo | null
     },
-    getAggregateState: (event: Event) => TAggregateState,
+    getAggregateState: (
+      state: TAggregateState,
+      event: Event,
+    ) => TAggregateState,
   ) => Promise<string>
 
   importEvents: (events: Event[]) => Promise<void>
@@ -200,7 +203,7 @@ export const createEventStore = (firebaseApp: firebase.app.App): EventStore => {
         const newAggregate: Aggregate = {
           id: aggregateId,
           revision: newRevision,
-          state: getAggregateState(event),
+          state: getAggregateState(oldAggregate.state as any, event),
         }
 
         transaction.set(aggregateRef, newAggregate)
