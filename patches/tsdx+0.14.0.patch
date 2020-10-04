@@ -1,0 +1,220 @@
+diff --git a/node_modules/tsdx/dist/createBuildConfigs.js b/node_modules/tsdx/dist/createBuildConfigs.js
+index 0a6fc49..4bbf936 100644
+--- a/node_modules/tsdx/dist/createBuildConfigs.js
++++ b/node_modules/tsdx/dist/createBuildConfigs.js
+@@ -2,7 +2,6 @@
+ Object.defineProperty(exports, "__esModule", { value: true });
+ const tslib_1 = require("tslib");
+ const fs = tslib_1.__importStar(require("fs-extra"));
+-const jpjs_1 = require("jpjs");
+ const constants_1 = require("./constants");
+ const createRollupConfig_1 = require("./createRollupConfig");
+ // check for custom tsdx.config.js
+@@ -15,10 +14,10 @@ if (fs.existsSync(constants_1.paths.appConfig)) {
+     tsdxConfig = require(constants_1.paths.appConfig);
+ }
+ async function createBuildConfigs(opts) {
+-    const allInputs = jpjs_1.concatAllArray(opts.input.map((input) => createAllFormats(opts, input).map((options, index) => (Object.assign(Object.assign({}, options), { 
++    const allInputs = createAllFormats(opts).map((options, index) => (Object.assign(Object.assign({}, options), { 
+         // We want to know if this is the first run for each entryfile
+         // for certain plugins (e.g. css)
+-        writeMeta: index === 0 })))));
++        writeMeta: index === 0 })));
+     return await Promise.all(allInputs.map(async (options, index) => {
+         // pass the full rollup config to tsdx.config.js override
+         const config = await createRollupConfig_1.createRollupConfig(options, index);
+@@ -26,14 +25,26 @@ async function createBuildConfigs(opts) {
+     }));
+ }
+ exports.createBuildConfigs = createBuildConfigs;
+-function createAllFormats(opts, input) {
++function createAllFormats(opts) {
++    const sharedOpts = {
++        ...opts,
++        // for multi-entry, we use an input object to specify where to put each
++        // file instead of output.file
++        input: opts.input.reduce((dict, input, index) => {
++          dict[`${opts.output.file[index]}`] = input;
++          return dict;
++        }, {}),
++        // multiple UMD names aren't currently supported for multi-entry
++        // (can't code-split UMD anyway)
++        name: opts.name[0],
++    }
+     return [
+-        opts.format.includes('cjs') && Object.assign(Object.assign({}, opts), { format: 'cjs', env: 'development', input }),
+-        opts.format.includes('cjs') && Object.assign(Object.assign({}, opts), { format: 'cjs', env: 'production', input }),
+-        opts.format.includes('esm') && Object.assign(Object.assign({}, opts), { format: 'esm', input }),
+-        opts.format.includes('umd') && Object.assign(Object.assign({}, opts), { format: 'umd', env: 'development', input }),
+-        opts.format.includes('umd') && Object.assign(Object.assign({}, opts), { format: 'umd', env: 'production', input }),
+-        opts.format.includes('system') && Object.assign(Object.assign({}, opts), { format: 'system', env: 'development', input }),
+-        opts.format.includes('system') && Object.assign(Object.assign({}, opts), { format: 'system', env: 'production', input }),
++        opts.format.includes('cjs') && Object.assign(Object.assign({}, sharedOpts), { format: 'cjs', env: 'development' }),
++        opts.format.includes('cjs') && Object.assign(Object.assign({}, sharedOpts), { format: 'cjs', env: 'production' }),
++        opts.format.includes('esm') && Object.assign(Object.assign({}, sharedOpts), { format: 'esm' }),
++        opts.format.includes('umd') && Object.assign(Object.assign({}, sharedOpts), { format: 'umd', env: 'development' }),
++        opts.format.includes('umd') && Object.assign(Object.assign({}, sharedOpts), { format: 'umd', env: 'production' }),
++        opts.format.includes('system') && Object.assign(Object.assign({}, sharedOpts), { format: 'system', env: 'development' }),
++        opts.format.includes('system') && Object.assign(Object.assign({}, sharedOpts), { format: 'system', env: 'production' }),
+     ].filter(Boolean);
+ }
+diff --git a/node_modules/tsdx/dist/createRollupConfig.js b/node_modules/tsdx/dist/createRollupConfig.js
+index d6d9378..0a12c59 100644
+--- a/node_modules/tsdx/dist/createRollupConfig.js
++++ b/node_modules/tsdx/dist/createRollupConfig.js
+@@ -23,15 +23,15 @@ async function createRollupConfig(opts, outputNum) {
+     var _a, _b;
+     const findAndRecordErrorCodes = await extractErrors_1.extractErrors(Object.assign(Object.assign({}, errorCodeOpts), opts));
+     const shouldMinify = opts.minify !== undefined ? opts.minify : opts.env === 'production';
+-    const outputName = [
+-        `${constants_1.paths.appDist}/${utils_1.safePackageName(opts.name)}`,
+-        opts.format,
+-        opts.env,
+-        shouldMinify ? 'min' : '',
+-        'js',
+-    ]
++    const outputSuffix = [opts.format, opts.env, shouldMinify ? 'min' : '', 'js']
+         .filter(Boolean)
+         .join('.');
++    let entryFileNames = `[name].${outputSuffix}`;
++    // if there's only one input, uses the package name instead of the filename
++    const inputKeys = Object.keys(opts.input);
++    if (inputKeys.length === 1) {
++        entryFileNames = `${inputKeys[0]}.${outputSuffix}`;
++    }
+     const tsconfigPath = opts.tsconfig || constants_1.paths.tsconfigJson;
+     // borrowed from https://github.com/facebook/create-react-app/pull/7248
+     const tsconfigJSON = typescript_1.default.readConfigFile(tsconfigPath, typescript_1.default.sys.readFile).config;
+@@ -71,8 +71,10 @@ async function createRollupConfig(opts, outputNum) {
+         },
+         // Establish Rollup output
+         output: {
++            // Set dir to output to
++            dir: constants_1.paths.appDist,
+             // Set filenames of the consumer's package
+-            file: outputName,
++            entryFileNames,
+             // Pass through the file format
+             format: opts.format,
+             // Do not let Rollup call Object.freeze() on namespace import objects
+diff --git a/node_modules/tsdx/dist/index.js b/node_modules/tsdx/dist/index.js
+index d2322e5..184af12 100755
+--- a/node_modules/tsdx/dist/index.js
++++ b/node_modules/tsdx/dist/index.js
+@@ -63,6 +63,41 @@ async function getInputs(entries, source) {
+             ((await exports.isDir(utils_1.resolveApp('src'))) && (await jsOrTs('src/index'))))
+         .map(file => sync_1.default(file)));
+ }
++function getNamesAndFiles(
++  inputs,
++  name
++) {
++  if (inputs.length === 1) {
++    const singleName = name || appPackageJson.name;
++    return {
++      names: [singleName],
++      files: [utils_1.safePackageName(singleName)],
++    };
++  }
++  // if multiple entries, each entry should retain its filename
++  const names = [];
++  const files = [];
++  inputs.forEach(input => {
++    // remove leading src/ directory
++    let filename = input;
++    const srcVars = ['src/', './src/'];
++    if (input.startsWith(srcVars[0]))
++      filename = input.substring(srcVars[0].length);
++    else if (input.startsWith(srcVars[1]))
++      filename = input.substring(srcVars[1].length);
++
++    // remove file extension
++    const noExt = filename
++      .split('.')
++      .slice(0, -1)
++      .join('.');
++
++    // UMD name shouldn't contain slashes, replace with __
++    names.push(noExt.replace('/', '__'));
++    files.push(noExt);
++  });
++  return { names, files };
++}
+ prog
+     .version(pkg.version)
+     .command('create <pkg>')
+@@ -214,7 +249,11 @@ prog
+         await cleanDistFolder();
+     }
+     if (opts.format.includes('cjs')) {
+-        await writeCjsEntryFile(opts.name);
++        await Promise.all(
++            opts.output.file.map(file =>
++                writeCjsEntryFile(file, opts.input.length)
++            )
++        );
+     }
+     let firstTime = true;
+     let successKiller = null;
+@@ -295,8 +334,12 @@ prog
+     await cleanDistFolder();
+     const logger = await createProgressEstimator_1.createProgressEstimator();
+     if (opts.format.includes('cjs')) {
+-        const promise = writeCjsEntryFile(opts.name).catch(logError_1.default);
+-        logger(promise, 'Creating entry file');
++        const promise = await Promise.all(
++            opts.output.file.map(file =>
++                writeCjsEntryFile(file, opts.input.length).catch(logError_1.default)
++            )
++        )
++        logger(promise, `Creating CJS entry file${opts.input.length > 1 ? 's' : ''}`);
+     }
+     try {
+         const promise = asyncro_1.default
+@@ -308,10 +351,10 @@ prog
+             throw e;
+         })
+             .then(async () => {
+-            await deprecated.moveTypes();
+         });
+         logger(promise, 'Building modules');
+         await promise;
++        await deprecated.moveTypes();
+     }
+     catch (error) {
+         logError_1.default(error);
+@@ -319,18 +362,20 @@ prog
+     }
+ });
+ async function normalizeOpts(opts) {
+-    return Object.assign(Object.assign({}, opts), { name: opts.name || appPackageJson.name, input: await getInputs(opts.entry, appPackageJson.source), format: opts.format.split(',').map((format) => {
++    const inputs = await getInputs(opts.entry, appPackageJson.source);
++    const { names, files } = getNamesAndFiles(inputs, opts.name);
++    return Object.assign(Object.assign({}, opts), { name: names, input: inputs, format: opts.format.split(',').map((format) => {
+             if (format === 'es') {
+                 return 'esm';
+             }
+             return format;
+-        }) });
++        }), output: { file: files } });
+ }
+ async function cleanDistFolder() {
+     await fs.remove(constants_1.paths.appDist);
+ }
+-function writeCjsEntryFile(name) {
+-    const baseLine = `module.exports = require('./${utils_1.safePackageName(name)}`;
++function writeCjsEntryFile(file, numEntries) {
++    const baseLine = `module.exports = require('./${file}`;
+     const contents = `
+ 'use strict'
+ 
+@@ -340,7 +385,8 @@ if (process.env.NODE_ENV === 'production') {
+   ${baseLine}.cjs.development.js')
+ }
+ `;
+-    return fs.outputFile(path_1.default.join(constants_1.paths.appDist, 'index.js'), contents);
++    const filename = numEntries === 1 ? 'index.js' : `${file}.js`
++    return fs.outputFile(path_1.default.join(constants_1.paths.appDist, filename), contents);
+ }
+ function getAuthorName() {
+     let author = '';

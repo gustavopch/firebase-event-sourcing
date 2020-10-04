@@ -20,6 +20,7 @@
   "typings": "dist/index.d.ts",
   "repository": "github:gustavopch/firebase-event-sourcing",
   "scripts": {
+    "postinstall": "patch-package",
     "build": "tsdx build --tsconfig ./tsconfig.build.json",
     "lint": "tsdx lint src",
     "type-check": "tsc --noEmit",
@@ -44,6 +45,8 @@
     "lint-staged": "10.4.0",
     "node-fetch": "2.6.1",
     "parcel-bundler": "1.12.4",
+    "patch-package": "6.2.2",
+    "postinstall-postinstall": "2.1.0",
     "tsdx": "0.14.0",
     "typescript": "4.0.3"
   },
