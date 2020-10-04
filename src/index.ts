@@ -1,6 +1,4 @@
-export { createApp } from './app'
 export { createClient } from './client'
-export { createFunctions } from './functions'
 export type {
   AggregateDefinition,
   GetInitialAggregateState,

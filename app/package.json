@@ -1,0 +1,5 @@
+{
+  "main": "../dist/app/index.js",
+  "module": "../dist/app/index.esm.js",
+  "typings": "../dist/app/index.d.ts"
+}

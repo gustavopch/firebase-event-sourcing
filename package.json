@@ -16,12 +16,12 @@
     "dist"
   ],
   "main": "dist/index.js",
-  "module": "dist/firebase-event-sourcing.esm.js",
+  "module": "dist/index.esm.js",
   "typings": "dist/index.d.ts",
   "repository": "github:gustavopch/firebase-event-sourcing",
   "scripts": {
     "postinstall": "patch-package",
-    "build": "tsdx build --tsconfig ./tsconfig.build.json",
+    "build": "tsdx build --tsconfig ./tsconfig.build.json --entry ./src/index.ts --entry ./src/app/index.ts --entry ./src/functions/index.ts",
     "lint": "tsdx lint src",
     "type-check": "tsc --noEmit",
     "test": "./scripts/test.js"
