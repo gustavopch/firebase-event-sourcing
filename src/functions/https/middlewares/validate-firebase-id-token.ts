@@ -24,8 +24,8 @@ export const validateFirebaseIdToken = (
     const authorization = req.header('Authorization')
     const [, idToken] = authorization?.split('Bearer ') ?? []
     if (!idToken) {
-      console.log('Invalid authorization header:', authorization)
-      res.status(403).send('Invalid authorization header')
+      console.log("Missing the 'Authorization' header:", authorization)
+      res.status(403).send('Unauthorized')
       return
     }
 
@@ -35,7 +35,7 @@ export const validateFirebaseIdToken = (
       req.userId = decodedIdToken.uid
       next()
     } catch (error) {
-      console.error('Error while verifying Firebase ID token:', error)
+      console.log("Couldn't verify the Firebase ID token:", error)
       res.status(403).send('Unauthorized')
     }
   }
