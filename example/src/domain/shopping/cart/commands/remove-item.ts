@@ -1,5 +1,6 @@
 import { Command, CommandDefinition } from '../../../../../../src'
 import { ShoppingCartItemRemoved } from '../events/item-removed'
+import { ShoppingCartState } from '../state'
 
 export type ShoppingCartRemoveItem = Command<{
   contextName: 'shopping'
@@ -12,9 +13,10 @@ export type ShoppingCartRemoveItem = Command<{
 
 export const removeItem: CommandDefinition<
   ShoppingCartRemoveItem,
-  ShoppingCartItemRemoved
+  ShoppingCartItemRemoved,
+  ShoppingCartState
 > = {
-  handle: command => ({
+  handle: (state, command) => ({
     name: 'itemRemoved',
     data: {
       itemId: command.data.itemId,

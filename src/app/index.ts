@@ -99,7 +99,9 @@ export const createApp = (
       throw error
     }
 
-    const { name: eventName, data: eventData } = commandDefinition.handle(command) // prettier-ignore
+    const initialState = aggregateDefinition.getInitialState?.() ?? {}
+    const aggregate = await eventStore.getAggregate(command.aggregateId)
+    const { name: eventName, data: eventData } = commandDefinition.handle(aggregate?.state ?? initialState, command) // prettier-ignore
 
     const eventId = await eventStore.saveEvent(
       {

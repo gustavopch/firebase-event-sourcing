@@ -1,5 +1,6 @@
 import { Command, CommandDefinition } from '../../../../../../src'
 import { ShoppingCartOrderPlaced } from '../events/order-placed'
+import { ShoppingCartState } from '../state'
 
 export type ShoppingCartPlaceOrder = Command<{
   contextName: 'shopping'
@@ -10,9 +11,10 @@ export type ShoppingCartPlaceOrder = Command<{
 
 export const placeOrder: CommandDefinition<
   ShoppingCartPlaceOrder,
-  ShoppingCartOrderPlaced
+  ShoppingCartOrderPlaced,
+  ShoppingCartState
 > = {
-  handle: command => ({
+  handle: (state, command) => ({
     name: 'orderPlaced',
     data: null,
   }),

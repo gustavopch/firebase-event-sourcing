@@ -1,3 +1,4 @@
+import { AggregateState } from './aggregate'
 import { Event } from './event'
 import { ClientInfo } from './misc'
 
@@ -35,7 +36,12 @@ export type CommandWithMetadata = Command & {
   metadata: CommandMetadata
 }
 
-export type CommandHandler<TCommand extends Command, TEvent extends Event> = (
+export type CommandHandler<
+  TCommand extends Command,
+  TEvent extends Event,
+  TAggregateState extends AggregateState
+> = (
+  state: TAggregateState,
   command: TCommand,
 ) => {
   name: TEvent['name']
@@ -44,8 +50,9 @@ export type CommandHandler<TCommand extends Command, TEvent extends Event> = (
 
 export type CommandDefinition<
   TCommand extends Command,
-  TEvent extends Event
+  TEvent extends Event,
+  TAggregateState extends AggregateState
 > = {
   isAuthorized?: (command: TCommand) => boolean | Promise<boolean>
-  handle: CommandHandler<TCommand, TEvent>
+  handle: CommandHandler<TCommand, TEvent, TAggregateState>
 }
