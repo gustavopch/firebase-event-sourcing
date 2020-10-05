@@ -114,7 +114,7 @@ export const createApp = (
         correlationId: command.metadata.correlationId,
         client: command.metadata.client,
       },
-      aggregateDefinition.getInitialState,
+      initialState,
       (state, event) => {
         const eventDefinition = aggregateDefinition.events?.[event.name]
         return eventDefinition?.handle?.(state, event) ?? {}
