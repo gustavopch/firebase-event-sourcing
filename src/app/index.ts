@@ -24,7 +24,6 @@ export const createApp = (
 
     const promises: Array<Promise<void>> = []
 
-    // prettier-ignore
     for (const [viewName, view] of Object.entries(appDefinition.views)) {
       for (const [handlerKey, handler] of Object.entries(view.projections)) {
         if (handlerKey === fullyQualifiedEventName) {
@@ -49,14 +48,13 @@ export const createApp = (
 
     const promises: Array<Promise<void>> = []
 
-    // prettier-ignore
     for (const [flowName, flow] of Object.entries(appDefinition.flows)) {
       const reactions = flow.reactions ?? {}
       for (const [handlerKey, handler] of Object.entries(reactions)) {
         if (handlerKey === fullyQualifiedEventName) {
-              const flowService = getFlowService({
-                causationEvent: event,
-              })
+          const flowService = getFlowService({
+            causationEvent: event,
+          })
 
           const promise = handler(event, { flow: flowService })
             .then(() => {
