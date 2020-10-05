@@ -38,9 +38,9 @@ export type CommandWithMetadata = Command & {
 }
 
 export type CommandHandler<
+  TAggregateState extends AggregateState,
   TCommand extends Command,
-  TEvent extends Event,
-  TAggregateState extends AggregateState
+  TEvent extends Event
 > = (
   state: TAggregateState,
   command: TCommand,
@@ -51,10 +51,10 @@ export type CommandHandler<
 }
 
 export type CommandDefinition<
+  TAggregateState extends AggregateState,
   TCommand extends Command,
-  TEvent extends Event,
-  TAggregateState extends AggregateState
+  TEvent extends Event
 > = {
   isAuthorized?: (command: TCommand) => boolean | Promise<boolean>
-  handle: CommandHandler<TCommand, TEvent, TAggregateState>
+  handle: CommandHandler<TAggregateState, TCommand, TEvent>
 }

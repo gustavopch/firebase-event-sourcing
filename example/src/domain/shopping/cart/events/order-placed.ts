@@ -9,8 +9,8 @@ export type ShoppingCartOrderPlaced = Event<{
 }>
 
 export const orderPlaced: EventDefinition<
-  ShoppingCartOrderPlaced,
-  ShoppingCartState
+  ShoppingCartState,
+  ShoppingCartOrderPlaced
 > = {
   handle: (state, event) => ({
     isPlaced: true,

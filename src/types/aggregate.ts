@@ -21,10 +21,10 @@ export type AggregateDefinition = {
   getInitialState?: GetInitialAggregateState<AggregateState>
 
   commands: {
-    [commandName: string]: CommandDefinition<Command<any>, Event<any>, any>
+    [commandName: string]: CommandDefinition<any, Command<any>, Event<any>>
   }
 
   events: {
-    [eventName: string]: EventDefinition<Event<any>, any>
+    [eventName: string]: EventDefinition<any, Event<any>>
   }
 }

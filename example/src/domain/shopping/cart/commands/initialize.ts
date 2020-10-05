@@ -10,9 +10,9 @@ export type ShoppingCartInitialize = Command<{
 }>
 
 export const initialize: CommandDefinition<
+  ShoppingCartState,
   ShoppingCartInitialize,
-  ShoppingCartInitialized,
-  ShoppingCartState
+  ShoppingCartInitialized
 > = {
   handle: (state, command) => ({
     name: 'initialized',

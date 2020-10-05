@@ -10,9 +10,9 @@ export type ShoppingCartPlaceOrder = Command<{
 }>
 
 export const placeOrder: CommandDefinition<
+  ShoppingCartState,
   ShoppingCartPlaceOrder,
-  ShoppingCartOrderPlaced,
-  ShoppingCartState
+  ShoppingCartOrderPlaced
 > = {
   handle: (state, command) => ({
     name: 'orderPlaced',

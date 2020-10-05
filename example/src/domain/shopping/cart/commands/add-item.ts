@@ -12,9 +12,9 @@ export type ShoppingCartAddItem = Command<{
 }>
 
 export const addItem: CommandDefinition<
+  ShoppingCartState,
   ShoppingCartAddItem,
-  ShoppingCartItemAdded,
-  ShoppingCartState
+  ShoppingCartItemAdded
 > = {
   handle: (state, command) => ({
     name: 'itemAdded',

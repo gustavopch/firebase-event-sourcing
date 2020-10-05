@@ -36,13 +36,13 @@ export type Event<
 }
 
 export type EventHandler<
-  TEvent extends Event,
-  TAggregateState extends AggregateState
+  TAggregateState extends AggregateState,
+  TEvent extends Event
 > = (state: TAggregateState, event: TEvent) => TAggregateState
 
 export type EventDefinition<
-  TEvent extends Event,
-  TAggregateState extends AggregateState
+  TAggregateState extends AggregateState,
+  TEvent extends Event
 > = {
-  handle: EventHandler<TEvent, TAggregateState>
+  handle: EventHandler<TAggregateState, TEvent>
 }

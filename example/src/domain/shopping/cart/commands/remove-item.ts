@@ -12,9 +12,9 @@ export type ShoppingCartRemoveItem = Command<{
 }>
 
 export const removeItem: CommandDefinition<
+  ShoppingCartState,
   ShoppingCartRemoveItem,
-  ShoppingCartItemRemoved,
-  ShoppingCartState
+  ShoppingCartItemRemoved
 > = {
   handle: (state, command) => ({
     name: 'itemRemoved',
