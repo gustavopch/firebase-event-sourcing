@@ -1,4 +1,5 @@
 import firebase from 'firebase-admin'
+import { createAggregatesService } from '../services/aggregates-service'
 
 import { FlowService, createFlowService } from '../services/flow-service'
 import { createEventStore } from '../stores/event-store'
@@ -18,6 +19,7 @@ export const createApp = (
   appDefinition: AppDefinition,
 ): App => {
   const eventStore = createEventStore(firebaseApp)
+  const aggregatesService = createAggregatesService(eventStore)
 
   const runProjections = async (event: Event) => {
     const fullyQualifiedEventName = getFullyQualifiedEventName(event)
@@ -99,7 +101,7 @@ export const createApp = (
 
     const initialState = aggregateDefinition.getInitialState?.() ?? {}
     const aggregate = await eventStore.getAggregate(command.aggregateId)
-    const { name: eventName, data: eventData } = commandDefinition.handle(aggregate?.state ?? initialState, command) // prettier-ignore
+    const { name: eventName, data: eventData } = commandDefinition.handle(aggregate?.state ?? initialState, command, { aggregates: aggregatesService }) // prettier-ignore
 
     const eventId = await eventStore.saveEvent(
       {

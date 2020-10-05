@@ -1,3 +1,4 @@
+import { AggregatesService } from '../services/aggregates-service'
 import { AggregateState } from './aggregate'
 import { Event } from './event'
 import { ClientInfo } from './misc'
@@ -43,6 +44,7 @@ export type CommandHandler<
 > = (
   state: TAggregateState,
   command: TCommand,
+  services: { aggregates: AggregatesService },
 ) => {
   name: TEvent['name']
   data: TEvent['data']
