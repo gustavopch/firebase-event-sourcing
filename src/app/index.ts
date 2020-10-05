@@ -58,7 +58,7 @@ export const createApp = (
                 causationEvent: event,
               })
 
-          const promise = handler(flowService, event)
+          const promise = handler(event, { flow: flowService })
             .then(() => {
               console.log(`Ran '${flowName}' reaction with event '${fullyQualifiedEventName}:${event.id}'`) // prettier-ignore
             })

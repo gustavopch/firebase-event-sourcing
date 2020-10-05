@@ -4,8 +4,8 @@ import { Event } from './event'
 export type CronHandler = (flow: FlowService) => Promise<void>
 
 export type ReactionHandler<TEvent extends Event> = (
-  flow: FlowService,
   event: TEvent,
+  services: { flow: FlowService },
 ) => Promise<void>
 
 export type FlowDefinition = {
