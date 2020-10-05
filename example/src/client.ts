@@ -14,7 +14,7 @@ type App = {
 
 export const createEventSourcingClient = () => {
   const client = createClient<App>(firebase.app(), {
-    baseUrl: config.firebase.cloudFunctionsBaseUrl,
+    functionsUrl: config.firebase.functionsUrl,
   })
 
   return client

@@ -20,7 +20,7 @@ export type Client<TAppDefinition extends AppDefinition> = {
 export const createClient = <TAppDefinition extends AppDefinition>(
   firebaseApp: firebase.app.App,
   options: {
-    baseUrl: string
+    functionsUrl: string
   },
 ): Client<TAppDefinition> => {
   return {
@@ -33,7 +33,7 @@ export const createClient = <TAppDefinition extends AppDefinition>(
     }) => {
       const idToken = await firebaseApp.auth().currentUser?.getIdToken()
 
-      const res = await fetch(`${options.baseUrl}/commands`, {
+      const res = await fetch(`${options.functionsUrl}/commands`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
