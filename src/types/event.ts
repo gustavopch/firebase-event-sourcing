@@ -38,7 +38,7 @@ export type Event<
 export type EventHandler<
   TAggregateState extends AggregateState,
   TEvent extends Event
-> = (state: TAggregateState, event: TEvent) => TAggregateState
+> = (state: TAggregateState, event: TEvent) => Partial<TAggregateState>
 
 export type EventDefinition<
   TAggregateState extends AggregateState,
