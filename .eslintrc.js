@@ -57,6 +57,7 @@ module.exports = {
         '@typescript-eslint/no-unsafe-call': 'off',
         '@typescript-eslint/no-unsafe-member-access': 'off',
         '@typescript-eslint/no-unsafe-return': 'off',
+        '@typescript-eslint/restrict-template-expressions': 'off',
         '@typescript-eslint/return-await': 'error',
         '@typescript-eslint/unbound-method': 'off',
       },
