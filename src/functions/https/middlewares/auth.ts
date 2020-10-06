@@ -10,9 +10,7 @@ declare global {
   }
 }
 
-export const validateFirebaseIdToken = (
-  firebaseApp: firebase.app.App,
-): RequestHandler => {
+export const auth = (firebaseApp: firebase.app.App): RequestHandler => {
   return async (req, res, next) => {
     // Testing?
     if (process.env.NODE_ENV === 'test') {

@@ -7,7 +7,7 @@ import * as functions from 'firebase-functions'
 import { createApp } from '../../app'
 import { AppDefinition } from '../../types/app'
 import { CommandWithMetadata } from '../../types/command'
-import { validateFirebaseIdToken } from './middlewares/validate-firebase-id-token'
+import { auth } from './middlewares/auth'
 import { parseLocationFromHeaders } from './utils/parse-location-from-headers'
 
 const commandSchema = {
@@ -50,7 +50,7 @@ export const createCommandsEndpoint = (
   const server = express()
   server.set('trust proxy', true)
   server.use(cors({ origin: true }))
-  server.use(validateFirebaseIdToken(firebaseApp))
+  server.use(auth(firebaseApp))
 
   server.post('/', async (req, res) => {
     try {
