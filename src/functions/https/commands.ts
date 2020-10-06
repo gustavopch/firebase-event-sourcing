@@ -35,6 +35,26 @@ const dataSchema = {
   properties: {},
 }
 
+const causationIdSchema = {
+  type: 'string',
+  minLength: 1,
+}
+
+const correlationIdSchema = {
+  type: 'string',
+  minLength: 1,
+}
+
+const metadataSchema = {
+  type: 'object',
+  properties: {
+    causationId: causationIdSchema,
+    correlationId: correlationIdSchema,
+  },
+  required: ['causationId', 'correlationId'],
+  additionalProperties: false,
+}
+
 const commandSchema = {
   type: 'object',
   properties: {
@@ -48,8 +68,23 @@ const commandSchema = {
   additionalProperties: false,
 }
 
+const commandWithMetadataSchema = {
+  type: 'object',
+  properties: {
+    contextName: contextNameSchema,
+    aggregateName: aggregateNameSchema,
+    aggregateId: aggregateIdSchema,
+    name: nameSchema,
+    data: dataSchema,
+    metadata: metadataSchema,
+  },
+  required: ['contextName', 'aggregateName', 'aggregateId', 'name', 'data'],
+  additionalProperties: false,
+}
+
 const ajv = new Ajv()
 const validateCommand = ajv.compile(commandSchema)
+const validateCommandWithMetadata = ajv.compile(commandWithMetadataSchema)
 
 export const createCommandsEndpoint = (
   firebaseApp: firebase.app.App,
@@ -64,7 +99,10 @@ export const createCommandsEndpoint = (
 
   server.post('/', async (req, res) => {
     try {
-      const isCommandValid = await validateCommand(req.body)
+      const isCommandValid =
+        req.userId === 'system'
+          ? await validateCommandWithMetadata(req.body)
+          : await validateCommand(req.body)
 
       if (!isCommandValid) {
         console.error('Invalid command:', validateCommand.errors)
@@ -79,8 +117,8 @@ export const createCommandsEndpoint = (
         name: req.body.name,
         data: req.body.data,
         metadata: {
-          causationId: null,
-          correlationId: null,
+          causationId: req.body.metadata?.causationId || null,
+          correlationId: req.body.metadata?.correlationId || null,
           client: {
             userId: req.userId || null,
             ip: req.ip || null,
