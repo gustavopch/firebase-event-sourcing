@@ -10,29 +10,39 @@ import { CommandWithMetadata } from '../../types/command'
 import { auth } from './middlewares/auth'
 import { parseLocationFromHeaders } from './utils/parse-location-from-headers'
 
+const contextNameSchema = {
+  type: 'string',
+  minLength: 1,
+}
+
+const aggregateNameSchema = {
+  type: 'string',
+  minLength: 1,
+}
+
+const aggregateIdSchema = {
+  type: 'string',
+  minLength: 1,
+}
+
+const nameSchema = {
+  type: 'string',
+  minLength: 1,
+}
+
+const dataSchema = {
+  type: ['object', 'null'],
+  properties: {},
+}
+
 const commandSchema = {
   type: 'object',
   properties: {
-    contextName: {
-      type: 'string',
-      minLength: 1,
-    },
-    aggregateName: {
-      type: 'string',
-      minLength: 1,
-    },
-    aggregateId: {
-      type: 'string',
-      minLength: 1,
-    },
-    name: {
-      type: 'string',
-      minLength: 1,
-    },
-    data: {
-      type: ['object', 'null'],
-      properties: {},
-    },
+    contextName: contextNameSchema,
+    aggregateName: aggregateNameSchema,
+    aggregateId: aggregateIdSchema,
+    name: nameSchema,
+    data: dataSchema,
   },
   required: ['contextName', 'aggregateName', 'aggregateId', 'name', 'data'],
   additionalProperties: false,
