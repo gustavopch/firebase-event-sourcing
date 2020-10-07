@@ -42,7 +42,7 @@ export type CommandHandler<
   TCommand extends Command,
   TEvent extends Event
 > = (
-  state: TAggregateState,
+  state: TAggregateState | null,
   command: TCommand,
   services: { aggregates: AggregatesService },
 ) => {
