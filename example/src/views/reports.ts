@@ -1,7 +1,7 @@
 import firebase from 'firebase-admin'
 
 import { ViewDefinition } from '../../../src'
-import { ShoppingCartOrderPlaced } from '../domain/shopping/cart/events/order-placed'
+import { ShoppingCartOrderPlaced } from '../domain/shopping/cart/events'
 
 export const REPORTS = 'reports'
 

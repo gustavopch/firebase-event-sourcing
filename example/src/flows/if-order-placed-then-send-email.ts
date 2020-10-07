@@ -1,5 +1,5 @@
 import { FlowDefinition } from '../../../src'
-import { ShoppingCartOrderPlaced } from '../domain/shopping/cart/events/order-placed'
+import { ShoppingCartOrderPlaced } from '../domain/shopping/cart/events'
 
 import { getEmailService } from '../services/email-service'
 

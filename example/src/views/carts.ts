@@ -2,10 +2,12 @@ import firebase from 'firebase-admin'
 
 import { ViewDefinition } from '../../../src'
 import { flatten } from '../../../src/utils/flatten'
-import { ShoppingCartInitialized } from '../domain/shopping/cart/events/initialized'
-import { ShoppingCartItemAdded } from '../domain/shopping/cart/events/item-added'
-import { ShoppingCartItemRemoved } from '../domain/shopping/cart/events/item-removed'
-import { ShoppingCartOrderPlaced } from '../domain/shopping/cart/events/order-placed'
+import {
+  ShoppingCartInitialized,
+  ShoppingCartItemAdded,
+  ShoppingCartItemRemoved,
+  ShoppingCartOrderPlaced,
+} from '../domain/shopping/cart/events'
 
 export const CARTS = 'carts'
 

@@ -2,7 +2,7 @@ import * as testing from '@firebase/rules-unit-testing'
 import firebase from 'firebase-admin'
 
 import { config } from '../../example/src/config'
-import { ShoppingCartInitialized } from '../../example/src/domain/shopping/cart/events/initialized'
+import { ShoppingCartInitialized } from '../../example/src/domain/shopping/cart/events'
 import { ShoppingCartState } from '../../example/src/domain/shopping/cart/state'
 import { Aggregate } from '../types/aggregate'
 import { Event } from '../types/event'
