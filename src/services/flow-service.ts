@@ -6,7 +6,7 @@ export type FlowService = {
 }
 
 export const createFlowService = (
-  dispatch: (command: CommandWithMetadata) => Promise<{ eventId: string }>,
+  dispatch: (command: CommandWithMetadata) => Promise<unknown>,
   causationEvent: Event | null,
 ): FlowService => {
   return {

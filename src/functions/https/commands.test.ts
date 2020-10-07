@@ -91,7 +91,7 @@ describe('/commands endpoint', () => {
 
     expect(res.status).toBe(201)
     expect(await res.json()).toEqual({
-      eventId: expect.any(String),
+      eventIds: [expect.any(String)],
     })
   })
 

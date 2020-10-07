@@ -128,9 +128,9 @@ export const createCommandsEndpoint = (
         },
       }
 
-      const { eventId } = await app.dispatch(command)
+      const { eventIds } = await app.dispatch(command)
 
-      res.status(201).send({ eventId })
+      res.status(201).send({ eventIds })
     } catch (error) {
       if (error.name === 'AggregateNotFound') {
         console.log(error.message)

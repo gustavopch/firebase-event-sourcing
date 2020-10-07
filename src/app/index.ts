@@ -9,7 +9,7 @@ import { Event } from '../types/event'
 import { getFullyQualifiedEventName } from '../utils/get-fully-qualified-event-name'
 
 export type App = {
-  dispatch: (command: CommandWithMetadata) => Promise<{ eventId: string }>
+  dispatch: (command: CommandWithMetadata) => Promise<{ eventIds: string[] }>
   replayEvents: () => Promise<void>
   getFlowService: (params: { causationEvent: Event | null }) => FlowService
 }
@@ -100,35 +100,42 @@ export const createApp = (
     }
 
     const aggregate = await eventStore.getAggregate(command.aggregateId)
-    const { name: eventName, data: eventData } = commandDefinition.handle(aggregate?.state ?? null, command, { aggregates: aggregatesService }) // prettier-ignore
+    const eventOrEventsProps = commandDefinition.handle(aggregate?.state ?? null, command, { aggregates: aggregatesService }) // prettier-ignore
+    const eventsProps = Array.isArray(eventOrEventsProps)
+      ? eventOrEventsProps
+      : [eventOrEventsProps]
 
     const initialState = aggregateDefinition.getInitialState?.() ?? {}
-    const eventId = await eventStore.saveEvent(
-      {
-        contextName: command.contextName,
-        aggregateName: command.aggregateName,
-        aggregateId: command.aggregateId,
-        name: eventName,
-        data: eventData,
-        causationId: command.metadata.causationId,
-        correlationId: command.metadata.correlationId,
-        client: command.metadata.client,
-      },
-      initialState,
-      (state, event) => {
-        const eventDefinition = aggregateDefinition.events?.[event.name]
-        return eventDefinition?.handle?.(state, event) ?? {}
-      },
-    )
+    const eventIds: string[] = []
+    for (const { name: eventName, data: eventData } of eventsProps) {
+      const eventId = await eventStore.saveEvent(
+        {
+          contextName: command.contextName,
+          aggregateName: command.aggregateName,
+          aggregateId: command.aggregateId,
+          name: eventName,
+          data: eventData,
+          causationId: command.metadata.causationId,
+          correlationId: command.metadata.correlationId,
+          client: command.metadata.client,
+        },
+        initialState,
+        (state, event) => {
+          const eventDefinition = aggregateDefinition.events?.[event.name]
+          return eventDefinition?.handle?.(state, event) ?? {}
+        },
+      )
 
-    const event = (await eventStore.getEvent(eventId))!
-    console.log('Saved event:', event)
+      eventIds.push(eventId)
+      const event = (await eventStore.getEvent(eventId))!
+      console.log('Saved event:', event)
 
-    await runProjections(event)
+      await runProjections(event)
 
-    await runReactions(event)
+      await runReactions(event)
+    }
 
-    return { eventId }
+    return { eventIds }
   }
 
   const replayEvents: App['replayEvents'] = async () => {
