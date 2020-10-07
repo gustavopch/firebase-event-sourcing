@@ -1,6 +1,8 @@
 export { createClient } from './client'
 export type {
+  Aggregate,
   AggregateDefinition,
+  AggregateState,
   GetInitialAggregateState,
 } from './types/aggregate'
 export type {
