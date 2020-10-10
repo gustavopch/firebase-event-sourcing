@@ -1,20 +1,15 @@
 import { Command, CommandDefinition } from '../../../../../src'
-import {
-  ShoppingCartInitialized,
-  ShoppingCartItemAdded,
-  ShoppingCartItemRemoved,
-  ShoppingCartOrderPlaced,
-} from './events'
-import { ShoppingCartState } from './state'
+import { Initialized, ItemAdded, ItemRemoved, OrderPlaced } from './events'
+import { State } from './state'
 
-export type ShoppingCartInitialize = Command<{
+export type Initialize = Command<{
   contextName: 'shopping'
   aggregateName: 'cart'
   name: 'initialize'
   data: null
 }>
 
-export type ShoppingCartAddItem = Command<{
+export type AddItem = Command<{
   contextName: 'shopping'
   aggregateName: 'cart'
   name: 'addItem'
@@ -23,7 +18,7 @@ export type ShoppingCartAddItem = Command<{
   }
 }>
 
-export type ShoppingCartRemoveItem = Command<{
+export type RemoveItem = Command<{
   contextName: 'shopping'
   aggregateName: 'cart'
   name: 'removeItem'
@@ -32,29 +27,21 @@ export type ShoppingCartRemoveItem = Command<{
   }
 }>
 
-export type ShoppingCartPlaceOrder = Command<{
+export type PlaceOrder = Command<{
   contextName: 'shopping'
   aggregateName: 'cart'
   name: 'placeOrder'
   data: null
 }>
 
-const initialize: CommandDefinition<
-  ShoppingCartState,
-  ShoppingCartInitialize,
-  ShoppingCartInitialized
-> = {
+const initialize: CommandDefinition<State, Initialize, Initialized> = {
   handle: (state, command) => ({
     name: 'initialized',
     data: null,
   }),
 }
 
-const addItem: CommandDefinition<
-  ShoppingCartState,
-  ShoppingCartAddItem,
-  ShoppingCartItemAdded
-> = {
+const addItem: CommandDefinition<State, AddItem, ItemAdded> = {
   handle: (state, command) => ({
     name: 'itemAdded',
     data: {
@@ -63,11 +50,7 @@ const addItem: CommandDefinition<
   }),
 }
 
-const removeItem: CommandDefinition<
-  ShoppingCartState,
-  ShoppingCartRemoveItem,
-  ShoppingCartItemRemoved
-> = {
+const removeItem: CommandDefinition<State, RemoveItem, ItemRemoved> = {
   handle: (state, command) => ({
     name: 'itemRemoved',
     data: {
@@ -76,11 +59,7 @@ const removeItem: CommandDefinition<
   }),
 }
 
-const placeOrder: CommandDefinition<
-  ShoppingCartState,
-  ShoppingCartPlaceOrder,
-  ShoppingCartOrderPlaced
-> = {
+const placeOrder: CommandDefinition<State, PlaceOrder, OrderPlaced> = {
   handle: (state, command) => ({
     name: 'orderPlaced',
     data: null,

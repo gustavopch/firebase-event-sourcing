@@ -1,14 +1,14 @@
 import { Event, EventDefinition } from '../../../../../src'
-import { ShoppingCartState } from './state'
+import { State } from './state'
 
-export type ShoppingCartInitialized = Event<{
+export type Initialized = Event<{
   contextName: 'shopping'
   aggregateName: 'cart'
   name: 'initialized'
   data: null
 }>
 
-export type ShoppingCartItemAdded = Event<{
+export type ItemAdded = Event<{
   contextName: 'shopping'
   aggregateName: 'cart'
   name: 'itemAdded'
@@ -17,7 +17,7 @@ export type ShoppingCartItemAdded = Event<{
   }
 }>
 
-export type ShoppingCartItemRemoved = Event<{
+export type ItemRemoved = Event<{
   contextName: 'shopping'
   aggregateName: 'cart'
   name: 'itemRemoved'
@@ -26,17 +26,14 @@ export type ShoppingCartItemRemoved = Event<{
   }
 }>
 
-export type ShoppingCartOrderPlaced = Event<{
+export type OrderPlaced = Event<{
   contextName: 'shopping'
   aggregateName: 'cart'
   name: 'orderPlaced'
   data: null
 }>
 
-const orderPlaced: EventDefinition<
-  ShoppingCartState,
-  ShoppingCartOrderPlaced
-> = {
+const orderPlaced: EventDefinition<State, OrderPlaced> = {
   handle: (state, event) => ({
     isPlaced: true,
   }),

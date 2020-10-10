@@ -1,12 +1,12 @@
 import { FlowDefinition } from '../../../src'
-import { ShoppingCartOrderPlaced } from '../domain/shopping/cart/events'
+import * as ShoppingCart from '../domain/shopping/cart/events'
 
 import { getEmailService } from '../services/email-service'
 
 export const ifOrderPlacedThenSendEmail: FlowDefinition = {
   reactions: {
     'shopping.cart.orderPlaced': async (
-      event: ShoppingCartOrderPlaced,
+      event: ShoppingCart.OrderPlaced,
       { flow },
     ) => {
       const emailService = getEmailService()
