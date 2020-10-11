@@ -1,16 +1,15 @@
-import { Event, EventDefinition } from '../../../../../src'
+import { EventDefinition } from '../../../../../src'
+import { EventCreationProps, EventPreset } from '../../../../../src/types/event'
 import { State } from './state'
 
+type Event<T extends EventCreationProps> = EventPreset<'shopping', 'cart', T>
+
 export type Initialized = Event<{
-  contextName: 'shopping'
-  aggregateName: 'cart'
   name: 'initialized'
   data: null
 }>
 
 export type ItemAdded = Event<{
-  contextName: 'shopping'
-  aggregateName: 'cart'
   name: 'itemAdded'
   data: {
     title: string
@@ -18,8 +17,6 @@ export type ItemAdded = Event<{
 }>
 
 export type ItemRemoved = Event<{
-  contextName: 'shopping'
-  aggregateName: 'cart'
   name: 'itemRemoved'
   data: {
     itemId: string
@@ -27,8 +24,6 @@ export type ItemRemoved = Event<{
 }>
 
 export type OrderPlaced = Event<{
-  contextName: 'shopping'
-  aggregateName: 'cart'
   name: 'orderPlaced'
   data: null
 }>

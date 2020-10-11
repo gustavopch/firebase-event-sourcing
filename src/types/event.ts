@@ -35,9 +35,20 @@ export type Event<
   metadata: EventMetadata
 }
 
-export type EventCreationProps<TEvent extends Event> = TEvent extends any
-  ? Pick<TEvent, 'name' | 'data'>
-  : never
+export type EventCreationProps<
+  TEvent extends Event = Event
+> = TEvent extends any ? Pick<TEvent, 'name' | 'data'> : never
+
+export type EventPreset<
+  TContextName extends string,
+  TAggregateName extends string,
+  TEventCreationProps extends EventCreationProps
+> = Event<{
+  contextName: TContextName
+  aggregateName: TAggregateName
+  name: TEventCreationProps['name']
+  data: TEventCreationProps['data']
+}>
 
 export type EventHandler<
   TAggregateState extends AggregateState,

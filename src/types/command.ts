@@ -37,6 +37,21 @@ export type CommandWithMetadata = Command & {
   metadata: CommandMetadata
 }
 
+export type CommandCreationProps<
+  TCommand extends Command = Command
+> = TCommand extends any ? Pick<TCommand, 'name' | 'data'> : never
+
+export type CommandPreset<
+  TContextName extends string,
+  TAggregateName extends string,
+  TEventCreationProps extends EventCreationProps
+> = Command<{
+  contextName: TContextName
+  aggregateName: TAggregateName
+  name: TEventCreationProps['name']
+  data: TEventCreationProps['data']
+}>
+
 export type CommandHandler<
   TAggregateState extends AggregateState,
   TCommand extends Command,

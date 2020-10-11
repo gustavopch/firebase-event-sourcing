@@ -1,17 +1,19 @@
-import { Command, CommandDefinition } from '../../../../../src'
+import { CommandDefinition } from '../../../../../src'
+import {
+  CommandCreationProps,
+  CommandPreset,
+} from '../../../../../src/types/command'
 import { Initialized, ItemAdded, ItemRemoved, OrderPlaced } from './events'
 import { State } from './state'
 
+type Command<T extends CommandCreationProps> = CommandPreset<'shopping', 'cart', T> // prettier-ignore
+
 export type Initialize = Command<{
-  contextName: 'shopping'
-  aggregateName: 'cart'
   name: 'initialize'
   data: null
 }>
 
 export type AddItem = Command<{
-  contextName: 'shopping'
-  aggregateName: 'cart'
   name: 'addItem'
   data: {
     title: string
@@ -19,8 +21,6 @@ export type AddItem = Command<{
 }>
 
 export type RemoveItem = Command<{
-  contextName: 'shopping'
-  aggregateName: 'cart'
   name: 'removeItem'
   data: {
     itemId: string
@@ -28,8 +28,6 @@ export type RemoveItem = Command<{
 }>
 
 export type PlaceOrder = Command<{
-  contextName: 'shopping'
-  aggregateName: 'cart'
   name: 'placeOrder'
   data: null
 }>
