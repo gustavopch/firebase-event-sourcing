@@ -11,16 +11,12 @@ export type Initialized = Event<{
 
 export type ItemAdded = Event<{
   name: 'itemAdded'
-  data: {
-    title: string
-  }
+  data: { title: string }
 }>
 
 export type ItemRemoved = Event<{
   name: 'itemRemoved'
-  data: {
-    itemId: string
-  }
+  data: { itemId: string }
 }>
 
 export type OrderPlaced = Event<{

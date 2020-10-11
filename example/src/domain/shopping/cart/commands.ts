@@ -15,16 +15,12 @@ export type Initialize = Command<{
 
 export type AddItem = Command<{
   name: 'addItem'
-  data: {
-    title: string
-  }
+  data: { title: string }
 }>
 
 export type RemoveItem = Command<{
   name: 'removeItem'
-  data: {
-    itemId: string
-  }
+  data: { itemId: string }
 }>
 
 export type PlaceOrder = Command<{
