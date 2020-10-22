@@ -60,7 +60,10 @@ export type CommandHandler<
   state: TAggregateState | null,
   command: TCommand,
   services: { aggregates: AggregatesService },
-) => EventCreationProps<TEvent> | Array<EventCreationProps<TEvent>>
+) =>
+  | EventCreationProps<TEvent>
+  | Array<EventCreationProps<TEvent>>
+  | Promise<EventCreationProps<TEvent> | Array<EventCreationProps<TEvent>>>
 
 export type CommandDefinition<
   TAggregateState extends AggregateState,

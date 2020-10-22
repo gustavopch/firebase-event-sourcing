@@ -100,7 +100,7 @@ export const createApp = (
     }
 
     const aggregate = await eventStore.getAggregate(command.aggregateId)
-    const eventOrEventsProps = commandDefinition.handle(aggregate?.state ?? null, command, { aggregates: aggregatesService }) // prettier-ignore
+    const eventOrEventsProps = await commandDefinition.handle(aggregate?.state ?? null, command, { aggregates: aggregatesService }) // prettier-ignore
     const eventsProps = Array.isArray(eventOrEventsProps)
       ? eventOrEventsProps
       : [eventOrEventsProps]
