@@ -14,7 +14,7 @@ export type Client<TAppDefinition extends AppDefinition> = {
     aggregateId: string
     name: TCommandName
     data: Parameters<TAppDefinition['domain'][TContextName][TAggregateName]['commands'][TCommandName]['handle']>[1]['data'] // prettier-ignore
-  }) => Promise<{ eventIds: string }>
+  }) => Promise<{ eventIds: string[] }>
 }
 
 export const createClient = <TAppDefinition extends AppDefinition>(
