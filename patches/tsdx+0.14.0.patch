@@ -98,7 +98,7 @@ index d6d9378..0a12c59 100644
              format: opts.format,
              // Do not let Rollup call Object.freeze() on namespace import objects
 diff --git a/node_modules/tsdx/dist/index.js b/node_modules/tsdx/dist/index.js
-index d2322e5..184af12 100755
+index d2322e5..e118f00 100755
 --- a/node_modules/tsdx/dist/index.js
 +++ b/node_modules/tsdx/dist/index.js
 @@ -63,6 +63,41 @@ async function getInputs(entries, source) {
@@ -204,7 +204,7 @@ index d2322e5..184af12 100755
 -function writeCjsEntryFile(name) {
 -    const baseLine = `module.exports = require('./${utils_1.safePackageName(name)}`;
 +function writeCjsEntryFile(file, numEntries) {
-+    const baseLine = `module.exports = require('./${file}`;
++    const baseLine = `module.exports = require('./${file.split('/').reverse()[0]}`;
      const contents = `
  'use strict'
  
