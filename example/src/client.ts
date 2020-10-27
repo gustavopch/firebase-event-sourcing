@@ -6,14 +6,14 @@ import type { domain } from './domain'
 import type { flows } from './flows'
 import type { views } from './views'
 
-type App = {
+type AppDefinition = {
   domain: typeof domain
   flows: typeof flows
   views: typeof views
 }
 
 export const createEventSourcingClient = () => {
-  const client = createClient<App>(firebase.app(), {
+  const client = createClient<AppDefinition>(firebase.app(), {
     functionsUrl: config.firebase.functionsUrl,
   })
 
