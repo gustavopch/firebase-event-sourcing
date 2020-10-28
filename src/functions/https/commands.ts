@@ -128,7 +128,14 @@ export const createCommandsEndpoint = (
         },
       }
 
-      const { eventIds } = await app.dispatch(command)
+      const { eventIds } = await app.dispatch(
+        command.contextName,
+        command.aggregateName,
+        command.name,
+        command.aggregateId,
+        command.data,
+        command.metadata,
+      )
 
       res.status(201).send({ eventIds })
     } catch (error) {

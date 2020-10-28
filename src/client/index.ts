@@ -8,13 +8,13 @@ export type Client<TAppDefinition extends AppDefinition> = {
     TContextName extends keyof TAppDefinition['domain'],
     TAggregateName extends keyof TAppDefinition['domain'][TContextName],
     TCommandName extends keyof TAppDefinition['domain'][TContextName][TAggregateName]['commands']
-  >(params: {
-    contextName: TContextName
-    aggregateName: TAggregateName
-    aggregateId: string
-    name: TCommandName
-    data: Parameters<TAppDefinition['domain'][TContextName][TAggregateName]['commands'][TCommandName]['handle']>[1]['data'] // prettier-ignore
-  }) => Promise<{ eventIds: string[] }>
+  >(
+    contextName: TContextName,
+    aggregateName: TAggregateName,
+    commandName: TCommandName,
+    aggregateId: string,
+    data: Parameters<TAppDefinition['domain'][TContextName][TAggregateName]['commands'][TCommandName]['handle']>[1]['data'], // prettier-ignore
+  ) => Promise<{ eventIds: string[] }>
 }
 
 export const createClient = <TAppDefinition extends AppDefinition>(
@@ -24,13 +24,13 @@ export const createClient = <TAppDefinition extends AppDefinition>(
   },
 ): Client<TAppDefinition> => {
   return {
-    dispatch: async ({
+    dispatch: async (
       contextName,
       aggregateName,
+      commandName,
       aggregateId,
-      name,
       data,
-    }) => {
+    ) => {
       const idToken = await firebaseApp.auth().currentUser?.getIdToken()
 
       const res = await fetch(`${options.functionsUrl}/commands`, {
@@ -43,7 +43,7 @@ export const createClient = <TAppDefinition extends AppDefinition>(
           contextName,
           aggregateName,
           aggregateId,
-          name,
+          name: commandName,
           data,
         }),
       })

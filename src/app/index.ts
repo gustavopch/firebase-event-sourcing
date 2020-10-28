@@ -13,21 +13,21 @@ export type App<TAppDefinition extends AppDefinition> = {
     TContextName extends keyof TAppDefinition['domain'] & string,
     TAggregateName extends keyof TAppDefinition['domain'][TContextName] & string, // prettier-ignore
     TCommandName extends keyof TAppDefinition['domain'][TContextName][TAggregateName]['commands'] & string // prettier-ignore
-  >(command: {
-    contextName: TContextName
-    aggregateName: TAggregateName
-    aggregateId: string
-    name: TCommandName
-    data: Parameters<TAppDefinition['domain'][TContextName][TAggregateName]['commands'][TCommandName]['handle']>[1]['data'] // prettier-ignore
-    metadata?: CommandMetadata
-  }) => Promise<{ eventIds: string[] }>
+  >(
+    contextName: TContextName,
+    aggregateName: TAggregateName,
+    commandName: TCommandName,
+    aggregateId: string,
+    data: Parameters<TAppDefinition['domain'][TContextName][TAggregateName]['commands'][TCommandName]['handle']>[1]['data'], // prettier-ignore
+    metadata?: CommandMetadata,
+  ) => Promise<{ eventIds: string[] }>
   replayEvents: () => Promise<void>
   getFlowService: (params: { causationEvent: Event | null }) => FlowService
 }
 
 export const createApp = <TAppDefinition extends AppDefinition>(
   firebaseApp: firebase.app.App,
-  appDefinition: AppDefinition,
+  appDefinition: TAppDefinition,
 ): App<TAppDefinition> => {
   const eventStore = createEventStore(firebaseApp)
   const aggregatesService = createAggregatesService(eventStore)
@@ -85,21 +85,36 @@ export const createApp = <TAppDefinition extends AppDefinition>(
     await Promise.all(promises)
   }
 
-  const dispatch: App<TAppDefinition>['dispatch'] = async command => {
-    const aggregateDefinition = appDefinition.domain[command.contextName]?.[command.aggregateName] // prettier-ignore
+  const dispatch: App<TAppDefinition>['dispatch'] = async (
+    contextName,
+    aggregateName,
+    commandName,
+    aggregateId,
+    data,
+    metadata,
+  ) => {
+    const aggregateDefinition = appDefinition.domain[contextName]?.[aggregateName] // prettier-ignore
     if (!aggregateDefinition) {
       const error = new Error()
       error.name = 'AggregateNotFound'
-      error.message = `Aggregate '${command.contextName}.${command.aggregateName}' not found`
+      error.message = `Aggregate '${contextName}.${aggregateName}' not found`
       throw error
     }
 
-    const commandDefinition = aggregateDefinition.commands[command.name]
+    const commandDefinition = aggregateDefinition.commands[commandName]
     if (!commandDefinition) {
       const error = new Error()
       error.name = 'CommandHandlerNotFound'
-      error.message = `Command handler for '${command.contextName}.${command.aggregateName}.${command.name}' not found`
+      error.message = `Command handler for '${contextName}.${aggregateName}.${commandName}' not found`
       throw error
+    }
+
+    const command = {
+      contextName,
+      aggregateName,
+      aggregateId,
+      name: commandName,
+      data,
     }
 
     const isAuthorized = (await commandDefinition.isAuthorized?.(command)) ?? true // prettier-ignore
@@ -110,7 +125,7 @@ export const createApp = <TAppDefinition extends AppDefinition>(
       throw error
     }
 
-    const aggregate = await eventStore.getAggregate(command.aggregateId)
+    const aggregate = await eventStore.getAggregate(aggregateId)
     const eventOrEventsProps = await commandDefinition.handle(aggregate?.state ?? null, command, { aggregates: aggregatesService }) // prettier-ignore
     const eventsProps = Array.isArray(eventOrEventsProps)
       ? eventOrEventsProps
@@ -121,14 +136,14 @@ export const createApp = <TAppDefinition extends AppDefinition>(
     for (const { name: eventName, data: eventData } of eventsProps) {
       const eventId = await eventStore.saveEvent(
         {
-          contextName: command.contextName,
-          aggregateName: command.aggregateName,
-          aggregateId: command.aggregateId,
+          contextName,
+          aggregateName,
+          aggregateId,
           name: eventName,
           data: eventData,
-          causationId: command.metadata?.causationId ?? null,
-          correlationId: command.metadata?.correlationId ?? null,
-          client: command.metadata?.client ?? null,
+          causationId: metadata?.causationId ?? null,
+          correlationId: metadata?.correlationId ?? null,
+          client: metadata?.client ?? null,
         },
         initialState,
         (state, event) => {
@@ -158,7 +173,18 @@ export const createApp = <TAppDefinition extends AppDefinition>(
   const getFlowService: App<TAppDefinition>['getFlowService'] = ({
     causationEvent,
   }) => {
-    return createFlowService(dispatch, causationEvent)
+    return createFlowService(
+      command =>
+        dispatch(
+          command.contextName,
+          command.aggregateName,
+          command.name,
+          command.aggregateId,
+          command.data,
+          command.metadata,
+        ),
+      causationEvent,
+    )
   }
 
   return {
