@@ -19,7 +19,7 @@ export type App<TAppDefinition extends AppDefinition> = {
     aggregateId: string
     name: TCommandName
     data: Parameters<TAppDefinition['domain'][TContextName][TAggregateName]['commands'][TCommandName]['handle']>[1]['data'] // prettier-ignore
-    metadata: CommandMetadata
+    metadata?: CommandMetadata
   }) => Promise<{ eventIds: string[] }>
   replayEvents: () => Promise<void>
   getFlowService: (params: { causationEvent: Event | null }) => FlowService
@@ -126,9 +126,9 @@ export const createApp = <TAppDefinition extends AppDefinition>(
           aggregateId: command.aggregateId,
           name: eventName,
           data: eventData,
-          causationId: command.metadata.causationId,
-          correlationId: command.metadata.correlationId,
-          client: command.metadata.client,
+          causationId: command.metadata?.causationId ?? null,
+          correlationId: command.metadata?.correlationId ?? null,
+          client: command.metadata?.client ?? null,
         },
         initialState,
         (state, event) => {
