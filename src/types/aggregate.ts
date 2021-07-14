@@ -5,17 +5,15 @@ export type AggregateState = {
   [key: string]: any
 }
 
-export type Aggregate<
-  TAggregateState extends AggregateState = AggregateState
-> = {
-  id: string
-  revision: number
-  state: TAggregateState
-}
+export type Aggregate<TAggregateState extends AggregateState = AggregateState> =
+  {
+    id: string
+    revision: number
+    state: TAggregateState
+  }
 
-export type GetInitialAggregateState<
-  TAggregateState extends AggregateState
-> = () => TAggregateState
+export type GetInitialAggregateState<TAggregateState extends AggregateState> =
+  () => TAggregateState
 
 export type AggregateDefinition = {
   getInitialState?: GetInitialAggregateState<AggregateState>

@@ -12,7 +12,7 @@ export type App<TAppDefinition extends AppDefinition> = {
   dispatch: <
     TContextName extends keyof TAppDefinition['domain'] & string,
     TAggregateName extends keyof TAppDefinition['domain'][TContextName] & string, // prettier-ignore
-    TCommandName extends keyof TAppDefinition['domain'][TContextName][TAggregateName]['commands'] & string // prettier-ignore
+    TCommandName extends keyof TAppDefinition['domain'][TContextName][TAggregateName]['commands'] & string, // prettier-ignore
   >(
     contextName: TContextName,
     aggregateName: TAggregateName,

@@ -24,7 +24,7 @@ export type Command<
     aggregateName: string
     name: string
     data: CommandData
-  }
+  },
 > = {
   contextName: TProps['contextName']
   aggregateName: TProps['aggregateName']
@@ -37,14 +37,13 @@ export type CommandWithMetadata = Command & {
   metadata: CommandMetadata
 }
 
-export type CommandCreationProps<
-  TCommand extends Command = Command
-> = TCommand extends any ? Pick<TCommand, 'name' | 'data'> : never
+export type CommandCreationProps<TCommand extends Command = Command> =
+  TCommand extends any ? Pick<TCommand, 'name' | 'data'> : never
 
 export type CommandPreset<
   TContextName extends string,
   TAggregateName extends string,
-  TEventCreationProps extends EventCreationProps
+  TEventCreationProps extends EventCreationProps,
 > = Command<{
   contextName: TContextName
   aggregateName: TAggregateName
@@ -55,7 +54,7 @@ export type CommandPreset<
 export type CommandHandler<
   TAggregateState extends AggregateState,
   TCommand extends Command,
-  TEvent extends Event
+  TEvent extends Event,
 > = (
   state: TAggregateState | null,
   command: TCommand,
@@ -68,7 +67,7 @@ export type CommandHandler<
 export type CommandDefinition<
   TAggregateState extends AggregateState,
   TCommand extends Command,
-  TEvent extends Event
+  TEvent extends Event,
 > = {
   isAuthorized?: (command: TCommand) => boolean | Promise<boolean>
   handle: CommandHandler<TAggregateState, TCommand, TEvent>

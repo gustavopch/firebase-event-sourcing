@@ -7,7 +7,7 @@ export type Client<TAppDefinition extends AppDefinition> = {
   dispatch: <
     TContextName extends keyof TAppDefinition['domain'],
     TAggregateName extends keyof TAppDefinition['domain'][TContextName],
-    TCommandName extends keyof TAppDefinition['domain'][TContextName][TAggregateName]['commands']
+    TCommandName extends keyof TAppDefinition['domain'][TContextName][TAggregateName]['commands'],
   >(
     contextName: TContextName,
     aggregateName: TAggregateName,
