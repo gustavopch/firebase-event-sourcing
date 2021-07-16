@@ -53,7 +53,7 @@ export type CommandHandler<
   TEvent extends Event,
 > = (
   state: TAggregateState | null,
-  command: TCommand,
+  command: TCommand & { metadata: CommandMetadata },
   services: { aggregates: AggregatesService },
 ) =>
   | EventCreationProps<TEvent>

@@ -111,6 +111,7 @@ export const createApp = <TAppDefinition extends AppDefinition>(
       aggregateId,
       name: commandName,
       data,
+      metadata,
     }
 
     const isAuthorized = (await commandDefinition.isAuthorized?.(command)) ?? true // prettier-ignore
