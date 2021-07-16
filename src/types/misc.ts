@@ -9,7 +9,7 @@ export type Location = {
 }
 
 export type ClientInfo = {
-  ip: string | null
-  ua: string | null
+  ip: string
+  ua: string
   location: Location | null
 }

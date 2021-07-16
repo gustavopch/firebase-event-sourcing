@@ -103,6 +103,14 @@ export const createCommandsEndpoint = (
         return
       }
 
+      const userAgent = req.header('User-Agent')
+
+      if (!userAgent) {
+        console.error("Missing 'User-Agent' header", { headers: req.headers })
+        res.status(400).send("Missing 'User-Agent' header")
+        return
+      }
+
       const command: CommandWithMetadata = {
         aggregateName: req.body.aggregateName,
         aggregateId: req.body.aggregateId,
@@ -113,8 +121,8 @@ export const createCommandsEndpoint = (
           correlationId: req.body.metadata?.correlationId || null,
           userId: req.userId,
           client: {
-            ip: req.ip || null,
-            ua: req.header('User-Agent') || null,
+            ip: req.ip,
+            ua: userAgent,
             location: parseLocationFromHeaders(req),
           },
         },
