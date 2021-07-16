@@ -10,6 +10,7 @@ export type CommandData = {
 export type CommandMetadata = {
   causationId: string | null
   correlationId: string | null
+  userId: string
   client: ClientInfo | null
 }
 

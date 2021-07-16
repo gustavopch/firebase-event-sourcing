@@ -138,6 +138,7 @@ export const createApp = <TAppDefinition extends AppDefinition>(
           data: eventData,
           causationId: metadata.causationId,
           correlationId: metadata.correlationId,
+          userId: metadata.userId,
           client: metadata.client,
         },
         initialState,

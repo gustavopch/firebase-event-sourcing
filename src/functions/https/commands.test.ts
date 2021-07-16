@@ -121,10 +121,10 @@ describe('/commands endpoint', () => {
         metadata: {
           causationId: eventId,
           correlationId: eventId,
+          userId: 'test',
           timestamp: expect.any(Number),
           revision: 1,
           client: {
-            userId: 'test',
             ip: '127.0.0.1',
             ua: expect.any(String),
             location: null,

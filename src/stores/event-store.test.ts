@@ -38,14 +38,10 @@ const testData: {
       metadata: {
         causationId: '1',
         correlationId: '1',
+        userId: 'john',
         timestamp: new Date('2020-07-01').getTime(),
         revision: 1,
-        client: {
-          userId: 'john',
-          ip: null,
-          ua: null,
-          location: null,
-        },
+        client: null,
       },
     },
     '2': {
@@ -57,6 +53,7 @@ const testData: {
       metadata: {
         causationId: '2',
         correlationId: '2',
+        userId: 'system',
         timestamp: new Date('2020-07-02').getTime(),
         revision: 1,
         client: null,
@@ -71,14 +68,10 @@ const testData: {
       metadata: {
         causationId: '3',
         correlationId: '3',
+        userId: 'john',
         timestamp: new Date('2020-07-03').getTime(),
         revision: 1,
-        client: {
-          userId: 'john',
-          ip: null,
-          ua: null,
-          location: null,
-        },
+        client: null,
       },
     },
     '4': {
@@ -90,6 +83,7 @@ const testData: {
       metadata: {
         causationId: '4',
         correlationId: '4',
+        userId: 'system',
         timestamp: new Date('2020-07-04').getTime(),
         revision: 1,
         client: null,
@@ -104,6 +98,7 @@ const testData: {
       metadata: {
         causationId: '5',
         correlationId: '5',
+        userId: 'system',
         timestamp: new Date('2020-07-05').getTime(),
         revision: 1,
         client: null,
@@ -118,6 +113,7 @@ const testData: {
       metadata: {
         causationId: '5',
         correlationId: '5',
+        userId: 'system',
         timestamp: new Date('2020-07-05').getTime(),
         revision: 2,
         client: null,
@@ -132,6 +128,7 @@ const testData: {
       metadata: {
         causationId: '5.1',
         correlationId: '5',
+        userId: 'system',
         timestamp: new Date('2020-07-05').getTime(),
         revision: 3,
         client: null,
@@ -231,6 +228,7 @@ describe('Event Store', () => {
         data: null,
         causationId: null,
         correlationId: null,
+        userId: 'system',
         client: null,
       },
       {
@@ -250,6 +248,7 @@ describe('Event Store', () => {
       metadata: {
         causationId: id,
         correlationId: id,
+        userId: 'system',
         timestamp: expect.any(Number),
         revision: 1,
         client: null,

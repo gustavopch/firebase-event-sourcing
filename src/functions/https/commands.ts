@@ -111,8 +111,8 @@ export const createCommandsEndpoint = (
         metadata: {
           causationId: req.body.metadata?.causationId || null,
           correlationId: req.body.metadata?.correlationId || null,
+          userId: req.userId,
           client: {
-            userId: req.userId || null,
             ip: req.ip || null,
             ua: req.header('User-Agent') || null,
             location: parseLocationFromHeaders(req),

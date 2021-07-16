@@ -8,6 +8,7 @@ export type EventData = {
 export type EventMetadata = {
   causationId: string
   correlationId: string
+  userId: string
   timestamp: number
   revision: number
   client: ClientInfo | null

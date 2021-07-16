@@ -65,6 +65,7 @@ export type EventStore = {
       data: TEvent['data']
       causationId: string | null
       correlationId: string | null
+      userId: string
       client: ClientInfo | null
     },
     initialState: TAggregateState,
@@ -110,11 +111,7 @@ export const createEventStore = (firebaseApp: firebase.app.App): EventStore => {
     },
 
     getEventsByUserId: async (userId, onNext) => {
-      const query = eventsCollection.where(
-        'metadata.client.userId',
-        '==',
-        userId,
-      )
+      const query = eventsCollection.where('metadata.userId', '==', userId)
 
       await queryInBatches(query, onNext)
     },
@@ -143,6 +140,7 @@ export const createEventStore = (firebaseApp: firebase.app.App): EventStore => {
         data,
         causationId,
         correlationId,
+        userId,
         client,
       },
       initialState,
@@ -181,6 +179,7 @@ export const createEventStore = (firebaseApp: firebase.app.App): EventStore => {
           metadata: {
             causationId: causationId ?? eventId,
             correlationId: correlationId ?? eventId,
+            userId,
             timestamp: Date.now(),
             revision: newRevision,
             client,
