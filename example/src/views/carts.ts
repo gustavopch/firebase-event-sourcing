@@ -2,7 +2,7 @@ import firebase from 'firebase-admin'
 
 import { ViewDefinition } from '../../../src'
 import { flatten } from '../../../src/utils/flatten'
-import * as CartEvents from '../domain/cart/events'
+import * as Domain from '../domain'
 
 export const CARTS = 'carts'
 
@@ -22,7 +22,7 @@ export type Cart = {
 
 export const carts: ViewDefinition = {
   projections: {
-    'cart.initialized': async (event: CartEvents.Initialized) => {
+    'cart.initialized': async (event: Domain.Cart.Initialized) => {
       const db = firebase.firestore()
 
       const cart: Cart = {
@@ -36,7 +36,7 @@ export const carts: ViewDefinition = {
       await db.collection(CARTS).doc(event.aggregateId).set(cart)
     },
 
-    'cart.itemAdded': async (event: CartEvents.ItemAdded) => {
+    'cart.itemAdded': async (event: Domain.Cart.ItemAdded) => {
       const db = firebase.firestore()
 
       const itemId = db.collection('whatever').doc().id
@@ -52,7 +52,7 @@ export const carts: ViewDefinition = {
       await db.collection(CARTS).doc(event.aggregateId).update(flatten(nfe))
     },
 
-    'cart.itemRemoved': async (event: CartEvents.ItemRemoved) => {
+    'cart.itemRemoved': async (event: Domain.Cart.ItemRemoved) => {
       const db = firebase.firestore()
 
       const nfe: Partial<Cart> = {
@@ -64,7 +64,7 @@ export const carts: ViewDefinition = {
       await db.collection(CARTS).doc(event.aggregateId).update(flatten(nfe))
     },
 
-    'cart.orderPlaced': async (event: CartEvents.OrderPlaced) => {
+    'cart.orderPlaced': async (event: Domain.Cart.OrderPlaced) => {
       const db = firebase.firestore()
 
       const nfe: Partial<Cart> = {

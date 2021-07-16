@@ -1,7 +1,7 @@
 import firebase from 'firebase-admin'
 
 import { ViewDefinition } from '../../../src'
-import * as CartEvents from '../domain/cart/events'
+import * as Domain from '../domain'
 
 export const REPORTS = 'reports'
 
@@ -14,7 +14,7 @@ export type Report = {
 
 export const reports: ViewDefinition = {
   projections: {
-    'cart.orderPlaced': async (event: CartEvents.OrderPlaced) => {
+    'cart.orderPlaced': async (event: Domain.Cart.OrderPlaced) => {
       const db = firebase.firestore()
 
       const report: Report = {

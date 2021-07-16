@@ -2,8 +2,7 @@ import * as testing from '@firebase/rules-unit-testing'
 import firebase from 'firebase-admin'
 
 import { config } from '../../example/src/config'
-import * as CartEvents from '../../example/src/domain/cart/events'
-import { State as CartState } from '../../example/src/domain/cart/state'
+import * as Domain from '../../example/src/domain'
 import { Aggregate } from '../types/aggregate'
 import { Event } from '../types/event'
 import { AGGREGATES, EVENTS, createEventStore } from './event-store'
@@ -226,7 +225,10 @@ describe('Event Store', () => {
   })
 
   test('saveEvent', async () => {
-    const id = await eventStore.saveEvent<CartEvents.Initialized, CartState>(
+    const id = await eventStore.saveEvent<
+      Domain.Cart.Initialized,
+      Domain.Cart.State
+    >(
       {
         aggregateName: 'cart',
         aggregateId: 'x',
