@@ -3,8 +3,6 @@ import firebase from 'firebase-admin'
 import { ViewDefinition, flatten, generateId } from '../../../src'
 import * as Domain from '../domain'
 
-export const CARTS = 'carts'
-
 type CartStatus = 'open' | 'placed'
 
 type CartItem = {
@@ -19,11 +17,13 @@ export type Cart = {
   items: { [id: string]: CartItem }
 }
 
+export const cartsCollection = () => {
+  return firebase.firestore().collection('carts')
+}
+
 export const carts: ViewDefinition = {
   projections: {
     'cart.initialized': async (event: Domain.Cart.Initialized) => {
-      const db = firebase.firestore()
-
       const cart: Cart = {
         id: event.aggregateId,
         initializedAt: Date.now(),
@@ -32,12 +32,10 @@ export const carts: ViewDefinition = {
         items: {},
       }
 
-      await db.collection(CARTS).doc(event.aggregateId).set(cart)
+      await cartsCollection().doc(event.aggregateId).set(cart)
     },
 
     'cart.itemAdded': async (event: Domain.Cart.ItemAdded) => {
-      const db = firebase.firestore()
-
       const nfe: Partial<Cart> = {
         items: {
           [generateId()]: {
@@ -46,30 +44,26 @@ export const carts: ViewDefinition = {
         },
       }
 
-      await db.collection(CARTS).doc(event.aggregateId).update(flatten(nfe))
+      await cartsCollection().doc(event.aggregateId).update(flatten(nfe))
     },
 
     'cart.itemRemoved': async (event: Domain.Cart.ItemRemoved) => {
-      const db = firebase.firestore()
-
       const nfe: Partial<Cart> = {
         items: {
           [event.data.itemId]: firebase.firestore.FieldValue.delete() as any,
         },
       }
 
-      await db.collection(CARTS).doc(event.aggregateId).update(flatten(nfe))
+      await cartsCollection().doc(event.aggregateId).update(flatten(nfe))
     },
 
     'cart.orderPlaced': async (event: Domain.Cart.OrderPlaced) => {
-      const db = firebase.firestore()
-
       const nfe: Partial<Cart> = {
         placedAt: Date.now(),
         status: 'placed',
       }
 
-      await db.collection(CARTS).doc(event.aggregateId).update(flatten(nfe))
+      await cartsCollection().doc(event.aggregateId).update(flatten(nfe))
     },
   },
 }

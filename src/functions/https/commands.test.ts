@@ -3,7 +3,7 @@ import firebase from 'firebase-admin'
 import fetch from 'node-fetch'
 
 import { config } from '../../../example/src/config'
-import { CARTS } from '../../../example/src/views/carts'
+import { cartsCollection } from '../../../example/src/views/carts'
 import { createEventStore } from '../../stores/event-store'
 import { Event } from '../../types/event'
 
@@ -14,8 +14,6 @@ const firebaseApp = firebase.initializeApp({
 firebaseApp.firestore().settings({
   ignoreUndefinedProperties: true,
 })
-
-const db = firebaseApp.firestore()
 
 const eventStore = createEventStore(firebaseApp)
 
@@ -150,7 +148,7 @@ describe('/commands endpoint', () => {
       }),
     })
 
-    const cartSnap = await db.collection(CARTS).doc('123').get()
+    const cartSnap = await cartsCollection().doc('123').get()
 
     expect(cartSnap.data()).toEqual({
       id: '123',
