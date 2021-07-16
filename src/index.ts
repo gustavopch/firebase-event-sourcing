@@ -25,3 +25,4 @@ export type {
 export type { FlowDefinition } from './types/flow'
 export type { ViewDefinition } from './types/view'
 export { flatten } from './utils/flatten'
+export { generateId } from './utils/generate-id'

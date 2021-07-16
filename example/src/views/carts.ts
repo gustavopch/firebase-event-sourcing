@@ -1,6 +1,6 @@
 import firebase from 'firebase-admin'
 
-import { ViewDefinition, flatten } from '../../../src'
+import { ViewDefinition, flatten, generateId } from '../../../src'
 import * as Domain from '../domain'
 
 export const CARTS = 'carts'
@@ -38,11 +38,9 @@ export const carts: ViewDefinition = {
     'cart.itemAdded': async (event: Domain.Cart.ItemAdded) => {
       const db = firebase.firestore()
 
-      const itemId = db.collection('whatever').doc().id
-
       const nfe: Partial<Cart> = {
         items: {
-          [itemId]: {
+          [generateId()]: {
             title: event.data.title,
           },
         },

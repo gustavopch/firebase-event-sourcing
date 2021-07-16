@@ -3,6 +3,7 @@ import firebase from 'firebase-admin'
 import { Aggregate, AggregateState } from '../types/aggregate'
 import { Event } from '../types/event'
 import { ClientInfo } from '../types/misc'
+import { generateId } from '../utils/generate-id'
 
 export const AGGREGATES = 'aggregates'
 export const EVENTS = 'events'
@@ -37,8 +38,6 @@ const queryInBatches = async (
 export type OnEvent = (event: Event) => void | Promise<void>
 
 export type EventStore = {
-  generateId: () => string
-
   getEvent: (eventId: string | null | undefined) => Promise<Event | null>
 
   getEventsByCausationId: (causationId: string) => Promise<Event[]>
@@ -86,13 +85,7 @@ export const createEventStore = (firebaseApp: firebase.app.App): EventStore => {
   const aggregatesCollection = db.collection(AGGREGATES)
   const eventsCollection = db.collection(EVENTS)
 
-  const generateId = () => {
-    return db.collection('whatever').doc().id
-  }
-
   return {
-    generateId,
-
     getEvent: async eventId => {
       if (!eventId) {
         return null

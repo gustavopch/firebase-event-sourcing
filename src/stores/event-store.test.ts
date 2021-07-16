@@ -160,11 +160,6 @@ afterAll(async () => {
 })
 
 describe('Event Store', () => {
-  test('generateId', () => {
-    const id = eventStore.generateId()
-    expect(typeof id).toBe('string')
-  })
-
   test('getEvent', async () => {
     expect(await eventStore.getEvent('1')).toEqual(testData.events['1'])
   })
