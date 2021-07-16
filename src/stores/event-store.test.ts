@@ -2,8 +2,8 @@ import * as testing from '@firebase/rules-unit-testing'
 import firebase from 'firebase-admin'
 
 import { config } from '../../example/src/config'
-import * as ShoppingCart from '../../example/src/domain/shopping/cart/events'
-import { State as ShoppingCartState } from '../../example/src/domain/shopping/cart/state'
+import * as CartEvents from '../../example/src/domain/cart/events'
+import { State as CartState } from '../../example/src/domain/cart/state'
 import { Aggregate } from '../types/aggregate'
 import { Event } from '../types/event'
 import { AGGREGATES, EVENTS, createEventStore } from './event-store'
@@ -31,7 +31,6 @@ const testData: {
   },
   events: {
     '1': {
-      contextName: 'shopping',
       aggregateName: 'cart',
       aggregateId: 'A',
       name: 'initialized',
@@ -51,7 +50,6 @@ const testData: {
       },
     },
     '2': {
-      contextName: 'shopping',
       aggregateName: 'cart',
       aggregateId: 'B',
       name: 'initialized',
@@ -66,7 +64,6 @@ const testData: {
       },
     },
     '3': {
-      contextName: 'shopping',
       aggregateName: 'cart',
       aggregateId: 'C',
       name: 'initialized',
@@ -86,7 +83,6 @@ const testData: {
       },
     },
     '4': {
-      contextName: 'shopping',
       aggregateName: 'cart',
       aggregateId: 'D',
       name: 'initialized',
@@ -101,7 +97,6 @@ const testData: {
       },
     },
     '5': {
-      contextName: 'shopping',
       aggregateName: 'cart',
       aggregateId: 'E',
       name: 'initialized',
@@ -116,7 +111,6 @@ const testData: {
       },
     },
     '5.1': {
-      contextName: 'shopping',
       aggregateName: 'cart',
       aggregateId: 'E',
       name: 'itemAdded',
@@ -131,7 +125,6 @@ const testData: {
       },
     },
     '5.2': {
-      contextName: 'shopping',
       aggregateName: 'cart',
       aggregateId: 'E',
       name: 'itemAdded',
@@ -233,12 +226,8 @@ describe('Event Store', () => {
   })
 
   test('saveEvent', async () => {
-    const id = await eventStore.saveEvent<
-      ShoppingCart.Initialized,
-      ShoppingCartState
-    >(
+    const id = await eventStore.saveEvent<CartEvents.Initialized, CartState>(
       {
-        contextName: 'shopping',
         aggregateName: 'cart',
         aggregateId: 'x',
         name: 'initialized',
@@ -256,7 +245,6 @@ describe('Event Store', () => {
     )
 
     expect(await eventStore.getEvent(id)).toEqual({
-      contextName: 'shopping',
       aggregateName: 'cart',
       aggregateId: 'x',
       id,

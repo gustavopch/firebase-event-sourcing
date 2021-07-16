@@ -10,11 +10,6 @@ import { CommandWithMetadata } from '../../types/command'
 import { auth } from './middlewares/auth'
 import { parseLocationFromHeaders } from './utils/parse-location-from-headers'
 
-const contextNameSchema = {
-  type: 'string',
-  minLength: 1,
-}
-
 const aggregateNameSchema = {
   type: 'string',
   minLength: 1,
@@ -58,27 +53,25 @@ const metadataSchema = {
 const commandSchema = {
   type: 'object',
   properties: {
-    contextName: contextNameSchema,
     aggregateName: aggregateNameSchema,
     aggregateId: aggregateIdSchema,
     name: nameSchema,
     data: dataSchema,
   },
-  required: ['contextName', 'aggregateName', 'aggregateId', 'name', 'data'],
+  required: ['aggregateName', 'aggregateId', 'name', 'data'],
   additionalProperties: false,
 }
 
 const commandWithMetadataSchema = {
   type: 'object',
   properties: {
-    contextName: contextNameSchema,
     aggregateName: aggregateNameSchema,
     aggregateId: aggregateIdSchema,
     name: nameSchema,
     data: dataSchema,
     metadata: metadataSchema,
   },
-  required: ['contextName', 'aggregateName', 'aggregateId', 'name', 'data'],
+  required: ['aggregateName', 'aggregateId', 'name', 'data'],
   additionalProperties: false,
 }
 
@@ -111,7 +104,6 @@ export const createCommandsEndpoint = (
       }
 
       const command: CommandWithMetadata = {
-        contextName: req.body.contextName,
         aggregateName: req.body.aggregateName,
         aggregateId: req.body.aggregateId,
         name: req.body.name,
@@ -129,7 +121,6 @@ export const createCommandsEndpoint = (
       }
 
       const { eventIds } = await app.dispatch(
-        command.contextName,
         command.aggregateName,
         command.name,
         command.aggregateId,

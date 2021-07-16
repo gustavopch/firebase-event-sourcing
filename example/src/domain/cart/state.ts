@@ -1,4 +1,4 @@
-import { GetInitialAggregateState } from '../../../../../src'
+import { GetInitialAggregateState } from '../../../../src'
 
 export type State = {
   isPlaced: boolean

@@ -15,18 +15,15 @@ export type CommandMetadata = {
 
 export type Command<
   TProps extends {
-    contextName: string
     aggregateName: string
     name: string
     data: CommandData
   } = {
-    contextName: string
     aggregateName: string
     name: string
     data: CommandData
   },
 > = {
-  contextName: TProps['contextName']
   aggregateName: TProps['aggregateName']
   aggregateId: string
   name: TProps['name']
@@ -41,11 +38,9 @@ export type CommandCreationProps<TCommand extends Command = Command> =
   TCommand extends any ? Pick<TCommand, 'name' | 'data'> : never
 
 export type CommandPreset<
-  TContextName extends string,
   TAggregateName extends string,
   TEventCreationProps extends EventCreationProps,
 > = Command<{
-  contextName: TContextName
   aggregateName: TAggregateName
   name: TEventCreationProps['name']
   data: TEventCreationProps['data']

@@ -1,5 +1,5 @@
-import { shopping } from './shopping'
+import { cart } from './cart'
 
 export const domain = {
-  shopping,
+  cart,
 }

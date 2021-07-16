@@ -1,8 +1,8 @@
-import { EventDefinition } from '../../../../../src'
-import { EventCreationProps, EventPreset } from '../../../../../src/types/event'
+import { EventDefinition } from '../../../../src'
+import { EventCreationProps, EventPreset } from '../../../../src/types/event'
 import { State } from './state'
 
-type Event<T extends EventCreationProps> = EventPreset<'shopping', 'cart', T>
+type Event<T extends EventCreationProps> = EventPreset<'cart', T>
 
 export type Initialized = Event<{
   name: 'initialized'

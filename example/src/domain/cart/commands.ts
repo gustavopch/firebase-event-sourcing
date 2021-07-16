@@ -1,12 +1,12 @@
-import { CommandDefinition } from '../../../../../src'
+import { CommandDefinition } from '../../../../src'
 import {
   CommandCreationProps,
   CommandPreset,
-} from '../../../../../src/types/command'
+} from '../../../../src/types/command'
 import { Initialized, ItemAdded, ItemRemoved, OrderPlaced } from './events'
 import { State } from './state'
 
-type Command<T extends CommandCreationProps> = CommandPreset<'shopping', 'cart', T> // prettier-ignore
+type Command<T extends CommandCreationProps> = CommandPreset<'cart', T>
 
 export type Initialize = Command<{
   name: 'initialize'

@@ -10,15 +10,13 @@ import { getFullyQualifiedEventName } from '../utils/get-fully-qualified-event-n
 
 export type App<TAppDefinition extends AppDefinition> = {
   dispatch: <
-    TContextName extends keyof TAppDefinition['domain'] & string,
-    TAggregateName extends keyof TAppDefinition['domain'][TContextName] & string, // prettier-ignore
-    TCommandName extends keyof TAppDefinition['domain'][TContextName][TAggregateName]['commands'] & string, // prettier-ignore
+    TAggregateName extends keyof TAppDefinition['domain'] & string,
+    TCommandName extends keyof TAppDefinition['domain'][TAggregateName]['commands'] & string, // prettier-ignore
   >(
-    contextName: TContextName,
     aggregateName: TAggregateName,
     commandName: TCommandName,
     aggregateId: string,
-    data: Parameters<TAppDefinition['domain'][TContextName][TAggregateName]['commands'][TCommandName]['handle']>[1]['data'], // prettier-ignore
+    data: Parameters<TAppDefinition['domain'][TAggregateName]['commands'][TCommandName]['handle']>[1]['data'], // prettier-ignore
     metadata?: CommandMetadata,
   ) => Promise<{ eventIds: string[] }>
   replayEvents: () => Promise<void>
@@ -86,18 +84,17 @@ export const createApp = <TAppDefinition extends AppDefinition>(
   }
 
   const dispatch: App<TAppDefinition>['dispatch'] = async (
-    contextName,
     aggregateName,
     commandName,
     aggregateId,
     data,
     metadata,
   ) => {
-    const aggregateDefinition = appDefinition.domain[contextName]?.[aggregateName] // prettier-ignore
+    const aggregateDefinition = appDefinition.domain?.[aggregateName]
     if (!aggregateDefinition) {
       const error = new Error()
       error.name = 'AggregateNotFound'
-      error.message = `Aggregate '${contextName}.${aggregateName}' not found`
+      error.message = `Aggregate '${aggregateName}' not found`
       throw error
     }
 
@@ -105,12 +102,11 @@ export const createApp = <TAppDefinition extends AppDefinition>(
     if (!commandDefinition) {
       const error = new Error()
       error.name = 'CommandHandlerNotFound'
-      error.message = `Command handler for '${contextName}.${aggregateName}.${commandName}' not found`
+      error.message = `Command handler for '${aggregateName}.${commandName}' not found`
       throw error
     }
 
     const command = {
-      contextName,
       aggregateName,
       aggregateId,
       name: commandName,
@@ -136,7 +132,6 @@ export const createApp = <TAppDefinition extends AppDefinition>(
     for (const { name: eventName, data: eventData } of eventsProps) {
       const eventId = await eventStore.saveEvent(
         {
-          contextName,
           aggregateName,
           aggregateId,
           name: eventName,
@@ -176,7 +171,6 @@ export const createApp = <TAppDefinition extends AppDefinition>(
     return createFlowService(
       command =>
         dispatch(
-          command.contextName,
           command.aggregateName,
           command.name,
           command.aggregateId,

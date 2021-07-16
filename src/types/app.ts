@@ -4,9 +4,7 @@ import { ViewDefinition } from './view'
 
 export type AppDefinition = {
   domain: {
-    [contextName: string]: {
-      [aggregateName: string]: AggregateDefinition
-    }
+    [aggregateName: string]: AggregateDefinition
   }
 
   flows: {

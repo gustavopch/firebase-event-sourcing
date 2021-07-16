@@ -15,18 +15,15 @@ export type EventMetadata = {
 
 export type Event<
   TProps extends {
-    contextName: string
     aggregateName: string
     name: string
     data: EventData
   } = {
-    contextName: string
     aggregateName: string
     name: string
     data: EventData
   },
 > = {
-  contextName: TProps['contextName']
   aggregateName: TProps['aggregateName']
   aggregateId: string
   id: string
@@ -39,11 +36,9 @@ export type EventCreationProps<TEvent extends Event = Event> =
   TEvent extends any ? Pick<TEvent, 'name' | 'data'> : never
 
 export type EventPreset<
-  TContextName extends string,
   TAggregateName extends string,
   TEventCreationProps extends EventCreationProps,
 > = Event<{
-  contextName: TContextName
   aggregateName: TAggregateName
   name: TEventCreationProps['name']
   data: TEventCreationProps['data']

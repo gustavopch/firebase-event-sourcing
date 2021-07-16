@@ -60,7 +60,6 @@ export type EventStore = {
 
   saveEvent: <TEvent extends Event, TAggregateState extends AggregateState>(
     eventProps: {
-      contextName: TEvent['contextName']
       aggregateName: TEvent['aggregateName']
       aggregateId: TEvent['aggregateId']
       name: TEvent['name']
@@ -145,7 +144,6 @@ export const createEventStore = (firebaseApp: firebase.app.App): EventStore => {
 
     saveEvent: async (
       {
-        contextName,
         aggregateName,
         aggregateId,
         name,
@@ -182,7 +180,6 @@ export const createEventStore = (firebaseApp: firebase.app.App): EventStore => {
         const newRevision = oldAggregate.revision + 1
 
         const event: Event = {
-          contextName,
           aggregateName,
           aggregateId,
           id: eventId,

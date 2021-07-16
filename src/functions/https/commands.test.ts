@@ -32,19 +32,17 @@ const endpoint = `http://localhost:5001/${projectName}/us-central1/commands`
 
 describe('/commands endpoint', () => {
   it.each([
-    ['context', 'xxxxxxxx', 'cart', 'initialize'],
-    ['aggregate', 'shopping', 'xxxx', 'initialize'],
-    ['command', 'shopping', 'cart', 'xxxxxxxxxx'],
+    ['aggregate', 'xxxx', 'initialize'],
+    ['command', 'cart', 'xxxxxxxxxx'],
   ])(
     'gracefully fails when %s is not found',
-    async (_, contextName, aggregateName, commandName) => {
+    async (_, aggregateName, commandName) => {
       const res = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          contextName,
           aggregateName,
           aggregateId: '123',
           name: commandName,
@@ -63,7 +61,6 @@ describe('/commands endpoint', () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        contextName: 'shopping',
         aggregateName: 'cart',
         // 'aggregateId' left out to make the command invalid
         name: 'initialize',
@@ -81,7 +78,6 @@ describe('/commands endpoint', () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        contextName: 'shopping',
         aggregateName: 'cart',
         aggregateId: '123',
         name: 'initialize',
@@ -103,7 +99,6 @@ describe('/commands endpoint', () => {
         'X-Forwarded-For': '127.0.0.1',
       },
       body: JSON.stringify({
-        contextName: 'shopping',
         aggregateName: 'cart',
         aggregateId: '123',
         name: 'initialize',
@@ -120,7 +115,6 @@ describe('/commands endpoint', () => {
 
     expect(events).toEqual([
       {
-        contextName: 'shopping',
         aggregateName: 'cart',
         aggregateId: '123',
         name: 'initialized',
@@ -149,7 +143,6 @@ describe('/commands endpoint', () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        contextName: 'shopping',
         aggregateName: 'cart',
         aggregateId: '123',
         name: 'initialize',
