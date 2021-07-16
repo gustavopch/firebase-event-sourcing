@@ -1,8 +1,8 @@
-import { CommandDefinition } from '../../../../src'
 import {
   CommandCreationProps,
+  CommandDefinition,
   CommandPreset,
-} from '../../../../src/types/command'
+} from '../../../../src'
 import { Initialized, ItemAdded, ItemRemoved, OrderPlaced } from './events'
 import { State } from './state'
 

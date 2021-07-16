@@ -1,5 +1,8 @@
-import { EventDefinition } from '../../../../src'
-import { EventCreationProps, EventPreset } from '../../../../src/types/event'
+import {
+  EventCreationProps,
+  EventDefinition,
+  EventPreset,
+} from '../../../../src'
 import { State } from './state'
 
 type Event<T extends EventCreationProps> = EventPreset<'cart', T>

@@ -1,7 +1,6 @@
 import firebase from 'firebase-admin'
 
-import { ViewDefinition } from '../../../src'
-import { flatten } from '../../../src/utils/flatten'
+import { ViewDefinition, flatten } from '../../../src'
 import * as Domain from '../domain'
 
 export const CARTS = 'carts'
