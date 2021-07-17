@@ -11,6 +11,7 @@ export type CommandMetadata = {
   causationId: string | null
   correlationId: string | null
   userId: string
+  timestamp: number
   client: ClientInfo | null
 }
 

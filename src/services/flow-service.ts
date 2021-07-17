@@ -17,6 +17,7 @@ export const createFlowService = (
           causationId: causationEvent?.id ?? null,
           correlationId: causationEvent?.metadata.correlationId ?? null,
           userId: 'system',
+          timestamp: Date.now(),
           client: null,
         },
       })
