@@ -1,3 +1,5 @@
+import firebase from 'firebase-admin'
+
 import { AggregatesService } from '../services/aggregates-service'
 import { AggregateState } from './aggregate'
 import { Event, EventCreationProps } from './event'
@@ -11,7 +13,7 @@ export type CommandMetadata = {
   causationId: string | null
   correlationId: string | null
   userId: string
-  timestamp: number
+  timestamp: firebase.firestore.Timestamp
   client: ClientInfo | null
 }
 

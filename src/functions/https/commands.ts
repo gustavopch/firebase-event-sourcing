@@ -120,7 +120,7 @@ export const createCommandsEndpoint = (
           causationId: req.body.metadata?.causationId || null,
           correlationId: req.body.metadata?.correlationId || null,
           userId: req.userId,
-          timestamp: Date.now(),
+          timestamp: firebase.firestore.Timestamp.now(),
           client: {
             ip: req.ip,
             ua: userAgent,

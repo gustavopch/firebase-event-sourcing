@@ -1,3 +1,5 @@
+import firebase from 'firebase-admin'
+
 import { AggregateState } from './aggregate'
 import { ClientInfo } from './misc'
 
@@ -9,7 +11,7 @@ export type EventMetadata = {
   causationId: string
   correlationId: string
   userId: string
-  timestamp: number
+  timestamp: firebase.firestore.Timestamp
   revision: number
   client: ClientInfo | null
 }

@@ -47,7 +47,7 @@ export type EventStore = {
   getEventsByUserId: (userId: string, onNext: OnEvent) => Promise<void>
 
   getReplay: (
-    fromTimestamp: Date | string | number,
+    fromTimestamp: firebase.firestore.Timestamp | Date | string | number,
     onNext: OnEvent,
   ) => Promise<void>
 
@@ -117,9 +117,13 @@ export const createEventStore = (firebaseApp: firebase.app.App): EventStore => {
     },
 
     getReplay: async (fromTimestamp, onNext) => {
-      fromTimestamp = new Date(fromTimestamp)
-
-      const query = eventsCollection.where('metadata.timestamp', '>=', fromTimestamp.getTime()) // prettier-ignore
+      const query = eventsCollection.where(
+        'metadata.timestamp',
+        '>=',
+        fromTimestamp instanceof firebase.firestore.Timestamp
+          ? fromTimestamp
+          : new Date(fromTimestamp),
+      )
 
       await queryInBatches(query, onNext)
     },
@@ -180,7 +184,7 @@ export const createEventStore = (firebaseApp: firebase.app.App): EventStore => {
             causationId: causationId ?? eventId,
             correlationId: correlationId ?? eventId,
             userId,
-            timestamp: Date.now(),
+            timestamp: firebase.firestore.Timestamp.now(),
             revision: newRevision,
             client,
           },

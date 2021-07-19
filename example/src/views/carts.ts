@@ -26,7 +26,7 @@ export const carts: ViewDefinition = {
     'cart.initialized': async (event: Domain.Cart.Initialized) => {
       const cart: Cart = {
         id: event.aggregateId,
-        initializedAt: event.metadata.timestamp,
+        initializedAt: event.metadata.timestamp.toMillis(),
         placedAt: null,
         status: 'open',
         items: {},
@@ -59,7 +59,7 @@ export const carts: ViewDefinition = {
 
     'cart.orderPlaced': async (event: Domain.Cart.OrderPlaced) => {
       const nfe: Partial<Cart> = {
-        placedAt: event.metadata.timestamp,
+        placedAt: event.metadata.timestamp.toMillis(),
         status: 'placed',
       }
 

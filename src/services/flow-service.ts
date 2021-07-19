@@ -1,3 +1,5 @@
+import firebase from 'firebase-admin'
+
 import { Command, CommandWithMetadata } from '../types/command'
 import { Event } from '../types/event'
 
@@ -17,7 +19,7 @@ export const createFlowService = (
           causationId: causationEvent?.id ?? null,
           correlationId: causationEvent?.metadata.correlationId ?? null,
           userId: 'system',
-          timestamp: Date.now(),
+          timestamp: firebase.firestore.Timestamp.now(),
           client: null,
         },
       })

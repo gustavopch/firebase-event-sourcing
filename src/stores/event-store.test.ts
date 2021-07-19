@@ -39,7 +39,7 @@ const testData: {
         causationId: '1',
         correlationId: '1',
         userId: 'john',
-        timestamp: new Date('2020-07-01').getTime(),
+        timestamp: firebase.firestore.Timestamp.fromDate(new Date('2020-07-01')), // prettier-ignore
         revision: 1,
         client: null,
       },
@@ -54,7 +54,7 @@ const testData: {
         causationId: '2',
         correlationId: '2',
         userId: 'system',
-        timestamp: new Date('2020-07-02').getTime(),
+        timestamp: firebase.firestore.Timestamp.fromDate(new Date('2020-07-02')), // prettier-ignore
         revision: 1,
         client: null,
       },
@@ -69,7 +69,7 @@ const testData: {
         causationId: '3',
         correlationId: '3',
         userId: 'john',
-        timestamp: new Date('2020-07-03').getTime(),
+        timestamp: firebase.firestore.Timestamp.fromDate(new Date('2020-07-03')), // prettier-ignore
         revision: 1,
         client: null,
       },
@@ -84,7 +84,7 @@ const testData: {
         causationId: '4',
         correlationId: '4',
         userId: 'system',
-        timestamp: new Date('2020-07-04').getTime(),
+        timestamp: firebase.firestore.Timestamp.fromDate(new Date('2020-07-04')), // prettier-ignore
         revision: 1,
         client: null,
       },
@@ -99,7 +99,7 @@ const testData: {
         causationId: '5',
         correlationId: '5',
         userId: 'system',
-        timestamp: new Date('2020-07-05').getTime(),
+        timestamp: firebase.firestore.Timestamp.fromDate(new Date('2020-07-05')), // prettier-ignore
         revision: 1,
         client: null,
       },
@@ -114,7 +114,7 @@ const testData: {
         causationId: '5',
         correlationId: '5',
         userId: 'system',
-        timestamp: new Date('2020-07-05').getTime(),
+        timestamp: firebase.firestore.Timestamp.fromDate(new Date('2020-07-05')), // prettier-ignore
         revision: 2,
         client: null,
       },
@@ -129,7 +129,7 @@ const testData: {
         causationId: '5.1',
         correlationId: '5',
         userId: 'system',
-        timestamp: new Date('2020-07-05').getTime(),
+        timestamp: firebase.firestore.Timestamp.fromDate(new Date('2020-07-05')), // prettier-ignore
         revision: 3,
         client: null,
       },
@@ -249,7 +249,7 @@ describe('Event Store', () => {
         causationId: id,
         correlationId: id,
         userId: 'system',
-        timestamp: expect.any(Number),
+        timestamp: expect.any(firebase.firestore.Timestamp),
         revision: 1,
         client: null,
       },

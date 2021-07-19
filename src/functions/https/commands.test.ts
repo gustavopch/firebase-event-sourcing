@@ -122,7 +122,7 @@ describe('/commands endpoint', () => {
           causationId: eventId,
           correlationId: eventId,
           userId: 'test',
-          timestamp: expect.any(Number),
+          timestamp: expect.any(firebase.firestore.Timestamp),
           revision: 1,
           client: {
             ip: '127.0.0.1',
