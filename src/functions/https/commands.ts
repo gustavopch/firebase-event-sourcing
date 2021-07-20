@@ -83,14 +83,14 @@ export const createCommandsEndpoint = (
   firebaseApp: firebase.app.App,
   appDefinition: AppDefinition,
 ): functions.HttpsFunction => {
-  const app = createApp(firebaseApp, appDefinition)
-
   const server = express()
   server.set('trust proxy', true)
   server.use(cors({ origin: true }))
   server.use(auth(firebaseApp))
 
   server.post('/', async (req, res) => {
+    const app = createApp(firebaseApp, appDefinition, req)
+
     try {
       const isCommandValid =
         req.userId === 'system'

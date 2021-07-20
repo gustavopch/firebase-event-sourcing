@@ -12,7 +12,7 @@ export const createCronJobFirebaseFunctions = (
   firebaseApp: firebase.app.App,
   appDefinition: AppDefinition,
 ): CronJobFunctions => {
-  const app = createApp(firebaseApp, appDefinition)
+  const app = createApp(firebaseApp, appDefinition, null)
 
   const cronJobFirebaseFunctions: CronJobFunctions = {}
 

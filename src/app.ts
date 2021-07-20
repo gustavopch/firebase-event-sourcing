@@ -1,7 +1,9 @@
+import { Request } from 'express'
 import firebase from 'firebase-admin'
 
 import { createAggregatesService } from './services/aggregates-service'
 import { FlowService, createFlowService } from './services/flow-service'
+import { createLoggerService } from './services/logger-service'
 import { createEventStore } from './stores/event-store'
 import { AppDefinition } from './types/app'
 import { CommandMetadata } from './types/command'
@@ -26,9 +28,14 @@ export type App<TAppDefinition extends AppDefinition> = {
 export const createApp = <TAppDefinition extends AppDefinition>(
   firebaseApp: firebase.app.App,
   appDefinition: TAppDefinition,
+  req: Request | null,
 ): App<TAppDefinition> => {
   const eventStore = createEventStore(firebaseApp)
-  const aggregatesService = createAggregatesService(eventStore)
+
+  const services = {
+    aggregates: createAggregatesService(eventStore),
+    logger: createLoggerService(req),
+  }
 
   const runProjections = async (event: Event) => {
     const fullyQualifiedEventName = getFullyQualifiedEventName(event)
@@ -123,7 +130,7 @@ export const createApp = <TAppDefinition extends AppDefinition>(
     }
 
     const aggregate = await eventStore.getAggregate(aggregateId)
-    const eventOrEventsProps = await commandDefinition.handle(aggregate?.state ?? null, command, { aggregates: aggregatesService }) // prettier-ignore
+    const eventOrEventsProps = await commandDefinition.handle(aggregate?.state ?? null, command, services) // prettier-ignore
     const eventsProps = Array.isArray(eventOrEventsProps)
       ? eventOrEventsProps
       : [eventOrEventsProps]
