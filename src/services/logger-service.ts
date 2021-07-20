@@ -17,11 +17,24 @@ type LogFn = (
   options?: LogOptions,
 ) => void
 
+type LogWithoutScopeFn = (
+  message: string,
+  body?: any,
+  options?: LogOptions,
+) => void
+
 export type LoggerService = {
   debug: LogFn
   info: LogFn
   warn: LogFn
   error: LogFn
+
+  withScope: (scope: string) => {
+    debug: LogWithoutScopeFn
+    info: LogWithoutScopeFn
+    warn: LogWithoutScopeFn
+    error: LogWithoutScopeFn
+  }
 }
 
 export const createLoggerService = (req: Request | null): LoggerService => {
@@ -75,5 +88,12 @@ export const createLoggerService = (req: Request | null): LoggerService => {
     info: writeLogEntry.bind(null, 'info'),
     warn: writeLogEntry.bind(null, 'warn'),
     error: writeLogEntry.bind(null, 'error'),
+
+    withScope: scope => ({
+      debug: writeLogEntry.bind(null, 'debug', scope),
+      info: writeLogEntry.bind(null, 'info', scope),
+      warn: writeLogEntry.bind(null, 'warn', scope),
+      error: writeLogEntry.bind(null, 'error', scope),
+    }),
   }
 }
