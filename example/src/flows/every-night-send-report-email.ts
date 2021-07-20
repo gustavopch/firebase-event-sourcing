@@ -1,5 +1,5 @@
 import { FlowDefinition } from '../../../src'
-import { getEmailService } from '../services/email-service'
+import { getEmailService } from '../services/email'
 import { Report, TOTALS_ID, reportsCollection } from '../views/reports'
 
 export const everyNightSendReportEmail: FlowDefinition = {

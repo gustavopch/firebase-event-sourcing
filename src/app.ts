@@ -1,9 +1,9 @@
 import { Request } from 'express'
 import firebase from 'firebase-admin'
 
-import { createAggregatesService } from './services/aggregates-service'
-import { FlowService, createFlowService } from './services/flow-service'
-import { createLoggerService } from './services/logger-service'
+import { createAggregatesService } from './services/aggregates'
+import { FlowService, createFlowService } from './services/flow'
+import { createLoggerService } from './services/logger'
 import { createEventStore } from './stores/event-store'
 import { AppDefinition } from './types/app'
 import { CommandMetadata } from './types/command'

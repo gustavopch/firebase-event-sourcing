@@ -1,7 +1,7 @@
 import { FlowDefinition } from '../../../src'
 import * as Domain from '../domain'
 
-import { getEmailService } from '../services/email-service'
+import { getEmailService } from '../services/email'
 
 export const ifOrderPlacedThenSendEmail: FlowDefinition = {
   reactions: {

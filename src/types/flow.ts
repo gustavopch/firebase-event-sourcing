@@ -1,4 +1,4 @@
-import { FlowService } from '../services/flow-service'
+import { FlowService } from '../services/flow'
 import { Event } from './event'
 
 export type CronHandler = (flow: FlowService) => Promise<void>
