@@ -14,6 +14,7 @@ export type {
   CommandPreset,
   CommandWithMetadata,
 } from './types/command'
+export type { Context } from './types/context'
 export type {
   Event,
   EventCreationProps,

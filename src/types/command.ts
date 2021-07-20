@@ -1,8 +1,7 @@
 import firebase from 'firebase-admin'
 
-import { AggregatesService } from '../services/aggregates-service'
-import { LoggerService } from '../services/logger-service'
 import { AggregateState } from './aggregate'
+import { Context } from './context'
 import { Event, EventCreationProps } from './event'
 import { ClientInfo } from './misc'
 
@@ -58,10 +57,7 @@ export type CommandHandler<
 > = (
   state: TAggregateState | null,
   command: TCommand & { metadata: CommandMetadata },
-  context: {
-    aggregates: AggregatesService
-    logger: LoggerService
-  },
+  context: Context,
 ) =>
   | EventCreationProps<TEvent>
   | Array<EventCreationProps<TEvent>>

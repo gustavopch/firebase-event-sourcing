@@ -32,7 +32,7 @@ export const createApp = <TAppDefinition extends AppDefinition>(
 ): App<TAppDefinition> => {
   const eventStore = createEventStore(firebaseApp)
 
-  const services = {
+  const context = {
     aggregates: createAggregatesService(eventStore),
     logger: createLoggerService(req),
   }
@@ -130,7 +130,7 @@ export const createApp = <TAppDefinition extends AppDefinition>(
     }
 
     const aggregate = await eventStore.getAggregate(aggregateId)
-    const eventOrEventsProps = await commandDefinition.handle(aggregate?.state ?? null, command, services) // prettier-ignore
+    const eventOrEventsProps = await commandDefinition.handle(aggregate?.state ?? null, command, context) // prettier-ignore
     const eventsProps = Array.isArray(eventOrEventsProps)
       ? eventOrEventsProps
       : [eventOrEventsProps]
