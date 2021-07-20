@@ -1,7 +1,7 @@
 import firebase from 'firebase/app'
 import 'firebase/auth'
 
-import { AppDefinition } from '../types/app'
+import { AppDefinition } from './types/app'
 
 export type Client<TAppDefinition extends AppDefinition> = {
   dispatch: <

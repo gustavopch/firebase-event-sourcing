@@ -1,12 +1,12 @@
 import firebase from 'firebase-admin'
-import { createAggregatesService } from '../services/aggregates-service'
 
-import { FlowService, createFlowService } from '../services/flow-service'
-import { createEventStore } from '../stores/event-store'
-import { AppDefinition } from '../types/app'
-import { CommandMetadata } from '../types/command'
-import { Event } from '../types/event'
-import { getFullyQualifiedEventName } from '../utils/get-fully-qualified-event-name'
+import { createAggregatesService } from './services/aggregates-service'
+import { FlowService, createFlowService } from './services/flow-service'
+import { createEventStore } from './stores/event-store'
+import { AppDefinition } from './types/app'
+import { CommandMetadata } from './types/command'
+import { Event } from './types/event'
+import { getFullyQualifiedEventName } from './utils/get-fully-qualified-event-name'
 
 export type App<TAppDefinition extends AppDefinition> = {
   dispatch: <

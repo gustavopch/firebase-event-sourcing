@@ -21,7 +21,7 @@
   "repository": "github:gustavopch/firebase-event-sourcing",
   "scripts": {
     "postinstall": "patch-package",
-    "build": "tsdx build --tsconfig ./tsconfig.build.json --entry ./src/index.ts --entry ./src/app/index.ts --entry ./src/functions/index.ts",
+    "build": "tsdx build --tsconfig ./tsconfig.build.json --entry ./src/index.ts --entry ./src/app.ts --entry ./src/functions/index.ts",
     "lint": "tsdx lint src",
     "type-check": "tsc --noEmit",
     "test": "./scripts/test.js"
