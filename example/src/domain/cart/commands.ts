@@ -29,35 +29,43 @@ export type PlaceOrder = Command<{
 }>
 
 const initialize: CommandDefinition<State, Initialize, Initialized> = {
-  handle: (cart, command) => ({
-    name: 'initialized',
-    data: null,
-  }),
+  handle: (cart, command) => {
+    return {
+      name: 'initialized',
+      data: null,
+    }
+  },
 }
 
 const addItem: CommandDefinition<State, AddItem, ItemAdded> = {
-  handle: (cart, command) => ({
-    name: 'itemAdded',
-    data: {
-      title: command.data.title,
-    },
-  }),
+  handle: (cart, command) => {
+    return {
+      name: 'itemAdded',
+      data: {
+        title: command.data.title,
+      },
+    }
+  },
 }
 
 const removeItem: CommandDefinition<State, RemoveItem, ItemRemoved> = {
-  handle: (cart, command) => ({
-    name: 'itemRemoved',
-    data: {
-      itemId: command.data.itemId,
-    },
-  }),
+  handle: (cart, command) => {
+    return {
+      name: 'itemRemoved',
+      data: {
+        itemId: command.data.itemId,
+      },
+    }
+  },
 }
 
 const placeOrder: CommandDefinition<State, PlaceOrder, OrderPlaced> = {
-  handle: (cart, command) => ({
-    name: 'orderPlaced',
-    data: null,
-  }),
+  handle: (cart, command) => {
+    return {
+      name: 'orderPlaced',
+      data: null,
+    }
+  },
 }
 
 export const commands = {
