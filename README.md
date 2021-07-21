@@ -4,15 +4,6 @@
 
 > Event Sourcing + CQRS + DDD for Firebase.
 
-<!-- toc -->
-
-- [Basic concepts](#basic-concepts)
-- [Installation](#installation)
-- [Usage](#usage)
-- [License](#license)
-
-<!-- tocstop -->
-
 ## Basic concepts
 
 **Event Sourcing**: Think of a bank account. You can't simply store the current balance. Instead, you must store the records (or the **events**) that have led up to the current balance (or the **state**). The events (`deposited 100 dollars`, `withdrawn 50 dollars`, etc.) are the source of truth. The state (the current balance) is just derived from the events.
