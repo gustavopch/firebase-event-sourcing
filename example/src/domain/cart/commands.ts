@@ -29,14 +29,14 @@ export type PlaceOrder = Command<{
 }>
 
 const initialize: CommandDefinition<State, Initialize, Initialized> = {
-  handle: (state, command) => ({
+  handle: (cart, command) => ({
     name: 'initialized',
     data: null,
   }),
 }
 
 const addItem: CommandDefinition<State, AddItem, ItemAdded> = {
-  handle: (state, command) => ({
+  handle: (cart, command) => ({
     name: 'itemAdded',
     data: {
       title: command.data.title,
@@ -45,7 +45,7 @@ const addItem: CommandDefinition<State, AddItem, ItemAdded> = {
 }
 
 const removeItem: CommandDefinition<State, RemoveItem, ItemRemoved> = {
-  handle: (state, command) => ({
+  handle: (cart, command) => ({
     name: 'itemRemoved',
     data: {
       itemId: command.data.itemId,
@@ -54,7 +54,7 @@ const removeItem: CommandDefinition<State, RemoveItem, ItemRemoved> = {
 }
 
 const placeOrder: CommandDefinition<State, PlaceOrder, OrderPlaced> = {
-  handle: (state, command) => ({
+  handle: (cart, command) => ({
     name: 'orderPlaced',
     data: null,
   }),

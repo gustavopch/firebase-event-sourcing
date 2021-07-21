@@ -1,6 +1,6 @@
 import firebase from 'firebase-admin'
 
-import { AggregateState } from './aggregate'
+import { Aggregate, AggregateState } from './aggregate'
 import { ClientInfo } from './misc'
 
 export type EventData = {
@@ -47,14 +47,14 @@ export type EventPreset<
   data: TEventCreationProps['data']
 }>
 
-export type EventHandler<
-  TAggregateState extends AggregateState,
-  TEvent extends Event,
-> = (state: TAggregateState, event: TEvent) => Partial<TAggregateState>
+export type EventHandler<TAggregate extends Aggregate, TEvent extends Event> = (
+  aggregate: Pick<TAggregate, 'id' | 'state'>,
+  event: TEvent,
+) => Partial<TAggregate['state']>
 
 export type EventDefinition<
   TAggregateState extends AggregateState,
   TEvent extends Event,
 > = {
-  handle: EventHandler<TAggregateState, TEvent>
+  handle: EventHandler<Aggregate<TAggregateState>, TEvent>
 }

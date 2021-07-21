@@ -130,7 +130,25 @@ export const createApp = <TAppDefinition extends AppDefinition>(
     }
 
     const aggregate = await eventStore.getAggregate(aggregateId)
-    const eventOrEventsProps = await commandDefinition.handle(aggregate?.state ?? null, command, context) // prettier-ignore
+
+    const eventOrEventsProps = await commandDefinition.handle(
+      aggregate
+        ? {
+            id: aggregateId,
+            revision: aggregate.revision,
+            exists: true,
+            state: aggregate.state,
+          }
+        : {
+            id: aggregateId,
+            revision: 0,
+            exists: false,
+            state: {},
+          },
+      command,
+      context,
+    )
+
     const eventsProps = Array.isArray(eventOrEventsProps)
       ? eventOrEventsProps
       : [eventOrEventsProps]
@@ -152,7 +170,15 @@ export const createApp = <TAppDefinition extends AppDefinition>(
         initialState,
         (state, event) => {
           const eventDefinition = aggregateDefinition.events?.[event.name]
-          return eventDefinition?.handle?.(state, event) ?? {}
+
+          const newState = eventDefinition?.handle?.(
+            aggregate
+              ? { id: aggregateId, state: aggregate.state }
+              : { id: aggregateId, state: {} },
+            event,
+          )
+
+          return newState ?? {}
         },
       )
 

@@ -1,6 +1,6 @@
 import firebase from 'firebase-admin'
 
-import { AggregateState } from './aggregate'
+import { Aggregate, AggregateState } from './aggregate'
 import { Context } from './context'
 import { Event, EventCreationProps } from './event'
 import { ClientInfo } from './misc'
@@ -51,11 +51,11 @@ export type CommandPreset<
 }>
 
 export type CommandHandler<
-  TAggregateState extends AggregateState,
+  TAggregate extends Aggregate,
   TCommand extends Command,
   TEvent extends Event,
 > = (
-  state: TAggregateState | null,
+  aggregate: TAggregate,
   command: TCommand & { metadata: CommandMetadata },
   context: Context,
 ) =>
@@ -69,5 +69,5 @@ export type CommandDefinition<
   TEvent extends Event,
 > = {
   isAuthorized?: (command: TCommand) => boolean | Promise<boolean>
-  handle: CommandHandler<TAggregateState, TCommand, TEvent>
+  handle: CommandHandler<Aggregate<TAggregateState>, TCommand, TEvent>
 }

@@ -28,7 +28,7 @@ export type OrderPlaced = Event<{
 }>
 
 const orderPlaced: EventDefinition<State, OrderPlaced> = {
-  handle: (state, event) => ({
+  handle: (cart, event) => ({
     isPlaced: true,
   }),
 }

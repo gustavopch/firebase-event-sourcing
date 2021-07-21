@@ -1,6 +1,6 @@
 import firebase from 'firebase-admin'
 
-import { Aggregate, AggregateState } from '../types/aggregate'
+import { Aggregate, AggregateData, AggregateState } from '../types/aggregate'
 import { Event } from '../types/event'
 import { ClientInfo } from '../types/misc'
 import { generateId } from '../utils/generate-id'
@@ -78,7 +78,7 @@ export type EventStore = {
     aggregateId: string | null | undefined,
   ) => Promise<Aggregate | null>
 
-  saveAggregate: (aggregate: Aggregate) => Promise<void>
+  saveAggregate: (aggregate: AggregateData) => Promise<void>
 }
 
 export const createEventStore = (firebaseApp: firebase.app.App): EventStore => {
@@ -159,7 +159,9 @@ export const createEventStore = (firebaseApp: firebase.app.App): EventStore => {
         const oldAggregate = await transaction
           .get(aggregateRef)
           .then(docSnap => {
-            const existingAggregate = docSnap.data() as Aggregate | undefined
+            const existingAggregate = docSnap.data() as
+              | AggregateData
+              | undefined
 
             if (existingAggregate) {
               return existingAggregate
@@ -192,7 +194,7 @@ export const createEventStore = (firebaseApp: firebase.app.App): EventStore => {
 
         transaction.set(eventRef, event)
 
-        const newAggregate: Aggregate = {
+        const newAggregate: AggregateData = {
           id: aggregateId,
           revision: newRevision,
           state: getNewState(oldAggregate.state as any, event),
@@ -215,8 +217,12 @@ export const createEventStore = (firebaseApp: firebase.app.App): EventStore => {
         return null
       }
 
-      const docSnap = await aggregatesCollection.doc(aggregateId).get()
-      return (docSnap.data() ?? null) as Aggregate | null
+      const aggregate = await aggregatesCollection
+        .doc(aggregateId)
+        .get()
+        .then(snap => snap.data() as AggregateData | undefined)
+
+      return aggregate ? { ...aggregate, exists: true } : null
     },
 
     saveAggregate: async aggregate => {

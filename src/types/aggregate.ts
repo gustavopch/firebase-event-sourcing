@@ -5,11 +5,17 @@ export type AggregateState = {
   [key: string]: any
 }
 
+export type AggregateData<
+  TAggregateState extends AggregateState = AggregateState,
+> = {
+  id: string
+  revision: number
+  state: TAggregateState
+}
+
 export type Aggregate<TAggregateState extends AggregateState = AggregateState> =
-  {
-    id: string
-    revision: number
-    state: TAggregateState
+  AggregateData<TAggregateState> & {
+    exists: boolean
   }
 
 export type GetInitialAggregateState<TAggregateState extends AggregateState> =

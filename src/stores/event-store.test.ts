@@ -3,7 +3,7 @@ import firebase from 'firebase-admin'
 
 import { config } from '../../example/src/config'
 import * as Domain from '../../example/src/domain'
-import { Aggregate } from '../types/aggregate'
+import { AggregateData } from '../types/aggregate'
 import { Event } from '../types/event'
 import { AGGREGATES, EVENTS, createEventStore } from './event-store'
 
@@ -18,7 +18,7 @@ firebaseApp.firestore().settings({
 const eventStore = createEventStore(firebaseApp)
 
 const testData: {
-  aggregates: { [id: string]: Aggregate }
+  aggregates: { [id: string]: AggregateData }
   events: { [id: string]: Event }
 } = {
   aggregates: {
@@ -268,7 +268,10 @@ describe('Event Store', () => {
   test('getAggregate', async () => {
     const aggregate = await eventStore.getAggregate(testData.aggregates['E'].id)
 
-    expect(aggregate).toEqual(testData.aggregates['E'])
+    expect(aggregate).toEqual({
+      ...testData.aggregates['E'],
+      exists: true,
+    })
   })
 
   test('saveAggregate', async () => {
@@ -286,6 +289,7 @@ describe('Event Store', () => {
       state: {
         foo: 'bar',
       },
+      exists: true,
     })
   })
 })
