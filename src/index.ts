@@ -8,6 +8,7 @@ export type {
 } from './types/aggregate'
 export type {
   Command,
+  CommandContext,
   CommandCreationProps,
   CommandData,
   CommandDefinition,
@@ -15,7 +16,6 @@ export type {
   CommandPreset,
   CommandWithMetadata,
 } from './types/command'
-export type { Context } from './types/context'
 export type {
   Event,
   EventCreationProps,
@@ -25,6 +25,6 @@ export type {
   EventPreset,
 } from './types/event'
 export type { FlowDefinition } from './types/flow'
-export type { ViewDefinition } from './types/view'
+export type { ProjectionContext, ViewDefinition } from './types/view'
 export { flatten } from './utils/flatten'
 export { generateId } from './utils/generate-id'

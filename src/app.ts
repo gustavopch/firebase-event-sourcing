@@ -31,11 +31,8 @@ export const createApp = <TAppDefinition extends AppDefinition>(
   req: Request | null,
 ): App<TAppDefinition> => {
   const eventStore = createEventStore(firebaseApp)
-
-  const context = {
-    aggregates: createAggregatesService(eventStore),
-    logger: createLoggerService(req),
-  }
+  const aggregatesService = createAggregatesService(eventStore)
+  const loggerService = createLoggerService(req)
 
   const runProjections = async (event: Event) => {
     const fullyQualifiedEventName = getFullyQualifiedEventName(event)
@@ -45,7 +42,9 @@ export const createApp = <TAppDefinition extends AppDefinition>(
     for (const [viewName, view] of Object.entries(appDefinition.views)) {
       for (const [handlerKey, handler] of Object.entries(view.projections)) {
         if (handlerKey === fullyQualifiedEventName) {
-          const promise = handler(event)
+          const promise = handler(event, {
+            logger: loggerService,
+          })
             .then(() => {
               console.log(`Ran '${viewName}' projection with event '${fullyQualifiedEventName}:${event.id}'`) // prettier-ignore
             })
@@ -146,7 +145,10 @@ export const createApp = <TAppDefinition extends AppDefinition>(
             state: {},
           },
       command,
-      context,
+      {
+        aggregates: aggregatesService,
+        logger: loggerService,
+      },
     )
 
     const eventsProps = Array.isArray(eventOrEventsProps)
