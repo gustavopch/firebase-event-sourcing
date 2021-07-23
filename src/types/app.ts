@@ -1,5 +1,6 @@
 import { AggregateDefinition } from './aggregate'
 import { FlowDefinition } from './flow'
+import { ServiceContext, Services } from './service'
 import { ViewDefinition } from './view'
 
 export type AppDefinition = {
@@ -14,4 +15,6 @@ export type AppDefinition = {
   views: {
     [viewName: string]: ViewDefinition
   }
+
+  services?: (ctx: ServiceContext) => Services
 }

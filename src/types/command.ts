@@ -5,6 +5,7 @@ import { LoggerService } from '../services/logger'
 import { Aggregate, AggregateState } from './aggregate'
 import { Event, EventCreationProps } from './event'
 import { ClientInfo } from './misc'
+import { Services } from './service'
 
 export type CommandData = {
   [key: string]: any
@@ -51,7 +52,7 @@ export type CommandPreset<
   data: TEventCreationProps['data']
 }>
 
-export type CommandContext = {
+export type CommandContext = Services & {
   aggregates: AggregatesService
   logger: LoggerService
 }

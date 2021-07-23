@@ -1,7 +1,8 @@
 import { LoggerService } from '../services/logger'
 import { Event } from './event'
+import { Services } from './service'
 
-export type ProjectionContext = {
+export type ProjectionContext = Services & {
   logger: LoggerService
 }
 

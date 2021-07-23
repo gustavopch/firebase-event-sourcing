@@ -34,6 +34,11 @@ export const createApp = <TAppDefinition extends AppDefinition>(
   const aggregatesService = createAggregatesService(eventStore)
   const loggerService = createLoggerService(req)
 
+  const userlandServices =
+    appDefinition.services?.({
+      logger: loggerService,
+    }) ?? {}
+
   const runProjections = async (event: Event) => {
     const fullyQualifiedEventName = getFullyQualifiedEventName(event)
 
@@ -44,6 +49,7 @@ export const createApp = <TAppDefinition extends AppDefinition>(
         if (handlerKey === fullyQualifiedEventName) {
           const promise = handler(event, {
             logger: loggerService,
+            ...userlandServices,
           })
             .then(() => {
               console.log(`Ran '${viewName}' projection with event '${fullyQualifiedEventName}:${event.id}'`) // prettier-ignore
@@ -148,6 +154,7 @@ export const createApp = <TAppDefinition extends AppDefinition>(
       {
         aggregates: aggregatesService,
         logger: loggerService,
+        ...userlandServices,
       },
     )
 
