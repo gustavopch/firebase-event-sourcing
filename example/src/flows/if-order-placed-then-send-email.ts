@@ -4,7 +4,7 @@ import { getEmailService } from '../services/email'
 
 export const ifOrderPlacedThenSendEmail: FlowDefinition = {
   reactions: {
-    'cart.orderPlaced': async (event: Domain.Cart.OrderPlaced, { flow }) => {
+    'cart.orderPlaced': async (event: Domain.Cart.OrderPlaced, ctx) => {
       const emailService = getEmailService()
 
       await emailService.send({

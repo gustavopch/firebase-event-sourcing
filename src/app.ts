@@ -1,13 +1,13 @@
-import { Request } from 'express'
 import firebase from 'firebase-admin'
 
-import { createAggregatesService } from './services/aggregates'
+import { AggregatesService } from './services/aggregates'
 import { FlowService, createFlowService } from './services/flow'
-import { createLoggerService } from './services/logger'
-import { createEventStore } from './stores/event-store'
+import { LoggerService } from './services/logger'
+import { EventStore } from './stores/event-store'
 import { AppDefinition } from './types/app'
 import { CommandMetadata } from './types/command'
 import { Event } from './types/event'
+import { Services } from './types/service'
 import { getFullyQualifiedEventName } from './utils/get-fully-qualified-event-name'
 
 export type App<TAppDefinition extends AppDefinition> = {
@@ -28,17 +28,11 @@ export type App<TAppDefinition extends AppDefinition> = {
 export const createApp = <TAppDefinition extends AppDefinition>(
   firebaseApp: firebase.app.App,
   appDefinition: TAppDefinition,
-  req: Request | null,
+  eventStore: EventStore,
+  aggregatesService: AggregatesService,
+  loggerService: LoggerService,
+  userlandServices: Services,
 ): App<TAppDefinition> => {
-  const eventStore = createEventStore(firebaseApp)
-  const aggregatesService = createAggregatesService(eventStore)
-  const loggerService = createLoggerService(req)
-
-  const userlandServices =
-    appDefinition.services?.({
-      logger: loggerService,
-    }) ?? {}
-
   const runProjections = async (event: Event) => {
     const fullyQualifiedEventName = getFullyQualifiedEventName(event)
 
@@ -91,7 +85,11 @@ export const createApp = <TAppDefinition extends AppDefinition>(
             causationEvent: event,
           })
 
-          const promise = handler(event, { flow: flowService })
+          const promise = handler(event, {
+            flow: flowService,
+            logger: loggerService,
+            ...userlandServices,
+          })
             .then(() => {
               console.log(`Ran '${flowName}' reaction with event '${fullyQualifiedEventName}:${event.id}'`) // prettier-ignore
             })

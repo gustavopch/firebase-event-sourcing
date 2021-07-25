@@ -2,6 +2,9 @@ import firebase from 'firebase-admin'
 import * as functions from 'firebase-functions'
 
 import { createApp } from '../../app'
+import { createAggregatesService } from '../../services/aggregates'
+import { createLoggerService } from '../../services/logger'
+import { createEventStore } from '../../stores/event-store'
 import { AppDefinition } from '../../types/app'
 
 type CronJobFunctions = {
@@ -12,7 +15,22 @@ export const createCronJobFirebaseFunctions = (
   firebaseApp: firebase.app.App,
   appDefinition: AppDefinition,
 ): CronJobFunctions => {
-  const app = createApp(firebaseApp, appDefinition, null)
+  const eventStore = createEventStore(firebaseApp)
+  const aggregatesService = createAggregatesService(eventStore)
+  const loggerService = createLoggerService(null)
+  const userlandServices =
+    appDefinition.services?.({
+      logger: loggerService,
+    }) ?? {}
+
+  const app = createApp(
+    firebaseApp,
+    appDefinition,
+    eventStore,
+    aggregatesService,
+    loggerService,
+    userlandServices,
+  )
 
   const cronJobFirebaseFunctions: CronJobFunctions = {}
 
@@ -42,7 +60,11 @@ export const createCronJobFirebaseFunctions = (
           causationEvent: null,
         })
 
-        await handler(flowService)
+        await handler({
+          ...userlandServices,
+          flow: flowService,
+          logger: loggerService,
+        })
       })
   }
 

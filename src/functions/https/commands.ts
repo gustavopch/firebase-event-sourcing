@@ -5,6 +5,9 @@ import firebase from 'firebase-admin'
 import * as functions from 'firebase-functions'
 
 import { createApp } from '../../app'
+import { createAggregatesService } from '../../services/aggregates'
+import { createLoggerService } from '../../services/logger'
+import { createEventStore } from '../../stores/event-store'
 import { AppDefinition } from '../../types/app'
 import { CommandWithMetadata } from '../../types/command'
 import { auth } from './middlewares/auth'
@@ -89,7 +92,22 @@ export const createCommandsEndpoint = (
   server.use(auth(firebaseApp))
 
   server.post('/', async (req, res) => {
-    const app = createApp(firebaseApp, appDefinition, req)
+    const eventStore = createEventStore(firebaseApp)
+    const aggregatesService = createAggregatesService(eventStore)
+    const loggerService = createLoggerService(req)
+    const userlandServices =
+      appDefinition.services?.({
+        logger: loggerService,
+      }) ?? {}
+
+    const app = createApp(
+      firebaseApp,
+      appDefinition,
+      eventStore,
+      aggregatesService,
+      loggerService,
+      userlandServices,
+    )
 
     try {
       const isCommandValid =

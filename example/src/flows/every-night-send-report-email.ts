@@ -6,7 +6,7 @@ import { TOTALS_ID } from '../views/reports'
 
 export const everyNightSendReportEmail: FlowDefinition = {
   cron: {
-    'every day 01:00': async flow => {
+    'every day 01:00': async ctx => {
       const emailService = getEmailService()
 
       const reportSnap = await firebase
