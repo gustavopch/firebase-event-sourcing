@@ -1,16 +1,19 @@
 import firebase from 'firebase-admin'
 
 import { ViewDefinition } from '../../../src'
-import * as Domain from '../domain'
 
 export const TOTALS_ID = 'totals'
 
-export type Report = {
-  id: string
-  orderCount: number
+declare global {
+  namespace Views.Reports {
+    type Report = {
+      id: string
+      orderCount: number
+    }
+  }
 }
 
-export const reports: ViewDefinition<Report> = {
+export const reports: ViewDefinition<Views.Reports.Report> = {
   projections: {
     'cart.orderPlaced': (event: Domain.Cart.OrderPlaced) => ({
       id: TOTALS_ID,

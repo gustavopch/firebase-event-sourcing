@@ -1,5 +1,4 @@
 import { FlowDefinition } from '../../../src'
-import * as Domain from '../domain'
 
 import { getEmailService } from '../services/email'
 

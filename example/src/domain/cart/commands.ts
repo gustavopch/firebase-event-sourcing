@@ -3,32 +3,38 @@ import {
   CommandDefinition,
   CommandPreset,
 } from '../../../../src'
-import { Initialized, ItemAdded, ItemRemoved, OrderPlaced } from './events'
-import { State } from './state'
 
 type Command<T extends CommandCreationProps> = CommandPreset<'cart', T>
 
-export type Initialize = Command<{
-  name: 'initialize'
-  data: null
-}>
+declare global {
+  namespace Domain.Cart {
+    type Initialize = Command<{
+      name: 'initialize'
+      data: null
+    }>
 
-export type AddItem = Command<{
-  name: 'addItem'
-  data: { title: string }
-}>
+    type AddItem = Command<{
+      name: 'addItem'
+      data: { title: string }
+    }>
 
-export type RemoveItem = Command<{
-  name: 'removeItem'
-  data: { itemId: string }
-}>
+    type RemoveItem = Command<{
+      name: 'removeItem'
+      data: { itemId: string }
+    }>
 
-export type PlaceOrder = Command<{
-  name: 'placeOrder'
-  data: null
-}>
+    type PlaceOrder = Command<{
+      name: 'placeOrder'
+      data: null
+    }>
+  }
+}
 
-const initialize: CommandDefinition<State, Initialize, Initialized> = {
+export const initialize: CommandDefinition<
+  Domain.Cart.State,
+  Domain.Cart.Initialize,
+  Domain.Cart.Initialized
+> = {
   handle: (cart, command) => {
     return {
       name: 'initialized',
@@ -37,7 +43,11 @@ const initialize: CommandDefinition<State, Initialize, Initialized> = {
   },
 }
 
-const addItem: CommandDefinition<State, AddItem, ItemAdded> = {
+export const addItem: CommandDefinition<
+  Domain.Cart.State,
+  Domain.Cart.AddItem,
+  Domain.Cart.ItemAdded
+> = {
   handle: (cart, command) => {
     return {
       name: 'itemAdded',
@@ -48,7 +58,11 @@ const addItem: CommandDefinition<State, AddItem, ItemAdded> = {
   },
 }
 
-const removeItem: CommandDefinition<State, RemoveItem, ItemRemoved> = {
+export const removeItem: CommandDefinition<
+  Domain.Cart.State,
+  Domain.Cart.RemoveItem,
+  Domain.Cart.ItemRemoved
+> = {
   handle: (cart, command) => {
     return {
       name: 'itemRemoved',
@@ -59,18 +73,15 @@ const removeItem: CommandDefinition<State, RemoveItem, ItemRemoved> = {
   },
 }
 
-const placeOrder: CommandDefinition<State, PlaceOrder, OrderPlaced> = {
+export const placeOrder: CommandDefinition<
+  Domain.Cart.State,
+  Domain.Cart.PlaceOrder,
+  Domain.Cart.OrderPlaced
+> = {
   handle: (cart, command) => {
     return {
       name: 'orderPlaced',
       data: null,
     }
   },
-}
-
-export const commands = {
-  initialize,
-  addItem,
-  removeItem,
-  placeOrder,
 }

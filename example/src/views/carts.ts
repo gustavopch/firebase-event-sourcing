@@ -1,23 +1,26 @@
 import firebase from 'firebase-admin'
 
 import { ViewDefinition, generateId } from '../../../src'
-import * as Domain from '../domain'
 
-type CartStatus = 'open' | 'placed'
+declare global {
+  namespace Views.Carts {
+    type Status = 'open' | 'placed'
 
-type CartItem = {
-  title: string
+    type Item = {
+      title: string
+    }
+
+    type Cart = {
+      id: string
+      initializedAt: number
+      placedAt: number | null
+      status: Status
+      items: { [id: string]: Item }
+    }
+  }
 }
 
-export type Cart = {
-  id: string
-  initializedAt: number
-  placedAt: number | null
-  status: CartStatus
-  items: { [id: string]: CartItem }
-}
-
-export const carts: ViewDefinition<Cart> = {
+export const carts: ViewDefinition<Views.Carts.Cart> = {
   projections: {
     'cart.initialized': (event: Domain.Cart.Initialized) => ({
       id: event.aggregateId,

@@ -2,7 +2,6 @@ import * as testing from '@firebase/rules-unit-testing'
 import firebase from 'firebase-admin'
 
 import { config } from '../../example/src/config'
-import * as Domain from '../../example/src/domain'
 import { AggregateData } from '../types/aggregate'
 import { Event } from '../types/event'
 import { AGGREGATES, EVENTS, createEventStore } from './event-store'

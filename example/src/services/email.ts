@@ -1,10 +1,14 @@
-let emailService: EmailService | null = null
+let emailService: Services.Email.Instance | null = null
 
-type EmailService = {
-  send: (params: { to: string; body: string }) => Promise<void>
+declare global {
+  namespace Services.Email {
+    type Instance = {
+      send: (params: { to: string; body: string }) => Promise<void>
+    }
+  }
 }
 
-const createEmailService = (): EmailService => {
+const createEmailService = (): Services.Email.Instance => {
   return {
     send: async ({ to, body }) => {
       await new Promise(resolve => setTimeout(resolve, 200))
@@ -13,7 +17,7 @@ const createEmailService = (): EmailService => {
   }
 }
 
-export const getEmailService = (): EmailService => {
+export const getEmailService = (): Services.Email.Instance => {
   if (!emailService) {
     emailService = createEmailService()
   }

@@ -1,11 +1,5 @@
-import * as Cart from './cart'
+import { aggregate as cart } from './cart'
 
 export const domain = {
-  cart: {
-    getInitialState: Cart.getInitialState,
-    commands: Cart.commands,
-    events: Cart.events,
-  },
+  cart,
 }
-
-export type { Cart }

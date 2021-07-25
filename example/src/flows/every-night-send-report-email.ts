@@ -2,7 +2,7 @@ import firebase from 'firebase-admin'
 
 import { FlowDefinition } from '../../../src'
 import { getEmailService } from '../services/email'
-import { Report, TOTALS_ID } from '../views/reports'
+import { TOTALS_ID } from '../views/reports'
 
 export const everyNightSendReportEmail: FlowDefinition = {
   cron: {
@@ -14,7 +14,7 @@ export const everyNightSendReportEmail: FlowDefinition = {
         .collection('reports')
         .doc(TOTALS_ID)
         .get()
-      const report = reportSnap.data() as Report
+      const report = reportSnap.data() as Views.Reports.Report
 
       await emailService.send({
         to: 'admin@example.com',

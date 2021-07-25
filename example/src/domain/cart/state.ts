@@ -1,9 +1,14 @@
 import { GetInitialAggregateState } from '../../../../src'
 
-export type State = {
-  isPlaced: boolean
+declare global {
+  namespace Domain.Cart {
+    type State = {
+      isPlaced: boolean
+    }
+  }
 }
 
-export const getInitialState: GetInitialAggregateState<State> = () => ({
-  isPlaced: false,
-})
+export const getInitialState: GetInitialAggregateState<Domain.Cart.State> =
+  () => ({
+    isPlaced: false,
+  })
