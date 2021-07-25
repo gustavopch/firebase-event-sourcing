@@ -1,4 +1,7 @@
 export { createClient } from './client'
+export { flatten } from './utils/flatten'
+export { generateId } from './utils/generate-id'
+
 export type {
   Aggregate,
   AggregateData,
@@ -27,5 +30,3 @@ export type {
 export type { FlowDefinition } from './types/flow'
 export type { ServiceContext, Services } from './types/service'
 export type { ViewContext, ViewDefinition } from './types/view'
-export { flatten } from './utils/flatten'
-export { generateId } from './utils/generate-id'
