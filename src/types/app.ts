@@ -13,7 +13,7 @@ export type AppDefinition = {
   }
 
   views: {
-    [viewName: string]: ViewDefinition
+    [viewName: string]: ViewDefinition<any>
   }
 
   services?: (ctx: ServiceContext) => Services

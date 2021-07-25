@@ -3,7 +3,6 @@ import firebase from 'firebase-admin'
 import fetch from 'node-fetch'
 
 import { config } from '../../../example/src/config'
-import { cartsCollection } from '../../../example/src/views/carts'
 import { createEventStore } from '../../stores/event-store'
 import { Event } from '../../types/event'
 
@@ -148,7 +147,11 @@ describe('/commands endpoint', () => {
       }),
     })
 
-    const cartSnap = await cartsCollection().doc('123').get()
+    const cartSnap = await firebase
+      .firestore()
+      .collection('carts')
+      .doc('123')
+      .get()
 
     expect(cartSnap.data()).toEqual({
       id: '123',

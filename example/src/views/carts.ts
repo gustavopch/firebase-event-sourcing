@@ -1,6 +1,6 @@
 import firebase from 'firebase-admin'
 
-import { ViewDefinition, flatten, generateId } from '../../../src'
+import { ViewDefinition, generateId } from '../../../src'
 import * as Domain from '../domain'
 
 type CartStatus = 'open' | 'placed'
@@ -17,53 +17,33 @@ export type Cart = {
   items: { [id: string]: CartItem }
 }
 
-export const cartsCollection = () => {
-  return firebase.firestore().collection('carts')
-}
-
-export const carts: ViewDefinition = {
+export const carts: ViewDefinition<Cart> = {
   projections: {
-    'cart.initialized': async (event: Domain.Cart.Initialized) => {
-      const cart: Cart = {
-        id: event.aggregateId,
-        initializedAt: event.metadata.timestamp.toMillis(),
-        placedAt: null,
-        status: 'open',
-        items: {},
-      }
+    'cart.initialized': (event: Domain.Cart.Initialized) => ({
+      id: event.aggregateId,
+      initializedAt: event.metadata.timestamp.toMillis(),
+      placedAt: null,
+      status: 'open',
+      items: {},
+    }),
 
-      await cartsCollection().doc(event.aggregateId).set(cart)
-    },
-
-    'cart.itemAdded': async (event: Domain.Cart.ItemAdded) => {
-      const nfe: Partial<Cart> = {
-        items: {
-          [generateId()]: {
-            title: event.data.title,
-          },
+    'cart.itemAdded': (event: Domain.Cart.ItemAdded) => ({
+      items: {
+        [generateId()]: {
+          title: event.data.title,
         },
-      }
+      },
+    }),
 
-      await cartsCollection().doc(event.aggregateId).update(flatten(nfe))
-    },
+    'cart.itemRemoved': (event: Domain.Cart.ItemRemoved) => ({
+      items: {
+        [event.data.itemId]: firebase.firestore.FieldValue.delete() as any,
+      },
+    }),
 
-    'cart.itemRemoved': async (event: Domain.Cart.ItemRemoved) => {
-      const nfe: Partial<Cart> = {
-        items: {
-          [event.data.itemId]: firebase.firestore.FieldValue.delete() as any,
-        },
-      }
-
-      await cartsCollection().doc(event.aggregateId).update(flatten(nfe))
-    },
-
-    'cart.orderPlaced': async (event: Domain.Cart.OrderPlaced) => {
-      const nfe: Partial<Cart> = {
-        placedAt: event.metadata.timestamp.toMillis(),
-        status: 'placed',
-      }
-
-      await cartsCollection().doc(event.aggregateId).update(flatten(nfe))
-    },
+    'cart.orderPlaced': (event: Domain.Cart.OrderPlaced) => ({
+      placedAt: event.metadata.timestamp.toMillis(),
+      status: 'placed',
+    }),
   },
 }

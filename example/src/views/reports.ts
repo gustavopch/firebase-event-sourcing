@@ -10,19 +10,11 @@ export type Report = {
   orderCount: number
 }
 
-export const reportsCollection = () => {
-  return firebase.firestore().collection('reports')
-}
-
-export const reports: ViewDefinition = {
+export const reports: ViewDefinition<Report> = {
   projections: {
-    'cart.orderPlaced': async (event: Domain.Cart.OrderPlaced) => {
-      const report: Report = {
-        id: TOTALS_ID,
-        orderCount: firebase.firestore.FieldValue.increment(1) as any,
-      }
-
-      await reportsCollection().doc(TOTALS_ID).set(report)
-    },
+    'cart.orderPlaced': (event: Domain.Cart.OrderPlaced) => ({
+      id: TOTALS_ID,
+      orderCount: firebase.firestore.FieldValue.increment(1) as any,
+    }),
   },
 }

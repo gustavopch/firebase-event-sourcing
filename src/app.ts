@@ -42,28 +42,40 @@ export const createApp = <TAppDefinition extends AppDefinition>(
   const runProjections = async (event: Event) => {
     const fullyQualifiedEventName = getFullyQualifiedEventName(event)
 
-    const promises: Array<Promise<void>> = []
+    await firebaseApp
+      .firestore()
+      // eslint-disable-next-line @typescript-eslint/require-await
+      .runTransaction(async transaction => {
+        for (const [viewName, view] of Object.entries(appDefinition.views)) {
+          for (const [handlerKey, handler] of Object.entries(
+            view.projections,
+          )) {
+            if (handlerKey === fullyQualifiedEventName) {
+              const state = handler(event, {
+                logger: loggerService,
+                ...userlandServices,
+              })
 
-    for (const [viewName, view] of Object.entries(appDefinition.views)) {
-      for (const [handlerKey, handler] of Object.entries(view.projections)) {
-        if (handlerKey === fullyQualifiedEventName) {
-          const promise = handler(event, {
-            logger: loggerService,
-            ...userlandServices,
-          })
-            .then(() => {
-              console.log(`Ran '${viewName}' projection with event '${fullyQualifiedEventName}:${event.id}'`) // prettier-ignore
-            })
-            .catch(error => {
-              console.error(`Failed to run '${viewName}' projection with event '${fullyQualifiedEventName}:${event.id}':`, error) // prettier-ignore
-            })
+              transaction.set(
+                firebaseApp
+                  .firestore()
+                  .collection(viewName)
+                  .doc(event.aggregateId),
+                state,
+                { merge: true },
+              )
 
-          promises.push(promise)
+              console.log(`Trying to run '${viewName}' projection with event '${fullyQualifiedEventName}:${event.id}'`) // prettier-ignore
+            }
+          }
         }
-      }
-    }
-
-    await Promise.all(promises)
+      })
+      .then(() => {
+        console.info('Ran transaction of projections')
+      })
+      .catch(error => {
+        console.error('Failed to run transaction of projections:', error)
+      })
   }
 
   const runReactions = async (event: Event) => {
