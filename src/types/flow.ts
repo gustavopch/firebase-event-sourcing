@@ -1,19 +1,19 @@
 import { FlowService } from '../services/flow'
 import { Event } from './event'
 
-export type CronHandler = (flow: FlowService) => Promise<void>
+export type FlowCronHandler = (flow: FlowService) => Promise<void>
 
-export type ReactionHandler<TEvent extends Event> = (
+export type FlowReactionHandler<TEvent extends Event> = (
   event: TEvent,
   services: { flow: FlowService },
 ) => Promise<void>
 
 export type FlowDefinition = {
   cron?: {
-    [jobName: string]: CronHandler
+    [jobName: string]: FlowCronHandler
   }
 
   reactions?: {
-    [eventName: string]: ReactionHandler<Event<any>>
+    [eventName: string]: FlowReactionHandler<Event<any>>
   }
 }

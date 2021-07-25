@@ -26,6 +26,6 @@ export type {
 } from './types/event'
 export type { FlowDefinition } from './types/flow'
 export type { ServiceContext, Services } from './types/service'
-export type { ProjectionContext, ViewDefinition } from './types/view'
+export type { ViewContext, ViewDefinition } from './types/view'
 export { flatten } from './utils/flatten'
 export { generateId } from './utils/generate-id'

@@ -2,21 +2,21 @@ import { LoggerService } from '../services/logger'
 import { Event } from './event'
 import { Services } from './service'
 
-export type ProjectionState = {
+export type ViewProjectionState = {
   [key: string]: any
 }
 
-export type ProjectionContext = Services & {
+export type ViewContext = Services & {
   logger: LoggerService
 }
 
-export type ProjectionHandler<
-  TProjectionState extends ProjectionState,
+export type ViewProjectionHandler<
+  TViewProjectionState extends ViewProjectionState,
   TEvent extends Event,
-> = (event: TEvent, context: ProjectionContext) => Partial<TProjectionState>
+> = (event: TEvent, context: ViewContext) => Partial<TViewProjectionState>
 
-export type ViewDefinition<TProjectionState extends ProjectionState> = {
+export type ViewDefinition<TViewProjectionState extends ViewProjectionState> = {
   projections: {
-    [eventName: string]: ProjectionHandler<TProjectionState, Event<any>>
+    [eventName: string]: ViewProjectionHandler<TViewProjectionState, Event<any>>
   }
 }
