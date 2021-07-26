@@ -1,4 +1,5 @@
 export { createClient } from './client'
+export { Trigger } from './constants'
 export { flatten } from './utils/flatten'
 export { generateId } from './utils/generate-id'
 
@@ -29,4 +30,8 @@ export type {
 } from './types/event'
 export type { FlowDefinition } from './types/flow'
 export type { ServiceContext, Services } from './types/service'
-export type { ViewContext, ViewDefinition } from './types/view'
+export type {
+  ViewDefinition,
+  ViewProjectionContext,
+  ViewReactionContext,
+} from './types/view'
