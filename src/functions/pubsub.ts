@@ -1,21 +1,21 @@
 import firebase from 'firebase-admin'
 import * as functions from 'firebase-functions'
 
-import { createApp } from '../../app'
-import { createAggregatesService } from '../../services/aggregates'
-import { createLoggerService } from '../../services/logger'
-import { createEventStore } from '../../stores/event-store'
-import { AppDefinition } from '../../types/app'
-import { Services } from '../../types/service'
+import { createApp } from '../app'
+import { createAggregatesService } from '../services/aggregates'
+import { createLoggerService } from '../services/logger'
+import { createEventStore } from '../stores/event-store'
+import { AppDefinition } from '../types/app'
+import { Services } from '../types/service'
 
-type CronJobFunctions = {
+type PubsubFunctions = {
   [functionName: string]: functions.CloudFunction<any>
 }
 
-export const createCronJobFirebaseFunctions = (
+export const createPubsubFunctions = (
   firebaseApp: firebase.app.App,
   appDefinition: AppDefinition,
-): CronJobFunctions => {
+): PubsubFunctions => {
   const eventStore = createEventStore(firebaseApp)
   const aggregatesService = createAggregatesService(eventStore)
   const loggerService = createLoggerService(null)
@@ -32,7 +32,7 @@ export const createCronJobFirebaseFunctions = (
     userlandServices,
   )
 
-  const cronJobFirebaseFunctions: CronJobFunctions = {}
+  const pubsubFunctions: PubsubFunctions = {}
 
   for (const [flowName, flow] of Object.entries(appDefinition.flows)) {
     const [firstEntry, ...ignoredEntries] = Object.entries(flow.cron ?? {})
@@ -53,7 +53,7 @@ export const createCronJobFirebaseFunctions = (
       )
     }
 
-    cronJobFirebaseFunctions[flowName] = functions.pubsub
+    pubsubFunctions[flowName] = functions.pubsub
       .schedule(schedule)
       .onRun(async ctx => {
         const flowService = app.getFlowService({
@@ -68,5 +68,5 @@ export const createCronJobFirebaseFunctions = (
       })
   }
 
-  return cronJobFirebaseFunctions
+  return pubsubFunctions
 }
