@@ -147,18 +147,43 @@ describe('/commands endpoint', () => {
       }),
     })
 
-    const cartSnap = await firebase
+    let cart
+
+    cart = await firebase
       .firestore()
       .collection('carts')
       .doc('123')
       .get()
+      .then(snap => snap.data())
 
-    expect(cartSnap.data()).toEqual({
+    expect(cart).toEqual({
       id: '123',
       initializedAt: expect.any(Number),
       placedAt: null,
       status: 'open',
       items: {},
     })
+
+    await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        aggregateName: 'cart',
+        aggregateId: '123',
+        name: 'discard',
+        data: null,
+      }),
+    })
+
+    cart = await firebase
+      .firestore()
+      .collection('carts')
+      .doc('123')
+      .get()
+      .then(snap => snap.data())
+
+    expect(cart).toBeUndefined()
   })
 })
