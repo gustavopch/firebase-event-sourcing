@@ -45,24 +45,25 @@ export const createApp = <TAppDefinition extends AppDefinition>(
             view.projections,
           )) {
             if (handlerKey === fullyQualifiedEventName) {
-              const stateOrStates = handler(event, {
+              const stateOrStatesWithTheirIds = handler(event, {
                 logger: loggerService,
                 ...userlandServices,
               })
 
-              const states = Array.isArray(stateOrStates)
-                ? stateOrStates
-                : [stateOrStates]
+              const statesWithTheirIds = Array.isArray(
+                stateOrStatesWithTheirIds,
+              )
+                ? stateOrStatesWithTheirIds
+                : [{ id: event.aggregateId, state: stateOrStatesWithTheirIds }]
 
-              for (const state of states) {
-                transaction.set(
-                  firebaseApp
-                    .firestore()
-                    .collection(viewName)
-                    .doc(state.id ?? event.aggregateId),
-                  state,
-                  { merge: true },
-                )
+              for (const { id, state } of statesWithTheirIds) {
+                const ref = firebaseApp.firestore().collection(viewName).doc(id)
+
+                if (state) {
+                  transaction.set(ref, state, { merge: true })
+                } else {
+                  transaction.delete(ref)
+                }
               }
 
               console.log(`Trying to run '${viewName}' projection with event '${fullyQualifiedEventName}:${event.id}'`) // prettier-ignore

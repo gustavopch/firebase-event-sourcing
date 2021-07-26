@@ -4,7 +4,6 @@ import { Event } from './event'
 import { Services } from './service'
 
 export type ViewProjectionState = {
-  id: string
   [key: string]: any
 }
 
@@ -20,7 +19,11 @@ export type ViewProjectionHandler<
   context: ViewProjectionContext,
 ) =>
   | Partial<TViewProjectionState>
-  | Array<Pick<TViewProjectionState, 'id'> & Partial<TViewProjectionState>>
+  | null
+  | Array<{
+      id: string
+      state: Partial<TViewProjectionState> | null
+    }>
 
 export type ViewReactionContext = Services & {
   logger: LoggerService
