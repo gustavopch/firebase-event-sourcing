@@ -3,15 +3,8 @@ import { Aggregate } from '../types/aggregate'
 
 export type AggregatesService = {
   exists: (aggregateId: string | string[] | null) => Promise<boolean>
-  get: <TAggregateIdOrIds extends string | string[]>(
-    aggregateId: TAggregateIdOrIds,
-  ) => Promise<
-    TAggregateIdOrIds extends string[]
-      ? Aggregate[]
-      : TAggregateIdOrIds extends string
-      ? Aggregate | null
-      : never
-  >
+  get: (aggregateId: string) => Promise<Aggregate | null>
+  getAll: (aggregateIds: string[]) => Promise<Aggregate[]>
 }
 
 export const createAggregatesService = (
@@ -34,12 +27,14 @@ export const createAggregatesService = (
       return aggregates.every(Boolean)
     },
 
-    get: async aggregateIdOrIds => {
+    get: async aggregateId => {
+      return eventStore.getAggregate(aggregateId)
+    },
+
+    getAll: async aggregateIds => {
       return (
-        Array.isArray(aggregateIdOrIds)
-          ? Promise.all(aggregateIdOrIds.map(id => eventStore.getAggregate(id)))
-          : eventStore.getAggregate(aggregateIdOrIds)
-      ) as Promise<any>
+        await Promise.all(aggregateIds.map(id => eventStore.getAggregate(id)))
+      ).filter((aggregate): aggregate is Aggregate => Boolean(aggregate))
     },
   }
 }
