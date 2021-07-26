@@ -27,6 +27,11 @@ declare global {
       name: 'placeOrder'
       data: null
     }>
+
+    type Discard = Command<{
+      name: 'discard'
+      data: null
+    }>
   }
 }
 
@@ -81,6 +86,19 @@ export const placeOrder: CommandDefinition<
   handle: (cart, command) => {
     return {
       name: 'orderPlaced',
+      data: null,
+    }
+  },
+}
+
+export const discard: CommandDefinition<
+  Domain.Cart.State,
+  Domain.Cart.Discard,
+  Domain.Cart.Discarded
+> = {
+  handle: (cart, command) => {
+    return {
+      name: 'discarded',
       data: null,
     }
   },

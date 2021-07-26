@@ -27,6 +27,11 @@ declare global {
       name: 'orderPlaced'
       data: null
     }>
+
+    type Discarded = Event<{
+      name: 'discarded'
+      data: null
+    }>
   }
 }
 

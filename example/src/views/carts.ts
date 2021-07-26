@@ -48,5 +48,7 @@ export const carts: ViewDefinition<Views.Carts.Cart> = {
       placedAt: event.metadata.timestamp.toMillis(),
       status: 'placed',
     }),
+
+    'cart.discarded': (event: Domain.Cart.Discarded) => null,
   },
 }
