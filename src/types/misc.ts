@@ -13,3 +13,7 @@ export type ClientInfo = {
   ua: string
   location: Location | null
 }
+
+declare global {
+  type Promisable<T> = T | Promise<T>
+}

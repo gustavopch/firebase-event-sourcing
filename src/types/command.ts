@@ -65,16 +65,13 @@ export type CommandHandler<
   aggregate: TAggregate,
   command: TCommand & { metadata: CommandMetadata },
   context: CommandContext,
-) =>
-  | EventCreationProps<TEvent>
-  | Array<EventCreationProps<TEvent>>
-  | Promise<EventCreationProps<TEvent> | Array<EventCreationProps<TEvent>>>
+) => Promisable<EventCreationProps<TEvent> | Array<EventCreationProps<TEvent>>>
 
 export type CommandDefinition<
   TAggregateState extends AggregateState,
   TCommand extends Command,
   TEvent extends Event,
 > = {
-  isAuthorized?: (command: TCommand) => boolean | Promise<boolean>
+  isAuthorized?: (command: TCommand) => Promisable<boolean>
   handle: CommandHandler<Aggregate<TAggregateState>, TCommand, TEvent>
 }

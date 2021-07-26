@@ -35,7 +35,7 @@ const queryInBatches = async (
   }
 }
 
-export type OnEvent = (event: Event) => void | Promise<void>
+export type OnEvent = (event: Event) => Promisable<void>
 
 export type EventStore = {
   getEvent: (eventId: string | null | undefined) => Promise<Event | null>
