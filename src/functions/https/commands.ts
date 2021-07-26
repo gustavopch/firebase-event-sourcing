@@ -10,6 +10,7 @@ import { createLoggerService } from '../../services/logger'
 import { createEventStore } from '../../stores/event-store'
 import { AppDefinition } from '../../types/app'
 import { CommandWithMetadata } from '../../types/command'
+import { Services } from '../../types/service'
 import { auth } from './middlewares/auth'
 import { parseLocationFromHeaders } from './utils/parse-location-from-headers'
 
@@ -95,10 +96,9 @@ export const createCommandsEndpoint = (
     const eventStore = createEventStore(firebaseApp)
     const aggregatesService = createAggregatesService(eventStore)
     const loggerService = createLoggerService(req)
-    const userlandServices =
-      appDefinition.services?.({
-        logger: loggerService,
-      }) ?? {}
+    const userlandServices = (appDefinition.services?.({
+      logger: loggerService,
+    }) ?? {}) as Services
 
     const app = createApp(
       firebaseApp,

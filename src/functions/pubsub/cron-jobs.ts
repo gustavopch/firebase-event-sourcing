@@ -6,6 +6,7 @@ import { createAggregatesService } from '../../services/aggregates'
 import { createLoggerService } from '../../services/logger'
 import { createEventStore } from '../../stores/event-store'
 import { AppDefinition } from '../../types/app'
+import { Services } from '../../types/service'
 
 type CronJobFunctions = {
   [functionName: string]: functions.CloudFunction<any>
@@ -18,10 +19,9 @@ export const createCronJobFirebaseFunctions = (
   const eventStore = createEventStore(firebaseApp)
   const aggregatesService = createAggregatesService(eventStore)
   const loggerService = createLoggerService(null)
-  const userlandServices =
-    appDefinition.services?.({
-      logger: loggerService,
-    }) ?? {}
+  const userlandServices = (appDefinition.services?.({
+    logger: loggerService,
+  }) ?? {}) as Services
 
   const app = createApp(
     firebaseApp,
@@ -61,9 +61,9 @@ export const createCronJobFirebaseFunctions = (
         })
 
         await handler({
-          ...userlandServices,
           flow: flowService,
           logger: loggerService,
+          ...userlandServices,
         })
       })
   }
