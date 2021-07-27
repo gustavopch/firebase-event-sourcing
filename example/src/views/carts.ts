@@ -21,6 +21,8 @@ declare global {
 }
 
 export const carts: ViewDefinition<Views.Carts.Cart> = {
+  collectionName: 'carts',
+
   projections: {
     'cart.initialized': (event: Domain.Cart.Initialized) => ({
       id: event.aggregateId,

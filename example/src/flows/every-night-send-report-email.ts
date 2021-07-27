@@ -1,14 +1,14 @@
 import firebase from 'firebase-admin'
 
 import { FlowDefinition } from '../../../src'
-import { TOTALS_ID } from '../views/reports'
+import { TOTALS_ID, reports as reportsView } from '../views/reports'
 
 export const everyNightSendReportEmail: FlowDefinition = {
   cron: {
     'every day 01:00': async ctx => {
       const reportSnap = await firebase
         .firestore()
-        .collection('reports')
+        .collection(reportsView.collectionName)
         .doc(TOTALS_ID)
         .get()
       const report = reportSnap.data() as Views.Reports.Report

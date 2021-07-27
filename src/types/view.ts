@@ -38,6 +38,8 @@ export type ViewReactionHandler<TParams extends any[]> = (
 ) => Promise<void>
 
 export type ViewDefinition<TViewProjectionState extends ViewProjectionState> = {
+  collectionName: string
+
   projections: {
     [eventName: string]: ViewProjectionHandler<TViewProjectionState, Event<any>>
   }

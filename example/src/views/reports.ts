@@ -14,6 +14,8 @@ declare global {
 }
 
 export const reports: ViewDefinition<Views.Reports.Report> = {
+  collectionName: 'reports',
+
   projections: {
     'cart.orderPlaced': (event: Domain.Cart.OrderPlaced) => ({
       id: TOTALS_ID,

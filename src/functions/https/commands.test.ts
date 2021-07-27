@@ -3,6 +3,7 @@ import firebase from 'firebase-admin'
 import fetch from 'node-fetch'
 
 import { config } from '../../../example/src/config'
+import { carts as cartsView } from '../../../example/src/views/carts'
 import { createEventStore } from '../../stores/event-store'
 import { Event } from '../../types/event'
 
@@ -151,7 +152,7 @@ describe('/commands endpoint', () => {
 
     cart = await firebase
       .firestore()
-      .collection('carts')
+      .collection(cartsView.collectionName)
       .doc('123')
       .get()
       .then(snap => snap.data())
@@ -179,7 +180,7 @@ describe('/commands endpoint', () => {
 
     cart = await firebase
       .firestore()
-      .collection('carts')
+      .collection(cartsView.collectionName)
       .doc('123')
       .get()
       .then(snap => snap.data())

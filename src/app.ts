@@ -57,7 +57,7 @@ export const createApp = <TAppDefinition extends AppDefinition>(
 
           await Promise.allSettled(
             statesWithTheirIds.map(async ({ id, state }) => {
-              const ref = db.collection(viewName).doc(id)
+              const ref = db.collection(view.collectionName).doc(id)
 
               try {
                 if (state) {
