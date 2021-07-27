@@ -1,7 +1,9 @@
+import firebase from 'firebase-admin'
 import * as functions from 'firebase-functions'
 
 import { Trigger } from '../constants'
 import { createLoggerService } from '../services/logger'
+import { createProjectionsService } from '../services/projections'
 import { AppDefinition } from '../types/app'
 import { Services } from '../types/service'
 
@@ -10,9 +12,11 @@ type FirestoreFunctions = {
 }
 
 export const createFirestoreFunctions = (
+  firebaseApp: firebase.app.App,
   appDefinition: AppDefinition,
 ): FirestoreFunctions => {
   const loggerService = createLoggerService(null)
+  const projectionsService = createProjectionsService(firebaseApp)
   const userlandServices = (appDefinition.services?.({
     logger: loggerService,
   }) ?? {}) as Services
@@ -35,6 +39,7 @@ export const createFirestoreFunctions = (
         .onCreate(async snap => {
           await createHandler(snap.data(), {
             logger: loggerService,
+            projections: projectionsService,
             ...userlandServices,
           })
         })
@@ -51,6 +56,7 @@ export const createFirestoreFunctions = (
             },
             {
               logger: loggerService,
+              projections: projectionsService,
               ...userlandServices,
             },
           )
@@ -63,6 +69,7 @@ export const createFirestoreFunctions = (
         .onDelete(async snap => {
           await deleteHandler(snap.data(), {
             logger: loggerService,
+            projections: projectionsService,
             ...userlandServices,
           })
         })
@@ -79,6 +86,7 @@ export const createFirestoreFunctions = (
             },
             {
               logger: loggerService,
+              projections: projectionsService,
               ...userlandServices,
             },
           )

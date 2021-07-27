@@ -7,6 +7,7 @@ import * as functions from 'firebase-functions'
 import { createApp } from '../../app'
 import { createAggregatesService } from '../../services/aggregates'
 import { createLoggerService } from '../../services/logger'
+import { createProjectionsService } from '../../services/projections'
 import { createEventStore } from '../../stores/event-store'
 import { AppDefinition } from '../../types/app'
 import { CommandWithMetadata } from '../../types/command'
@@ -96,6 +97,7 @@ export const createCommandsEndpoint = (
     const eventStore = createEventStore(firebaseApp)
     const aggregatesService = createAggregatesService(eventStore)
     const loggerService = createLoggerService(req)
+    const projectionsService = createProjectionsService(firebaseApp)
     const userlandServices = (appDefinition.services?.({
       logger: loggerService,
     }) ?? {}) as Services
@@ -106,6 +108,7 @@ export const createCommandsEndpoint = (
       eventStore,
       aggregatesService,
       loggerService,
+      projectionsService,
       userlandServices,
     )
 

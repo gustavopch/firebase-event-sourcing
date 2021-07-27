@@ -3,6 +3,7 @@ import firebase from 'firebase-admin'
 import { AggregatesService } from './services/aggregates'
 import { FlowService, createFlowService } from './services/flow'
 import { LoggerService } from './services/logger'
+import { ProjectionsService } from './services/projections'
 import { EventStore } from './stores/event-store'
 import { AppDefinition } from './types/app'
 import { CommandMetadata } from './types/command'
@@ -31,6 +32,7 @@ export const createApp = <TAppDefinition extends AppDefinition>(
   eventStore: EventStore,
   aggregatesService: AggregatesService,
   loggerService: LoggerService,
+  projectionsService: ProjectionsService,
   userlandServices: Services,
 ): App<TAppDefinition> => {
   const runProjections = async (event: Event) => {
@@ -47,6 +49,7 @@ export const createApp = <TAppDefinition extends AppDefinition>(
             if (handlerKey === fullyQualifiedEventName) {
               const stateOrStatesWithTheirIds = handler(event, {
                 logger: loggerService,
+                projections: projectionsService,
                 ...userlandServices,
               })
 

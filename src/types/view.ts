@@ -1,5 +1,6 @@
 import { Trigger } from '../constants'
 import { LoggerService } from '../services/logger'
+import { ProjectionsService } from '../services/projections'
 import { Event } from './event'
 import { Services } from './service'
 
@@ -9,6 +10,7 @@ export type ViewProjectionState = {
 
 export type ViewProjectionContext = Services & {
   logger: LoggerService
+  projections: ProjectionsService
 }
 
 export type ViewProjectionHandler<
@@ -17,16 +19,18 @@ export type ViewProjectionHandler<
 > = (
   event: TEvent,
   context: ViewProjectionContext,
-) =>
+) => Promisable<
   | Partial<TViewProjectionState>
   | null
   | Array<{
       id: string
       state: Partial<TViewProjectionState> | null
     }>
+>
 
 export type ViewReactionContext = Services & {
   logger: LoggerService
+  projections: ProjectionsService
 }
 
 export type ViewReactionHandler<TParams extends any[]> = (

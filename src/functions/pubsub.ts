@@ -4,6 +4,7 @@ import * as functions from 'firebase-functions'
 import { createApp } from '../app'
 import { createAggregatesService } from '../services/aggregates'
 import { createLoggerService } from '../services/logger'
+import { createProjectionsService } from '../services/projections'
 import { createEventStore } from '../stores/event-store'
 import { AppDefinition } from '../types/app'
 import { Services } from '../types/service'
@@ -19,6 +20,7 @@ export const createPubsubFunctions = (
   const eventStore = createEventStore(firebaseApp)
   const aggregatesService = createAggregatesService(eventStore)
   const loggerService = createLoggerService(null)
+  const projectionsService = createProjectionsService(firebaseApp)
   const userlandServices = (appDefinition.services?.({
     logger: loggerService,
   }) ?? {}) as Services
@@ -29,6 +31,7 @@ export const createPubsubFunctions = (
     eventStore,
     aggregatesService,
     loggerService,
+    projectionsService,
     userlandServices,
   )
 
