@@ -37,51 +37,44 @@ export const createApp = <TAppDefinition extends AppDefinition>(
     userland: Services
   },
 ): App<TAppDefinition> => {
+  const db = firebaseApp.firestore()
+
   const runProjections = async (event: Event) => {
     const fullyQualifiedEventName = getFullyQualifiedEventName(event)
 
-    await firebaseApp
-      .firestore()
-      // eslint-disable-next-line @typescript-eslint/require-await
-      .runTransaction(async transaction => {
-        for (const [viewName, view] of Object.entries(appDefinition.views)) {
-          for (const [handlerKey, handler] of Object.entries(
-            view.projections,
-          )) {
-            if (handlerKey === fullyQualifiedEventName) {
-              const stateOrStatesWithTheirIds = handler(event, {
-                logger: services.logger,
-                projections: services.projections,
-                ...services.userland,
-              })
+    for (const [viewName, view] of Object.entries(appDefinition.views)) {
+      for (const [handlerKey, handler] of Object.entries(view.projections)) {
+        if (handlerKey === fullyQualifiedEventName) {
+          const stateOrStatesWithTheirIds = handler(event, {
+            logger: services.logger,
+            projections: services.projections,
+            ...services.userland,
+          })
 
-              const statesWithTheirIds = Array.isArray(
-                stateOrStatesWithTheirIds,
-              )
-                ? stateOrStatesWithTheirIds
-                : [{ id: event.aggregateId, state: stateOrStatesWithTheirIds }]
+          const statesWithTheirIds = Array.isArray(stateOrStatesWithTheirIds)
+            ? stateOrStatesWithTheirIds
+            : [{ id: event.aggregateId, state: stateOrStatesWithTheirIds }]
 
-              for (const { id, state } of statesWithTheirIds) {
-                const ref = firebaseApp.firestore().collection(viewName).doc(id)
+          await Promise.allSettled(
+            statesWithTheirIds.map(async ({ id, state }) => {
+              const ref = db.collection(viewName).doc(id)
 
+              try {
                 if (state) {
-                  transaction.set(ref, state, { merge: true })
+                  await ref.set(state, { merge: true })
                 } else {
-                  transaction.delete(ref)
+                  await ref.delete()
                 }
-              }
 
-              console.log(`Trying to run '${viewName}' projection with event '${fullyQualifiedEventName}:${event.id}'`) // prettier-ignore
-            }
-          }
+                console.log(`Ran '${viewName}' projection with event '${fullyQualifiedEventName}:${event.id}'`) // prettier-ignore
+              } catch (error) {
+                console.error(`Failed to run '${viewName}' projection with event '${fullyQualifiedEventName}:${event.id}':`, error) // prettier-ignore
+              }
+            }),
+          )
         }
-      })
-      .then(() => {
-        console.info('Ran transaction of projections')
-      })
-      .catch(error => {
-        console.error('Failed to run transaction of projections:', error)
-      })
+      }
+    }
   }
 
   const runReactions = async (event: Event) => {
