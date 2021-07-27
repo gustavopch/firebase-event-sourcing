@@ -16,4 +16,11 @@ export type ClientInfo = {
 
 declare global {
   type Promisable<T> = T | Promise<T>
+
+  type Split<
+    TString extends string,
+    TDelimiter extends string,
+  > = TString extends `${infer THead}${TDelimiter}${infer TTail}`
+    ? [THead, ...Split<TTail, TDelimiter>]
+    : [TString]
 }

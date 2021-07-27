@@ -8,7 +8,9 @@ import { EventStore } from './stores/event-store'
 import { AppDefinition } from './types/app'
 import { CommandMetadata } from './types/command'
 import { Event } from './types/event'
+import { FlowReactionHandler } from './types/flow'
 import { Services } from './types/service'
+import { ViewProjectionHandler } from './types/view'
 import { getFullyQualifiedEventName } from './utils/get-fully-qualified-event-name'
 
 export type App<TAppDefinition extends AppDefinition> = {
@@ -43,7 +45,11 @@ export const createApp = <TAppDefinition extends AppDefinition>(
     const fullyQualifiedEventName = getFullyQualifiedEventName(event)
 
     for (const [viewName, view] of Object.entries(appDefinition.views)) {
-      for (const [handlerKey, handler] of Object.entries(view.projections)) {
+      const projectionEntries: Array<
+        [string, ViewProjectionHandler<any, any>]
+      > = Object.entries(view.projections)
+
+      for (const [handlerKey, handler] of projectionEntries) {
         if (handlerKey === fullyQualifiedEventName) {
           const stateOrStatesWithTheirIds = handler(event, {
             logger: services.logger,
@@ -83,8 +89,10 @@ export const createApp = <TAppDefinition extends AppDefinition>(
     const promises: Array<Promise<void>> = []
 
     for (const [flowName, flow] of Object.entries(appDefinition.flows)) {
-      const reactions = flow.reactions ?? {}
-      for (const [handlerKey, handler] of Object.entries(reactions)) {
+      const reactionEntries: Array<[string, FlowReactionHandler<any>]> =
+        Object.entries(flow.reactions ?? {})
+
+      for (const [handlerKey, handler] of reactionEntries) {
         if (handlerKey === fullyQualifiedEventName) {
           const flowService = getFlowService({
             causationEvent: event,

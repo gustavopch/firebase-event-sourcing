@@ -13,11 +13,14 @@ declare global {
   }
 }
 
-export const reports: ViewDefinition<Views.Reports.Report> = {
+export const reports: ViewDefinition<
+  Views.Reports.Report,
+  Domain.Cart.OrderPlaced
+> = {
   collectionName: 'reports',
 
   projections: {
-    'cart.orderPlaced': (event: Domain.Cart.OrderPlaced) => ({
+    'cart.orderPlaced': event => ({
       id: TOTALS_ID,
       orderCount: firebase.firestore.FieldValue.increment(1) as any,
     }),

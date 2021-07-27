@@ -20,11 +20,18 @@ declare global {
   }
 }
 
-export const carts: ViewDefinition<Views.Carts.Cart> = {
+export const carts: ViewDefinition<
+  Views.Carts.Cart,
+  | Domain.Cart.Initialized
+  | Domain.Cart.ItemAdded
+  | Domain.Cart.ItemRemoved
+  | Domain.Cart.OrderPlaced
+  | Domain.Cart.Discarded
+> = {
   collectionName: 'carts',
 
   projections: {
-    'cart.initialized': (event: Domain.Cart.Initialized) => ({
+    'cart.initialized': event => ({
       id: event.aggregateId,
       initializedAt: event.metadata.timestamp.toMillis(),
       placedAt: null,
@@ -32,7 +39,7 @@ export const carts: ViewDefinition<Views.Carts.Cart> = {
       items: {},
     }),
 
-    'cart.itemAdded': (event: Domain.Cart.ItemAdded) => ({
+    'cart.itemAdded': event => ({
       items: {
         [generateId()]: {
           title: event.data.title,
@@ -40,17 +47,17 @@ export const carts: ViewDefinition<Views.Carts.Cart> = {
       },
     }),
 
-    'cart.itemRemoved': (event: Domain.Cart.ItemRemoved) => ({
+    'cart.itemRemoved': event => ({
       items: {
         [event.data.itemId]: firebase.firestore.FieldValue.delete() as any,
       },
     }),
 
-    'cart.orderPlaced': (event: Domain.Cart.OrderPlaced) => ({
+    'cart.orderPlaced': event => ({
       placedAt: event.metadata.timestamp.toMillis(),
       status: 'placed',
     }),
 
-    'cart.discarded': (event: Domain.Cart.Discarded) => null,
+    'cart.discarded': event => null,
   },
 }

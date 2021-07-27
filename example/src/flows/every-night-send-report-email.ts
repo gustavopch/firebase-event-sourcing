@@ -3,7 +3,7 @@ import firebase from 'firebase-admin'
 import { FlowDefinition } from '../../../src'
 import { TOTALS_ID, reports as reportsView } from '../views/reports'
 
-export const everyNightSendReportEmail: FlowDefinition = {
+export const everyNightSendReportEmail: FlowDefinition<never> = {
   cron: {
     'every day 01:00': async ctx => {
       const reportSnap = await firebase

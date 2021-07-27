@@ -1,6 +1,6 @@
 import { FlowService } from '../services/flow'
 import { LoggerService } from '../services/logger'
-import { Event } from './event'
+import { Event, ExtractFullyQualifiedEventName } from './event'
 import { Services } from './service'
 
 export type FlowContext = Services & {
@@ -15,12 +15,19 @@ export type FlowReactionHandler<TEvent extends Event> = (
   context: FlowContext,
 ) => Promise<void>
 
-export type FlowDefinition = {
+export type FlowDefinition<TEvent extends Event> = {
   cron?: {
     [jobName: string]: FlowCronHandler
   }
 
   reactions?: {
-    [eventName: string]: FlowReactionHandler<Event<any>>
+    [eventName in ExtractFullyQualifiedEventName<TEvent>]: FlowReactionHandler<
+      TEvent extends {
+        aggregateName: Split<eventName, '.'>[0]
+        name: Split<eventName, '.'>[1]
+      }
+        ? TEvent
+        : never
+    >
   }
 }

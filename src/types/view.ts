@@ -1,7 +1,7 @@
 import { Trigger } from '../constants'
 import { LoggerService } from '../services/logger'
 import { ProjectionsService } from '../services/projections'
-import { Event } from './event'
+import { Event, ExtractFullyQualifiedEventName } from './event'
 import { Services } from './service'
 
 export type ViewProjectionState = {
@@ -37,11 +37,22 @@ export type ViewReactionHandler<TParams extends any[]> = (
   ...params: [...params: TParams, context: ViewReactionContext]
 ) => Promise<void>
 
-export type ViewDefinition<TViewProjectionState extends ViewProjectionState> = {
+export type ViewDefinition<
+  TViewProjectionState extends ViewProjectionState,
+  TEvent extends Event,
+> = {
   collectionName: string
 
   projections: {
-    [eventName: string]: ViewProjectionHandler<TViewProjectionState, Event<any>>
+    [eventName in ExtractFullyQualifiedEventName<TEvent>]: ViewProjectionHandler<
+      TViewProjectionState,
+      TEvent extends {
+        aggregateName: Split<eventName, '.'>[0]
+        name: Split<eventName, '.'>[1]
+      }
+        ? TEvent
+        : never
+    >
   }
 
   reactions?: {

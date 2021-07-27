@@ -58,3 +58,6 @@ export type EventDefinition<
 > = {
   handle: EventHandler<Aggregate<TAggregateState>, TEvent>
 }
+
+export type ExtractFullyQualifiedEventName<TEvent extends Event> =
+  TEvent extends any ? `${TEvent['aggregateName']}.${TEvent['name']}` : never
