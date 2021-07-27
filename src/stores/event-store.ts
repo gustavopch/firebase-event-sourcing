@@ -37,57 +37,17 @@ const queryInBatches = async (
 
 export type OnEvent = (event: Event) => Promisable<void>
 
-export type EventStore = {
-  getEvent: (eventId: string | null | undefined) => Promise<Event | null>
+export type EventStore = ReturnType<typeof createEventStore>
 
-  getEventsByCausationId: (causationId: string) => Promise<Event[]>
-
-  getEventsByCorrelationId: (correlationId: string) => Promise<Event[]>
-
-  getEventsByUserId: (userId: string, onNext: OnEvent) => Promise<void>
-
-  getReplay: (
-    fromTimestamp: firebase.firestore.Timestamp | Date | string | number,
-    onNext: OnEvent,
-  ) => Promise<void>
-
-  getReplayForAggregate: (
-    aggregateId: string,
-    fromRevision: number,
-    onNext: OnEvent,
-  ) => Promise<void>
-
-  saveEvent: <TEvent extends Event, TAggregateState extends AggregateState>(
-    eventProps: {
-      aggregateName: TEvent['aggregateName']
-      aggregateId: TEvent['aggregateId']
-      name: TEvent['name']
-      data: TEvent['data']
-      causationId: string | null
-      correlationId: string | null
-      userId: string
-      client: ClientInfo | null
-    },
-    initialState: TAggregateState,
-    getNewState: (state: TAggregateState, event: Event) => TAggregateState,
-  ) => Promise<string>
-
-  importEvents: (events: Event[]) => Promise<void>
-
-  getAggregate: (
-    aggregateId: string | null | undefined,
-  ) => Promise<Aggregate | null>
-
-  saveAggregate: (aggregate: AggregateData) => Promise<void>
-}
-
-export const createEventStore = (firebaseApp: firebase.app.App): EventStore => {
+export const createEventStore = (firebaseApp: firebase.app.App) => {
   const db = firebaseApp.firestore()
   const aggregatesCollection = db.collection(AGGREGATES)
   const eventsCollection = db.collection(EVENTS)
 
   return {
-    getEvent: async eventId => {
+    getEvent: async (
+      eventId: string | null | undefined,
+    ): Promise<Event | null> => {
       if (!eventId) {
         return null
       }
@@ -96,27 +56,35 @@ export const createEventStore = (firebaseApp: firebase.app.App): EventStore => {
       return (docSnap.data() ?? null) as Event | null
     },
 
-    getEventsByCausationId: async causationId => {
+    getEventsByCausationId: async (causationId: string): Promise<Event[]> => {
       const query = eventsCollection.where('metadata.causationId', '==', causationId) // prettier-ignore
 
       const querySnap = await query.get()
       return querySnap.docs.map(docSnap => docSnap.data() as Event)
     },
 
-    getEventsByCorrelationId: async correlationId => {
+    getEventsByCorrelationId: async (
+      correlationId: string,
+    ): Promise<Event[]> => {
       const query = eventsCollection.where('metadata.correlationId', '==', correlationId) // prettier-ignore
 
       const querySnap = await query.get()
       return querySnap.docs.map(docSnap => docSnap.data() as Event)
     },
 
-    getEventsByUserId: async (userId, onNext) => {
+    getEventsByUserId: async (
+      userId: string,
+      onNext: OnEvent,
+    ): Promise<void> => {
       const query = eventsCollection.where('metadata.userId', '==', userId)
 
       await queryInBatches(query, onNext)
     },
 
-    getReplay: async (fromTimestamp, onNext) => {
+    getReplay: async (
+      fromTimestamp: firebase.firestore.Timestamp | Date | string | number,
+      onNext: OnEvent,
+    ): Promise<void> => {
       const query = eventsCollection.where(
         'metadata.timestamp',
         '>=',
@@ -128,7 +96,11 @@ export const createEventStore = (firebaseApp: firebase.app.App): EventStore => {
       await queryInBatches(query, onNext)
     },
 
-    getReplayForAggregate: async (aggregateId, fromRevision, onNext) => {
+    getReplayForAggregate: async (
+      aggregateId: string,
+      fromRevision: number,
+      onNext: OnEvent,
+    ): Promise<void> => {
       const query = eventsCollection
         .where('aggregateId', '==', aggregateId)
         .where('metadata.revision', '>=', fromRevision)
@@ -136,7 +108,10 @@ export const createEventStore = (firebaseApp: firebase.app.App): EventStore => {
       await queryInBatches(query, onNext)
     },
 
-    saveEvent: async (
+    saveEvent: async <
+      TEvent extends Event,
+      TAggregateState extends AggregateState,
+    >(
       {
         aggregateName,
         aggregateId,
@@ -146,10 +121,19 @@ export const createEventStore = (firebaseApp: firebase.app.App): EventStore => {
         correlationId,
         userId,
         client,
+      }: {
+        aggregateName: TEvent['aggregateName']
+        aggregateId: TEvent['aggregateId']
+        name: TEvent['name']
+        data: TEvent['data']
+        causationId: string | null
+        correlationId: string | null
+        userId: string
+        client: ClientInfo | null
       },
-      initialState,
-      getNewState,
-    ) => {
+      initialState: TAggregateState,
+      getNewState: (state: TAggregateState, event: Event) => TAggregateState,
+    ): Promise<string> => {
       const eventId = generateId()
 
       const aggregateRef = aggregatesCollection.doc(aggregateId)
@@ -206,13 +190,15 @@ export const createEventStore = (firebaseApp: firebase.app.App): EventStore => {
       return eventId
     },
 
-    importEvents: async events => {
+    importEvents: async (events: Event[]): Promise<void> => {
       for (const event of events) {
         await eventsCollection.doc(event.id).set(event)
       }
     },
 
-    getAggregate: async aggregateId => {
+    getAggregate: async (
+      aggregateId: string | null | undefined,
+    ): Promise<Aggregate | null> => {
       if (!aggregateId) {
         return null
       }
@@ -225,7 +211,7 @@ export const createEventStore = (firebaseApp: firebase.app.App): EventStore => {
       return aggregate ? { ...aggregate, exists: true } : null
     },
 
-    saveAggregate: async aggregate => {
+    saveAggregate: async (aggregate: AggregateData): Promise<void> => {
       await aggregatesCollection.doc(aggregate.id).set(aggregate)
     },
   }

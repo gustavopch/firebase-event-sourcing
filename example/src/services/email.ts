@@ -2,17 +2,13 @@ import { ServiceContext } from '../../../src'
 
 declare global {
   namespace Services.Email {
-    type Instance = {
-      send: (params: { to: string; body: string }) => Promise<void>
-    }
+    type Instance = ReturnType<typeof createEmailService>
   }
 }
 
-export const createEmailService = (
-  ctx: ServiceContext,
-): Services.Email.Instance => {
+export const createEmailService = (ctx: ServiceContext) => {
   return {
-    send: async ({ to, body }) => {
+    send: async ({ to, body }: { to: string; body: string }): Promise<void> => {
       await new Promise(resolve => setTimeout(resolve, 200))
       console.log(`Sent email to ${to}`)
     },

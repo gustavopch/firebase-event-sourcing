@@ -5,52 +5,25 @@ import { generateId } from '../utils/generate-id'
 
 export type LogSeverity = 'debug' | 'info' | 'warn' | 'error'
 
-type LogOptions = {
-  timestamp?: Date
-  labels?: { [key: string]: string | number | boolean }
-}
+export type LoggerService = ReturnType<typeof createLoggerService>
 
-type LogFn = (
-  scope: string,
-  message: string,
-  body?: any,
-  options?: LogOptions,
-) => void
-
-type LogWithoutScopeFn = (
-  message: string,
-  body?: any,
-  options?: LogOptions,
-) => void
-
-export type LoggerService = {
-  debug: LogFn
-  info: LogFn
-  warn: LogFn
-  error: LogFn
-
-  withScope: (scope: string) => {
-    debug: LogWithoutScopeFn
-    info: LogWithoutScopeFn
-    warn: LogWithoutScopeFn
-    error: LogWithoutScopeFn
-  }
-}
-
-export const createLoggerService = (req: Request | null): LoggerService => {
+export const createLoggerService = (req: Request | null) => {
   const logging = new Logging()
   const log = logging.log('global')
 
-  const writeLogEntry = async <TBody>(
+  const writeLogEntry = <TBody>(
     severity: LogSeverity,
     scope: string,
     message: string,
     body?: TBody,
-    options?: LogOptions,
+    options?: {
+      timestamp?: Date
+      labels?: { [key: string]: string | number | boolean }
+    },
   ) => {
     const timestamp = options?.timestamp ?? new Date()
 
-    await log.write(
+    void log.write(
       // Docs: https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry
       log.entry(
         {
@@ -89,7 +62,7 @@ export const createLoggerService = (req: Request | null): LoggerService => {
     warn: writeLogEntry.bind(null, 'warn'),
     error: writeLogEntry.bind(null, 'error'),
 
-    withScope: scope => ({
+    withScope: (scope: string) => ({
       debug: writeLogEntry.bind(null, 'debug', scope),
       info: writeLogEntry.bind(null, 'info', scope),
       warn: writeLogEntry.bind(null, 'warn', scope),

@@ -3,16 +3,16 @@ import firebase from 'firebase-admin'
 import { Command, CommandWithMetadata } from '../types/command'
 import { Event } from '../types/event'
 
-export type FlowService = {
-  dispatch: <TCommand extends Command>(command: TCommand) => Promise<void>
-}
+export type FlowService = ReturnType<typeof createFlowService>
 
 export const createFlowService = (
   dispatch: (command: CommandWithMetadata) => Promise<unknown>,
   causationEvent: Event | null,
-): FlowService => {
+) => {
   return {
-    dispatch: async command => {
+    dispatch: async <TCommand extends Command>(
+      command: TCommand,
+    ): Promise<void> => {
       await dispatch({
         ...command,
         metadata: {

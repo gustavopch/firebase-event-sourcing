@@ -1,17 +1,13 @@
 import { EventStore } from '../stores/event-store'
 import { Aggregate } from '../types/aggregate'
 
-export type AggregatesService = {
-  exists: (aggregateId: string | string[] | null) => Promise<boolean>
-  get: (aggregateId: string) => Promise<Aggregate | null>
-  getAll: (aggregateIds: string[]) => Promise<Aggregate[]>
-}
+export type AggregatesService = ReturnType<typeof createAggregatesService>
 
-export const createAggregatesService = (
-  eventStore: EventStore,
-): AggregatesService => {
+export const createAggregatesService = (eventStore: EventStore) => {
   return {
-    exists: async aggregateIdOrIds => {
+    exists: async (
+      aggregateIdOrIds: string | string[] | null,
+    ): Promise<boolean> => {
       if (!aggregateIdOrIds) {
         return false
       }
@@ -27,11 +23,11 @@ export const createAggregatesService = (
       return aggregates.every(Boolean)
     },
 
-    get: async aggregateId => {
+    get: async (aggregateId: string): Promise<Aggregate | null> => {
       return eventStore.getAggregate(aggregateId)
     },
 
-    getAll: async aggregateIds => {
+    getAll: async (aggregateIds: string[]): Promise<Aggregate[]> => {
       return (
         await Promise.all(aggregateIds.map(id => eventStore.getAggregate(id)))
       ).filter((aggregate): aggregate is Aggregate => Boolean(aggregate))
