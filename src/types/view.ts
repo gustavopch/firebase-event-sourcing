@@ -2,6 +2,7 @@ import { Trigger } from '../constants'
 import { LoggerService } from '../services/logger'
 import { ProjectionsService } from '../services/projections'
 import { Event, ExtractFullyQualifiedEventName } from './event'
+import { Promisable, Split } from './misc'
 import { Services } from './service'
 
 export type ViewProjectionState = {

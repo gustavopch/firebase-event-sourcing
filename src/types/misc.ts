@@ -14,13 +14,11 @@ export type ClientInfo = {
   location: Location | null
 }
 
-declare global {
-  type Promisable<T> = T | Promise<T>
+export type Promisable<T> = T | Promise<T>
 
-  type Split<
-    TString extends string,
-    TDelimiter extends string,
-  > = TString extends `${infer THead}${TDelimiter}${infer TTail}`
-    ? [THead, ...Split<TTail, TDelimiter>]
-    : [TString]
-}
+export type Split<
+  TString extends string,
+  TDelimiter extends string,
+> = TString extends `${infer THead}${TDelimiter}${infer TTail}`
+  ? [THead, ...Split<TTail, TDelimiter>]
+  : [TString]

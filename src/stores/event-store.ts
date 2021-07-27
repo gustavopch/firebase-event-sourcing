@@ -2,7 +2,7 @@ import firebase from 'firebase-admin'
 
 import { Aggregate, AggregateData, AggregateState } from '../types/aggregate'
 import { Event } from '../types/event'
-import { ClientInfo } from '../types/misc'
+import { ClientInfo, Promisable } from '../types/misc'
 import { generateId } from '../utils/generate-id'
 
 export const AGGREGATES = 'aggregates'

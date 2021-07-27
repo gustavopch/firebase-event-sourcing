@@ -1,6 +1,7 @@
 import { FlowService } from '../services/flow'
 import { LoggerService } from '../services/logger'
 import { Event, ExtractFullyQualifiedEventName } from './event'
+import { Split } from './misc'
 import { Services } from './service'
 
 export type FlowContext = Services & {

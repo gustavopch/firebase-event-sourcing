@@ -4,7 +4,7 @@ import { AggregatesService } from '../services/aggregates'
 import { LoggerService } from '../services/logger'
 import { Aggregate, AggregateState } from './aggregate'
 import { Event, EventCreationProps } from './event'
-import { ClientInfo } from './misc'
+import { ClientInfo, Promisable } from './misc'
 import { Services } from './service'
 
 export type CommandData = {
