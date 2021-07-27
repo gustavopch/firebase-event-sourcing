@@ -30,10 +30,12 @@ export const createApp = <TAppDefinition extends AppDefinition>(
   firebaseApp: firebase.app.App,
   appDefinition: TAppDefinition,
   eventStore: EventStore,
-  aggregatesService: AggregatesService,
-  loggerService: LoggerService,
-  projectionsService: ProjectionsService,
-  userlandServices: Services,
+  services: {
+    aggregates: AggregatesService
+    logger: LoggerService
+    projections: ProjectionsService
+    userland: Services
+  },
 ): App<TAppDefinition> => {
   const runProjections = async (event: Event) => {
     const fullyQualifiedEventName = getFullyQualifiedEventName(event)
@@ -48,9 +50,9 @@ export const createApp = <TAppDefinition extends AppDefinition>(
           )) {
             if (handlerKey === fullyQualifiedEventName) {
               const stateOrStatesWithTheirIds = handler(event, {
-                logger: loggerService,
-                projections: projectionsService,
-                ...userlandServices,
+                logger: services.logger,
+                projections: services.projections,
+                ...services.userland,
               })
 
               const statesWithTheirIds = Array.isArray(
@@ -97,8 +99,8 @@ export const createApp = <TAppDefinition extends AppDefinition>(
 
           const promise = handler(event, {
             flow: flowService,
-            logger: loggerService,
-            ...userlandServices,
+            logger: services.logger,
+            ...services.userland,
           })
             .then(() => {
               console.log(`Ran '${flowName}' reaction with event '${fullyQualifiedEventName}:${event.id}'`) // prettier-ignore
@@ -172,9 +174,9 @@ export const createApp = <TAppDefinition extends AppDefinition>(
           },
       command,
       {
-        aggregates: aggregatesService,
-        logger: loggerService,
-        ...userlandServices,
+        aggregates: services.aggregates,
+        logger: services.logger,
+        ...services.userland,
       },
     )
 

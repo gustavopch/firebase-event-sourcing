@@ -102,15 +102,12 @@ export const createCommandsEndpoint = (
       logger: loggerService,
     }) ?? {}) as Services
 
-    const app = createApp(
-      firebaseApp,
-      appDefinition,
-      eventStore,
-      aggregatesService,
-      loggerService,
-      projectionsService,
-      userlandServices,
-    )
+    const app = createApp(firebaseApp, appDefinition, eventStore, {
+      aggregates: aggregatesService,
+      logger: loggerService,
+      projections: projectionsService,
+      userland: userlandServices,
+    })
 
     try {
       const isCommandValid =

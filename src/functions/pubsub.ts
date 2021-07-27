@@ -25,15 +25,12 @@ export const createPubsubFunctions = (
     logger: loggerService,
   }) ?? {}) as Services
 
-  const app = createApp(
-    firebaseApp,
-    appDefinition,
-    eventStore,
-    aggregatesService,
-    loggerService,
-    projectionsService,
-    userlandServices,
-  )
+  const app = createApp(firebaseApp, appDefinition, eventStore, {
+    aggregates: aggregatesService,
+    logger: loggerService,
+    projections: projectionsService,
+    userland: userlandServices,
+  })
 
   const pubsubFunctions: PubsubFunctions = {}
 
