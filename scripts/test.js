@@ -3,7 +3,7 @@ const { execSync } = require('child_process')
 
 const jestArgs = process.argv.slice(2).join(' ')
 
-const matchedTestFiles = execSync(`tsdx test --listTests ${jestArgs}`)
+const matchedTestFiles = execSync(`jest --listTests ${jestArgs}`)
   .toString()
   .split('\n')
   .filter(Boolean)
@@ -16,7 +16,7 @@ execSync('./scripts/build-example.js', {
   stdio: 'inherit',
 })
 
-const jestCommand = `tsdx test --passWithNoTests --runInBand ${jestArgs}`
+const jestCommand = `jest --passWithNoTests --runInBand ${jestArgs}`
 
 execSync(`NODE_ENV=test yarn firebase emulators:exec "${jestCommand}"`, {
   stdio: 'inherit',

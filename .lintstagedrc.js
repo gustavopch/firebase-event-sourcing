@@ -1,4 +1,4 @@
 module.exports = {
-  '*.js': ['tsdx lint'],
-  '*.ts': ['tsdx lint', () => 'tsc --noEmit'],
+  '*.js': ['eslint', 'prettier --check'],
+  '*.ts': ['eslint', 'prettier --check', () => 'tsc --noEmit'],
 }

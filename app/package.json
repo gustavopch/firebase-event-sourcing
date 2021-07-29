@@ -1,5 +1,5 @@
 {
   "main": "../dist/app.js",
-  "module": "../dist/app.esm.js",
+  "module": "../dist/app.mjs",
   "typings": "../dist/app.d.ts"
 }

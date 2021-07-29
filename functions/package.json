@@ -1,5 +1,5 @@
 {
   "main": "../dist/functions/index.js",
-  "module": "../dist/functions/index.esm.js",
+  "module": "../dist/functions/index.mjs",
   "typings": "../dist/functions/index.d.ts"
 }
